@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/theme/colors.dart';
 
+export 'theme/colors.dart';
+export 'theme/theme.dart';
+export 'components/button.dart';
+export 'components/divider.dart';
+export 'nezha_ui.dart';
+
 class NezhaApp extends StatefulWidget {
   final String title;
   final Widget? main;
