@@ -152,5 +152,173 @@ NZText.body('这是一段正文内容');''',
   child: MyWidget(),
 );''',
         ),
+        NZDocSection(
+          id: 'Divider',
+          title: 'Divider 分割线',
+          icon: Icons.horizontal_rule_rounded,
+          description: '用于分割内容的水平线，支持高度、厚度及缩进控制。',
+          usage: [
+            ['height', 'double', '分割线所占的垂直高度'],
+            ['thickness', 'double', '分割线的粗细'],
+            ['indent', 'double?', '左侧缩进距离'],
+            ['endIndent', 'double?', '右侧缩进距离'],
+            ['color', 'Color?', '自定义分割线颜色'],
+          ],
+          preview: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              NZText.body('上方内容'),
+              const NZDivider(),
+              NZText.body('中间内容 (默认样式)'),
+              const NZDivider(height: 32, thickness: 2, color: Colors.blue),
+              NZText.body('下方内容 (自定义样式)'),
+            ],
+          ),
+          content: 'NZDivider 是 NezhaUI 提供的基础视觉分割组件。',
+          code: '''// 基础用法
+const NZDivider()
+
+// 自定义样式
+NZDivider(
+  height: 32,
+  thickness: 2,
+  color: Colors.blue,
+  indent: 16,
+  endIndent: 16,
+)''',
+        ),
+        NZDocSection(
+          id: 'BackToTop',
+          title: 'BackToTop 回到顶部',
+          icon: Icons.vertical_align_top_rounded,
+          description: '当页面滚动到一定距离时出现，点击可快速返回顶部。',
+          usage: [
+            ['scrollController', 'ScrollController', '绑定的滚动控制器'],
+            ['threshold', 'double', '显示按钮的滚动距离阈值'],
+            ['duration', 'Duration', '滚动动画时长'],
+          ],
+          preview: Container(
+            height: 200,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.withOpacity(0.2)),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Center(
+              child: Text('由于文档环境限制，请在实际长页面中使用预览'),
+            ),
+          ),
+          content: 'NZBackToTop 是提升长页面用户体验的必备组件。',
+          code: '''NZBackToTop(
+  scrollController: _scrollController,
+  threshold: 200,
+  child: Icon(Icons.arrow_upward),
+)''',
+        ),
+        NZDocSection(
+          id: 'FloatingActionButton',
+          title: 'FAB 悬浮按钮',
+          icon: Icons.add_circle_outline_rounded,
+          description: '多功能悬浮按钮，支持图标、文字、图片背景及拖动功能。',
+          usage: [
+            ['type', 'NZFloatingActionButtonType', '按钮类型：standard, icon, image'],
+            ['draggable', 'bool', '是否开启拖动'],
+            ['scrollController', 'ScrollController?', '绑定后可实现滚动隐藏'],
+          ],
+          preview: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              NZFloatingActionButton.icon(
+                icon: const Icon(Icons.message_rounded),
+                onPressed: () {},
+              ),
+              const SizedBox(width: 16),
+              NZFloatingActionButton.standard(
+                icon: const Icon(Icons.edit_rounded),
+                label: '写文章',
+                onPressed: () {},
+              ),
+            ],
+          ),
+          content: 'NZFloatingActionButton 提供了比原生 FAB 更强大的定制能力。',
+          code: '''// 图标样式
+NZFloatingActionButton.icon(
+  icon: Icon(Icons.add),
+  onPressed: () {},
+)
+
+// 带文字样式
+NZFloatingActionButton.standard(
+  icon: Icon(Icons.add),
+  label: '添加',
+  onPressed: () {},
+)''',
+        ),
+        NZDocSection(
+          id: 'Markdown',
+          title: 'Markdown 渲染',
+          icon: Icons.description_rounded,
+          description: '原生实现的轻量级 Markdown 渲染组件，支持基础语法解析。',
+          usage: [
+            ['data', 'String', 'Markdown 源码'],
+            ['style', 'NZMarkdownStyle?', '自定义渲染样式'],
+          ],
+          preview: const NZMarkdown(
+            data: '''### Markdown 示例
+- 支持**加粗**和*斜体*
+- 支持`行内代码`
+- 支持引用块
+> 这是一段引用文本''',
+          ),
+          content: 'NZMarkdown 无需第三方依赖，适用于简单的文档展示。',
+          code: '''NZMarkdown(
+  data: '# 标题\\n这是一段**加粗**文字',
+)''',
+        ),
+        NZDocSection(
+          id: 'PullToRefresh',
+          title: 'PullToRefresh 下拉刷新',
+          icon: Icons.refresh_rounded,
+          description: '符合 NezhaUI 视觉风格的下拉刷新组件。',
+          usage: [
+            ['onRefresh', 'Future<void> Function()', '刷新回调'],
+            ['showSpinner', 'bool', '是否显示加载圆圈'],
+            ['label', 'String?', '自定义提示文本'],
+          ],
+          preview: Container(
+            height: 100,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.withOpacity(0.2)),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Center(child: Text('下拉刷新演示（需实际滚动环境）')),
+          ),
+          content: 'NZPullToRefresh 封装了复杂的下拉逻辑，提供一致的交互体验。',
+          code: '''NZPullToRefresh(
+  onRefresh: () async {
+    await Future.delayed(Duration(seconds: 2));
+  },
+  child: ListView(...),
+)''',
+        ),
+        NZDocSection(
+          id: 'CodeView',
+          title: 'CodeView 代码预览',
+          icon: Icons.code_rounded,
+          description: '支持 GitHub 风格高亮的代码查看组件。',
+          usage: [
+            ['code', 'String', '需要显示的代码'],
+            ['theme', 'NZCodeTheme', '主题：githubLight, githubDark'],
+            ['showCopyButton', 'bool', '是否显示复制按钮'],
+          ],
+          preview: const NZCodeView(
+            code: 'void main() {\n  print("Hello NezhaUI");\n}',
+            theme: NZCodeTheme.githubLight,
+          ),
+          content: 'NZCodeView 内置了代码高亮逻辑，非常适合文档类应用。',
+          code: '''NZCodeView(
+  code: 'final x = 1;',
+  theme: NZCodeTheme.githubDark,
+)''',
+        ),
       ];
 }
