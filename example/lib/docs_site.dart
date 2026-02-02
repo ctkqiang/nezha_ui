@@ -28,7 +28,7 @@ class _NZDocsSiteState extends State<NZDocsSite> {
 - **极致性能**：每个组件都经过细致的调优，确保在低端设备上也能保持流畅。
 - **专业美学**：遵循现代设计规范，提供一致且高级的视觉体验。
 - **高度定制**：深度集成 NZTheme 系统，轻松适配各种品牌风格。''',
-      'github': 'https://github.com/johnmelodyme/nezha_ui',
+      'github': 'https://github.com/ctkqiang/nezha_ui',
     },
     'Buttons': {
       'title': 'Button 按钮',
@@ -110,6 +110,31 @@ NZFloatingActionButton.standard(
   theme: NZCodeTheme.githubLight,
   showLineNumbers: true,
   showCopyButton: true,
+);''',
+    },
+    'Markdown': {
+      'title': 'Markdown 渲染',
+      'description': '纯原生实现的 Markdown 解析与渲染组件，无需任何第三方依赖。',
+      'usage': [
+        ['data', 'String', '需要渲染的 Markdown 文本内容'],
+        ['style', 'NZMarkdownStyle?', '自定义样式配置，如字体大小、颜色等'],
+      ],
+      'preview': const NZMarkdown(
+        data: '''### 弟弟快看！
+这是大姐为你写的 **Markdown** 组件。
+- 支持 **加粗**
+- 支持 *斜体*
+- 支持 `行内代码`
+
+> 这是一个引用块，是不是很优雅？''',
+      ),
+      'code': '''NZMarkdown(
+  data: """
+### 标题
+这是 **加粗** 文本。
+- 列表项 1
+- 列表项 2
+""",
 );''',
     },
   };
@@ -208,6 +233,7 @@ NZFloatingActionButton.standard(
         _buildMenuItem('Buttons', 'Button 按钮', Icons.smart_button_rounded),
         _buildMenuItem('FAB', 'FAB 悬浮按钮', Icons.ads_click_rounded),
         _buildMenuItem('CodeView', 'CodeView 代码预览', Icons.code_rounded),
+        _buildMenuItem('Markdown', 'Markdown 渲染', Icons.article_rounded),
       ],
     );
   }
@@ -265,7 +291,7 @@ NZFloatingActionButton.standard(
             children: [
               _buildFooterLink(
                 'GitHub 仓库',
-                'https://github.com/johnmelodyme/nezha_ui',
+                'https://github.com/ctkqiang/nezha_ui',
               ),
               const Text(' · ', style: TextStyle(color: Colors.grey)),
               _buildFooterLink('开源协议', '#'),
@@ -342,7 +368,7 @@ NZFloatingActionButton.standard(
           const SizedBox(height: 80),
           const Divider(),
           const SizedBox(height: 80),
-          _buildMarkdownContent(home['content']),
+          NZMarkdown(data: home['content']),
         ],
       ),
     );
@@ -491,60 +517,6 @@ NZFloatingActionButton.standard(
           ],
         ),
       ),
-    );
-  }
-
-  /// 构建简易 Markdown 内容展示
-  Widget _buildMarkdownContent(String content) {
-    final lines = content.split('\n');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: lines.map((line) {
-        if (line.startsWith('### ')) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 32, bottom: 16),
-            child: Text(
-              line.substring(4),
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          );
-        } else if (line.startsWith('- ')) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  '• ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Expanded(
-                  child: Text(
-                    line.substring(2),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      height: 1.5,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Text(
-              line,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-                height: 1.5,
-              ),
-            ),
-          );
-        }
-      }).toList(),
     );
   }
 }

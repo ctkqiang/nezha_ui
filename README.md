@@ -3,7 +3,7 @@
 轻量、优雅且专业的 Flutter 移动端组件库。
 
 [![pub package](https://img.shields.io/pub/v/nezha_ui.svg)](https://pub.dev/packages/nezha_ui)
-[![license](https://img.shields.io/github/license/johnmelodyme/nezha_ui.svg)](https://github.com/johnmelodyme/nezha_ui/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/ctkqiang/nezha_ui.svg)](https://github.com/ctkqiang/nezha_ui/blob/master/LICENSE)
 
 NezhaUI 是一套基于 Flutter 构建的移动端设计系统，致力于为现代应用开发提供丝滑、灵敏且高度可定制的 UI 组件。
 
