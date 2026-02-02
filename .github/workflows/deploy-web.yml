@@ -76,11 +76,19 @@ jobs:
           echo "4. Full build test:"
           flutter build web --release --base-href /nezha_ui/
           
-          echo "5. Fix index.html base href (Double check):"
-          sed -i 's/<base href="\$FLUTTER_BASE_HREF">/<base href="\/nezha_ui\/">/g' build/web/index.html || echo "Sed failed or already set"
+          echo "5. Fix index.html base href (More robust):"
+          # 使用更通用的正则表达式，不管之前是什么，都强制改成 /nezha_ui/
+          sed -i 's/<base href=".*">/<base href="\/nezha_ui\/">/g' build/web/index.html
           
-          echo "6. Add .nojekyll file:"
+          echo "6. Add .nojekyll, 404.html and CNAME:"
           touch build/web/.nojekyll
+          cp build/web/index.html build/web/404.html
+          echo "www.ctkqiang.xin" > build/web/CNAME
+          
+          echo ""
+          echo "7. Final build artifacts check:"
+          ls -R build/web/
+          grep "base href" build/web/index.html
           
           echo ""
           echo "Build result:"
