@@ -176,20 +176,21 @@ class _NZFloatingActionButtonState extends State<NZFloatingActionButton>
     _hideController.forward(); // 初始显示
 
     if (widget.scrollController != null) {
-      widget.scrollController!.addListener(_scrollListener);
+      widget.scrollController!.addListener(_onScroll);
     }
   }
 
   @override
   void dispose() {
     if (widget.scrollController != null) {
-      widget.scrollController!.removeListener(_scrollListener);
+      widget.scrollController!.removeListener(_onScroll);
     }
     _hideController.dispose();
     super.dispose();
   }
 
-  void _scrollListener() {
+  void _onScroll() {
+    if (widget.scrollController == null) return;
     if (widget.scrollController!.position.userScrollDirection ==
         ScrollDirection.reverse) {
       if (_isVisible) {
@@ -205,8 +206,31 @@ class _NZFloatingActionButtonState extends State<NZFloatingActionButton>
     }
   }
 
+  void _snapToEdge(Size size, EdgeInsets padding) {
+    if (!widget.draggable) return;
+
+    final double centerX = size.width / 2;
+    double targetX;
+    if (_position.dx + 28 < centerX) {
+      targetX = 16.0;
+    } else {
+      targetX = size.width - 56 - 16.0;
+    }
+
+    final double targetY = _position.dy.clamp(
+      padding.top + 16,
+      size.height - padding.bottom - 56 - 16,
+    );
+
+    setState(() {
+      _position = Offset(targetX, targetY);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final padding = MediaQuery.of(context).padding;
     final Color effectiveBackgroundColor =
         widget.backgroundColor ?? NZColor.nezhaPrimary;
     final Color effectiveForegroundColor =
@@ -249,7 +273,25 @@ class _NZFloatingActionButtonState extends State<NZFloatingActionButton>
             clipBehavior: Clip.antiAlias,
             child: Stack(
               children: [
-                Image(image: widget.image!, fit: BoxFit.cover),
+                Image(
+                  image: widget.image!,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+                // 蒙层增加层次感
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.1),
+                        Colors.black.withValues(alpha: 0.4),
+                      ],
+                    ),
+                  ),
+                ),
                 if (widget.icon != null)
                   Center(
                     child: IconTheme.merge(
@@ -278,10 +320,13 @@ class _NZFloatingActionButtonState extends State<NZFloatingActionButton>
                 child: Opacity(opacity: 0.8, child: content),
               ),
               childWhenDragging: const SizedBox.shrink(),
-              onDragEnd: (details) {
+              onDragUpdate: (details) {
                 setState(() {
-                  _position = details.offset;
+                  _position += details.delta;
                 });
+              },
+              onDragEnd: (details) {
+                _snapToEdge(size, padding);
               },
               child: content,
             ),

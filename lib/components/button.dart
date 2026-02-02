@@ -494,13 +494,56 @@ class NZDraggableButton extends StatefulWidget {
   State<NZDraggableButton> createState() => _NZDraggableButtonState();
 }
 
-class _NZDraggableButtonState extends State<NZDraggableButton> {
+class _NZDraggableButtonState extends State<NZDraggableButton>
+    with SingleTickerProviderStateMixin {
   late Offset _position;
+  late AnimationController _controller;
+  Animation<Offset>? _animation;
 
   @override
   void initState() {
     super.initState();
     _position = widget.initialPosition;
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _controller.addListener(() {
+      if (_animation != null) {
+        setState(() {
+          _position = _animation!.value;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _snapToEdge(Size size, EdgeInsets padding) {
+    final double centerX = size.width / 2;
+    double targetX;
+    // 自动吸附到最近的左右边缘，留出 16 像素间距
+    if (_position.dx + 30 < centerX) {
+      targetX = 16.0;
+    } else {
+      targetX = size.width - 60 - 16.0;
+    }
+
+    final double targetY = _position.dy.clamp(
+      padding.top + 16,
+      size.height - padding.bottom - 60 - 16,
+    );
+
+    _animation = Tween<Offset>(
+      begin: _position,
+      end: Offset(targetX, targetY),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
+
+    _controller.forward(from: 0.0);
   }
 
   @override
@@ -508,28 +551,33 @@ class _NZDraggableButtonState extends State<NZDraggableButton> {
     final size = MediaQuery.of(context).size;
     final padding = MediaQuery.of(context).padding;
 
-    return Positioned(
-      left: _position.dx.clamp(0.0, size.width - 60),
-      top: _position.dy.clamp(padding.top, size.height - padding.bottom - 60),
+    return AnimatedPositioned(
+      duration: _controller.isAnimating
+          ? Duration.zero
+          : const Duration(milliseconds: 50),
+      left: _position.dx,
+      top: _position.dy,
       child: Draggable(
         feedback: Material(
           color: Colors.transparent,
           child: Opacity(opacity: 0.8, child: widget.child),
         ),
-        childWhenDragging: Container(),
-        onDragEnd: (details) {
+        childWhenDragging: const SizedBox.shrink(),
+        onDragUpdate: (details) {
           setState(() {
-            // 考虑状态栏和导航栏的高度进行修正
-            _position = Offset(
-              details.offset.dx.clamp(0.0, size.width - 60),
-              details.offset.dy.clamp(
-                padding.top,
-                size.height - padding.bottom - 60,
-              ),
-            );
+            _position += details.delta;
           });
         },
-        child: GestureDetector(onTap: widget.onTap, child: widget.child),
+        onDragEnd: (details) {
+          _snapToEdge(size, padding);
+        },
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.grab,
+            child: widget.child,
+          ),
+        ),
       ),
     );
   }

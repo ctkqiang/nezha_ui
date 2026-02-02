@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.7,
         decoration: const BoxDecoration(
-          color: Color(0xFF1E1E1E),
+          color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         padding: const EdgeInsets.all(24),
@@ -137,13 +137,13 @@ class _HomePageState extends State<HomePage> {
                 Text(
                   title,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: Color(0xFF24292E),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white60),
+                  icon: const Icon(Icons.close, color: Color(0xFF959DA5)),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
@@ -154,18 +154,20 @@ class _HomePageState extends State<HomePage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: const Color(0xFFF6F8FA),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white10),
+                  border: Border.all(color: const Color(0xFFE1E4E8)),
                 ),
                 child: SingleChildScrollView(
-                  child: Text(
-                    code,
-                    style: const TextStyle(
-                      color: Color(0xFFD4D4D4),
-                      fontFamily: 'monospace',
-                      fontSize: 13,
-                      height: 1.5,
+                  child: RichText(
+                    text: TextSpan(
+                      style: const TextStyle(
+                        color: Color(0xFF24292E),
+                        fontFamily: 'monospace',
+                        fontSize: 13,
+                        height: 1.5,
+                      ),
+                      children: _highlightGitHubLight(code),
                     ),
                   ),
                 ),
@@ -185,6 +187,76 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  List<TextSpan> _highlightGitHubLight(String code) {
+    // 简单的 GitHub Light 风格正则高亮
+    final List<TextSpan> spans = [];
+    final pattern = RegExp(
+      r'(\/\/.*)|'
+      r'(".*?"|'
+      "'"
+      r".*?')|"
+      r'(\b(?:void|class|final|const|var|if|else|return|await|async|import|package|extends|super|this|new|true|false)\b)|'
+      r'(\b(?:NZButton|NZDivider|NZPullToRefresh|NZFloatingActionButton|NZProgressButton|NZImageButton|Text|Container|Column|Row|SizedBox|Icon|NetworkImage|SliverAppBar|CustomScrollView|FlexibleSpaceBar|Offset|Color|Colors)\b)|'
+      r'(\d+)',
+      multiLine: true,
+    );
+
+    int lastMatchEnd = 0;
+    for (final match in pattern.allMatches(code)) {
+      if (match.start > lastMatchEnd) {
+        spans.add(TextSpan(text: code.substring(lastMatchEnd, match.start)));
+      }
+
+      if (match.group(1) != null) {
+        spans.add(
+          TextSpan(
+            text: match.group(1),
+            style: const TextStyle(
+              color: Color(0xFF6A737D),
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        );
+      } else if (match.group(2) != null) {
+        spans.add(
+          TextSpan(
+            text: match.group(2),
+            style: const TextStyle(color: Color(0xFF032F62)),
+          ),
+        );
+      } else if (match.group(3) != null) {
+        spans.add(
+          TextSpan(
+            text: match.group(3),
+            style: const TextStyle(color: Color(0xFFD73A49)),
+          ),
+        );
+      } else if (match.group(4) != null) {
+        spans.add(
+          TextSpan(
+            text: match.group(4),
+            style: const TextStyle(color: Color(0xFF6F42C1)),
+          ),
+        );
+      } else if (match.group(5) != null) {
+        spans.add(
+          TextSpan(
+            text: match.group(5),
+            style: const TextStyle(color: Color(0xFF005CC5)),
+          ),
+        );
+      }
+
+      lastMatchEnd = match.end;
+    }
+
+    if (lastMatchEnd < code.length) {
+      spans.add(TextSpan(text: code.substring(lastMatchEnd)));
+    }
+
+    return spans;
   }
 
   Widget _buildSection(String title, Widget content, {String? code}) {
@@ -291,9 +363,12 @@ class _HomePageState extends State<HomePage> {
                         StretchMode.fadeTitle,
                       ],
                       background: Container(
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Color(0xFF2D5AF0), Color(0xFF5E81F4)],
+                            colors: [
+                              NZColor.nezhaPrimary,
+                              NZColor.nezhaPrimary.withValues(alpha: 0.8),
+                            ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -579,10 +654,10 @@ NZFloatingActionButton.image(
             initialPosition: const Offset(20, 350),
             draggable: true,
             image: const NetworkImage(
-              'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=1000&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop',
             ),
-            icon: const Icon(Icons.auto_awesome_rounded),
-            onPressed: () => _showMsg('触发了图片 FAB'),
+            icon: const Icon(Icons.palette_rounded, color: Colors.white),
+            onPressed: () => _showMsg('进入创意调色盘'),
           ),
         ],
       ),
