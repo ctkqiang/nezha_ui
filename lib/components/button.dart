@@ -505,9 +505,12 @@ class _NZDraggableButtonState extends State<NZDraggableButton> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final padding = MediaQuery.of(context).padding;
+
     return Positioned(
-      left: _position.dx,
-      top: _position.dy,
+      left: _position.dx.clamp(0.0, size.width - 60),
+      top: _position.dy.clamp(padding.top, size.height - padding.bottom - 60),
       child: Draggable(
         feedback: Material(
           color: Colors.transparent,
@@ -516,7 +519,14 @@ class _NZDraggableButtonState extends State<NZDraggableButton> {
         childWhenDragging: Container(),
         onDragEnd: (details) {
           setState(() {
-            _position = details.offset;
+            // 考虑状态栏和导航栏的高度进行修正
+            _position = Offset(
+              details.offset.dx.clamp(0.0, size.width - 60),
+              details.offset.dy.clamp(
+                padding.top,
+                size.height - padding.bottom - 60,
+              ),
+            );
           });
         },
         child: GestureDetector(onTap: widget.onTap, child: widget.child),

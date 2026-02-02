@@ -32,10 +32,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldMessengerState> _messengerKey =
       GlobalKey<ScaffoldMessengerState>();
+  final ScrollController _scrollController = ScrollController();
   int _counter = 0;
   double _downloadProgress = 0.0;
   bool _isDownloading = false;
   bool _isSaving = false;
+  double _appBarOpacity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final offset = _scrollController.offset;
+    final opacity = (offset / 100).clamp(0.0, 1.0);
+    if (opacity != _appBarOpacity) {
+      setState(() => _appBarOpacity = opacity);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Future<void> _handleRefresh() async {
     _showMsg('正在刷新数据...');
@@ -93,35 +116,141 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Widget _buildSection(String title, Widget content) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+  void _showCode(String title, String code) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.7,
+        decoration: const BoxDecoration(
+          color: Color(0xFF1E1E1E),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 4,
-              height: 18,
-              decoration: BoxDecoration(
-                color: NZColor.nezhaPrimary,
-                borderRadius: BorderRadius.circular(2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white60),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white10),
+                ),
+                child: SingleChildScrollView(
+                  child: Text(
+                    code,
+                    style: const TextStyle(
+                      color: Color(0xFFD4D4D4),
+                      fontFamily: 'monospace',
+                      fontSize: 13,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
               ),
             ),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-              ),
+            const SizedBox(height: 16),
+            NZButton.primary(
+              label: '复制示例代码',
+              block: true,
+              onPressed: () {
+                // TODO: 复制到剪贴板
+                Navigator.pop(context);
+                _showMsg('代码已复制到剪贴板');
+              },
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        content,
-        const NZDivider(height: 40),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildSection(String title, Widget content, {String? code}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 4,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: NZColor.nezhaPrimary,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ],
+                ),
+                if (code != null)
+                  IconButton(
+                    icon: const Icon(
+                      Icons.code_rounded,
+                      size: 20,
+                      color: NZColor.nezhaPrimary,
+                    ),
+                    onPressed: () => _showCode(title, code),
+                    visualDensity: VisualDensity.compact,
+                    tooltip: '查看代码',
+                  ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+            child: content,
+          ),
+        ],
+      ),
     );
   }
 
@@ -133,98 +262,127 @@ class _HomePageState extends State<HomePage> {
         children: [
           Scaffold(
             backgroundColor: const Color(0xFFF7F8FA),
-            appBar: AppBar(
-              title: const Text('NezhaUI 设计规范'),
-              backgroundColor: Colors.white,
-              surfaceTintColor: Colors.white,
-              elevation: 0,
-              centerTitle: true,
-            ),
             body: NZPullToRefresh(
-              backgroundColor: NZColor.blueGrey50,
-              refreshDelay: const Duration(milliseconds: 1500),
-              showIcon: true,
-              color: NZColor.blue400,
+              backgroundColor: Colors.transparent,
+              refreshDelay: const Duration(milliseconds: 1000),
               onRefresh: _handleRefresh,
               showSpinner: false,
-              label: '下拉即可刷新...',
-              readyLabel: '释放即可刷新',
-              refreshingLabel: '正在刷新中...',
-              successLabel: '数据刷新成功啦~',
-              successIcon: Icons.done_all_rounded,
-              child: SingleChildScrollView(
+              label: '下拉重置数据',
+              readyLabel: '松开立即重置',
+              refreshingLabel: '正在努力加载...',
+              successLabel: '重置成功啦',
+              child: CustomScrollView(
+                controller: _scrollController,
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 24.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header Banner
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(28),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF2D5AF0), Color(0xFF5E81F4)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                slivers: [
+                  SliverAppBar(
+                    expandedHeight: 220,
+                    pinned: true,
+                    stretch: true,
+                    backgroundColor: Colors.white,
+                    surfaceTintColor: Colors.white,
+                    elevation: 0,
+                    flexibleSpace: FlexibleSpaceBar(
+                      stretchModes: const [
+                        StretchMode.zoomBackground,
+                        StretchMode.blurBackground,
+                        StretchMode.fadeTitle,
+                      ],
+                      background: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFF2D5AF0), Color(0xFF5E81F4)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(
-                              0xFF2D5AF0,
-                            ).withValues(alpha: 0.3),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'NezhaUI',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 36,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 1.5,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              right: -50,
+                              top: -50,
+                              child: Container(
+                                width: 200,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 12),
-                          Text(
-                            '更轻量、更优雅、更专业的\nFlutter 移动端组件库',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              height: 1.6,
-                              fontWeight: FontWeight.w300,
+                            Padding(
+                              padding: const EdgeInsets.all(28.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Text(
+                                      'V1.0.0 STABLE',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  const Text(
+                                    'NezhaUI',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 1,
+                                    ),
+                                  ),
+                                  const Text(
+                                    '更轻量、更优雅、更专业的移动端组件库',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
+                          ],
+                        ),
+                      ),
+                      title: Opacity(
+                        opacity: _appBarOpacity,
+                        child: const Text(
+                          'NezhaUI 设计规范',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
+                        ),
                       ),
+                      centerTitle: true,
                     ),
-                    const SizedBox(height: 40),
-
-                    // Button Styles Section
-                    _buildSection(
-                      '下拉刷新示例 (NZPullToRefresh)',
-                      const Text(
-                        '你可以尝试下拉整个页面，我已经开启了 noSpinner 模式，并设置了自定义 Label 哦~',
-                        style: TextStyle(color: Colors.black45, fontSize: 14),
-                      ),
-                    ),
-
-                    // Button Styles Section
-                    _buildSection(
-                      '基础按钮样式 (NZButton)',
-                      Column(
-                        children: [
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 100),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        _buildSection(
+                          '基础按钮 (NZButton)',
                           Wrap(
                             spacing: 12,
                             runSpacing: 16,
@@ -247,222 +405,184 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20),
-                          NZButton.primary(
-                            label: _isSaving ? '正在保存...' : '通栏加载按钮示例',
-                            block: true,
-                            isLoading: _isSaving,
-                            onPressed: _simulateSave,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Custom Colors Section
-                    _buildSection(
-                      '自定义色彩 (Custom Colors)',
-                      Wrap(
-                        spacing: 12,
-                        runSpacing: 16,
-                        children: [
-                          NZButton.primary(
-                            label: '薄荷绿',
-                            color: NZColor.nezhaGreen,
-                            onPressed: () => _showMsg('清新薄荷绿'),
-                          ),
-                          NZButton.primary(
-                            label: '活力橙',
-                            color: NZColor.nezhaOrange,
-                            onPressed: () => _showMsg('活力阳光橙'),
-                          ),
-                          NZButton.primary(
-                            label: '魅惑紫',
-                            color: NZColor.nezhaPurple,
-                            onPressed: () => _showMsg('神秘魅惑紫'),
-                          ),
-                          NZButton.outline(
-                            label: '樱花粉',
-                            color: NZColor.nezhaPink,
-                            foregroundColor: NZColor.nezhaPink,
-                            onPressed: () => _showMsg('浪漫樱花粉'),
-                          ),
-                          NZButton.secondary(
-                            label: '警告红',
-                            color: NZColor.nezhaRed.withValues(alpha: 0.1),
-                            foregroundColor: NZColor.nezhaRed,
-                            onPressed: () => _showMsg('危险警示红'),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Icon Buttons Section
-                    _buildSection(
-                      '图标与状态',
-                      Wrap(
-                        spacing: 12,
-                        runSpacing: 16,
-                        children: [
-                          NZButton.primary(
-                            label: '添加',
-                            icon: const Icon(Icons.add_rounded),
-                            onPressed: () => _showMsg('执行添加操作'),
-                          ),
-                          NZButton.outline(
-                            label: '下载',
-                            icon: const Icon(Icons.cloud_download_outlined),
-                            onPressed: () => _showMsg('开始云端下载'),
-                          ),
-                          NZButton.text(
-                            label: '分享',
-                            icon: const Icon(Icons.share_outlined),
-                            onPressed: () => _showMsg('准备分享内容'),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Progress Button Section
-                    _buildSection(
-                      '进度按钮 (NZProgressButton)',
-                      NZProgressButton(
-                        progress: _downloadProgress,
-                        block: true,
-                        color: NZColor.nezhaIndigo,
-                        label: _isDownloading
-                            ? '正在极速下载... ${(_downloadProgress * 100).toInt()}%'
-                            : '点击体验背景进度',
-                        onPressed: _simulateDownload,
-                      ),
-                    ),
-
-                    // Image Button Section
-                    _buildSection(
-                      '图片按钮 (NZImageButton)',
-                      NZImageButton(
-                        image: const NetworkImage(
-                          'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop',
+                          code: '''NZButton.primary(
+  label: '主要操作',
+  onPressed: () => _showMsg('点击了主要操作'),
+),
+NZButton.secondary(
+  label: '次要操作',
+  onPressed: () => _showMsg('点击了次要操作'),
+),
+NZButton.outline(
+  label: '描边按钮',
+  onPressed: () => _showMsg('点击了描边按钮'),
+),
+NZButton.text(
+  label: '文字按钮',
+  onPressed: () => _showMsg('点击了文字按钮'),
+)''',
                         ),
-                        label: '探索新视界',
-                        block: true,
-                        borderRadius: 16,
-                        onPressed: () => _showMsg('开启视觉盛宴'),
-                      ),
-                    ),
-
-                    // Interactive Counter
-                    _buildSection(
-                      '交互反馈',
-                      Container(
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.grey.shade100),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.02),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    '活跃度计数',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black54,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '当前数值：$_counter',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black26,
-                                    ),
-                                  ),
-                                ],
+                        _buildSection(
+                          '按钮状态',
+                          Column(
+                            children: [
+                              NZButton.primary(
+                                label: _isSaving ? '正在努力保存...' : '点击触发加载状态',
+                                block: true,
+                                isLoading: _isSaving,
+                                onPressed: _simulateSave,
                               ),
-                            ),
-                            NZButton.primary(
-                              label: '计数',
-                              width: 80,
-                              height: 40,
-                              borderRadius: 20,
-                              onPressed: _incrementCounter,
-                            ),
-                          ],
+                              const SizedBox(height: 12),
+                              NZButton.primary(
+                                label: '禁用状态演示',
+                                block: true,
+                                onPressed: null,
+                              ),
+                            ],
+                          ),
+                          code: '''NZButton.primary(
+  label: _isSaving ? '正在保存...' : '加载状态',
+  block: true,
+  isLoading: _isSaving,
+  onPressed: _simulateSave,
+),
+NZButton.primary(
+  label: '禁用状态',
+  block: true,
+  onPressed: null,
+)''',
                         ),
-                      ),
-                    ),
+                        _buildSection(
+                          '进度按钮 (NZProgressButton)',
+                          NZProgressButton(
+                            progress: _downloadProgress,
+                            block: true,
+                            color: NZColor.nezhaIndigo,
+                            label: _isDownloading
+                                ? '下载中... ${(_downloadProgress * 100).toInt()}%'
+                                : '开始背景进度下载',
+                            onPressed: _simulateDownload,
+                          ),
+                          code: '''NZProgressButton(
+  progress: _downloadProgress,
+  block: true,
+  color: NZColor.nezhaIndigo,
+  label: _isDownloading ? '下载中...' : '开始下载',
+  onPressed: _simulateDownload,
+)''',
+                        ),
+                        _buildSection(
+                          '图片按钮 (NZImageButton)',
+                          NZImageButton(
+                            image: const NetworkImage(
+                              'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop',
+                            ),
+                            label: '探索视觉艺术',
+                            block: true,
+                            borderRadius: 20,
+                            onPressed: () => _showMsg('开启艺术之旅'),
+                          ),
+                          code: '''NZImageButton(
+  image: NetworkImage('...'),
+  label: '探索视觉艺术',
+  block: true,
+  borderRadius: 20,
+  onPressed: () => _showMsg('开启艺术之旅'),
+)''',
+                        ),
+                        _buildSection(
+                          '分割线 (NZDivider)',
+                          const Column(
+                            children: [
+                              Text(
+                                '上方内容',
+                                style: TextStyle(color: Colors.black38),
+                              ),
+                              NZDivider(height: 40, thickness: 1),
+                              Text(
+                                '下方内容',
+                                style: TextStyle(color: Colors.black38),
+                              ),
+                            ],
+                          ),
+                          code: '''NZDivider(height: 40, thickness: 1)''',
+                        ),
+                        _buildSection(
+                          '交互计数器',
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '当前计数值: $_counter',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              NZButton.primary(
+                                label: '点我计数',
+                                width: 100,
+                                height: 40,
+                                borderRadius: 20,
+                                onPressed: _incrementCounter,
+                              ),
+                            ],
+                          ),
+                          code: '''NZButton.primary(
+  label: '计数',
+  onPressed: _incrementCounter,
+)''',
+                        ),
+                        _buildSection(
+                          '悬浮按钮 (NZFloatingActionButton)',
+                          const Text(
+                            '悬浮按钮支持标准、图标和图片三种模式，并且可以随滚动自动隐藏或支持自由拖拽。',
+                            style: TextStyle(color: Colors.black54),
+                          ),
+                          code: '''// 标准悬浮按钮 (带文字)
+NZFloatingActionButton.standard(
+  label: '发布',
+  icon: const Icon(Icons.add_rounded),
+  scrollController: _scrollController,
+  onPressed: () => _showMsg('点击了发布'),
+),
 
-                    const SizedBox(height: 30),
-                    Center(
-                      child: Column(
-                        children: [
-                          Text(
-                            'NezhaUI ',
-                            style: TextStyle(
-                              color: Colors.grey.shade400,
-                              fontSize: 12,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Version 1.0.0-stable',
-                            style: TextStyle(
-                              color: Colors.grey.shade300,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
+// 图片悬浮按钮 (支持拖拽)
+NZFloatingActionButton.image(
+  initialPosition: const Offset(20, 350),
+  draggable: true,
+  image: NetworkImage('...'),
+  icon: const Icon(Icons.auto_awesome_rounded),
+  onPressed: () => _showMsg('触发了图片 FAB'),
+)''',
+                        ),
+                      ]),
                     ),
-                    const SizedBox(height: 60),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // Draggable Float Button
-          NZDraggableButton(
-            initialPosition: const Offset(300, 600),
-            onTap: () {
-              _messengerKey.currentState?.showSnackBar(
-                const SnackBar(
-                  content: Text('已触发悬浮助手回调'),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            },
-            child: Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: const Color(0xFF2D5AF0),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF2D5AF0).withValues(alpha: 0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.support_agent_rounded,
-                color: Colors.white,
-              ),
             ),
+          ),
+          // FAB 展示
+          Positioned(
+            right: 20,
+            bottom: 40,
+            child: NZFloatingActionButton.standard(
+              label: '发布',
+              icon: const Icon(Icons.add_rounded),
+              scrollController: _scrollController,
+              onPressed: () => _showMsg('点击了发布'),
+            ),
+          ),
+          NZFloatingActionButton.image(
+            initialPosition: const Offset(20, 350),
+            draggable: true,
+            image: const NetworkImage(
+              'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=1000&auto=format&fit=crop',
+            ),
+            icon: const Icon(Icons.auto_awesome_rounded),
+            onPressed: () => _showMsg('触发了图片 FAB'),
           ),
         ],
       ),
