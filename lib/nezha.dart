@@ -13,6 +13,7 @@ export 'components/code_view.dart';
 export 'components/navbar.dart';
 export 'components/toast.dart';
 export 'components/swipe_list_tile.dart';
+export 'components/notice_bar.dart';
 export 'components/pop_up.dart';
 
 export 'nezha_ui.dart';

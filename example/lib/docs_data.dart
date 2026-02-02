@@ -926,6 +926,44 @@ NZToast.show(
    onConfirm: () => print('已确认'),
  );''',
     ),
+    NZDocSection(
+      id: 'NoticeBar',
+      title: '公告栏 (NoticeBar)',
+      icon: Icons.campaign_rounded,
+      description: '用于循环播放重要信息。支持水平/垂直滚动，内置金融新闻等多种专业样式。',
+      usage: [
+        ['text', 'List<String>', '公告内容列表'],
+        [
+          'theme',
+          'NZNoticeBarTheme',
+          '样式主题：warning, success, error, info, finance',
+        ],
+        ['direction', 'NZNoticeBarDirection', '滚动方向：horizontal, vertical'],
+        ['speed', 'double', '滚动速度 (仅水平模式)'],
+        ['icon', 'Widget?', '前置图标'],
+      ],
+      preview: const Column(
+        children: [
+          NZNoticeBar(
+            text: ['这是一条标准的水平滚动公告，用于展示重要的通知信息。'],
+            icon: Icon(Icons.campaign_rounded),
+          ),
+          SizedBox(height: 12),
+          NZNoticeBar(
+            theme: NZNoticeBarTheme.finance,
+            text: ['[行情] 沪深300指数今日上涨 1.25%，科技板块领涨市场。'],
+            icon: Icon(Icons.trending_up_rounded),
+          ),
+        ],
+      ),
+      content:
+          'NZNoticeBar 提供了丰富的配置项，能够满足从简单的通知提醒到专业的金融行情展示等多种场景。它支持平滑的水平滚动和带有动画效果的垂直翻页。',
+      code: '''NZNoticeBar(
+   theme: NZNoticeBarTheme.finance,
+   text: ['沪深300指数今日上涨 1.25%'],
+   icon: Icon(Icons.trending_up),
+ )''',
+    ),
   ];
 
   static Widget _buildDrawerContent(BuildContext context, String title) {

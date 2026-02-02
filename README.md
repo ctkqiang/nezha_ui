@@ -83,6 +83,9 @@ class MyApp extends StatelessWidget {
 ### 导航栏 (NavBar)
 多功能顶栏，提供标准、搜索、Logo 及小程序胶囊控制四种模式，深度适配亮/暗色主题。
 
+### 公告栏 (NoticeBar)
+用于循环播放重要信息。支持水平/垂直滚动，内置金融新闻、成功、警告等多种专业样式。
+
 ### 弹窗 (PopUp)
 微信风格的对话框组件，用于重要的交互提示或确认操作。支持横向/纵向按钮排列及警示操作样式。
 
@@ -111,6 +114,7 @@ class MyApp extends StatelessWidget {
 - [Markdown 渲染](docs/markdown_view.md)
 - [导航栏组件](docs/navbar.md)
 - [分割线组件](docs/divider.md)
+- [公告栏组件](docs/notice_bar.md)
 - [弹窗组件](docs/pop_up.md)
 - [滑动操作](docs/swipe_list_tile.md)
 - [轻提示](docs/toast.md)

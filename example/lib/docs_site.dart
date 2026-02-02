@@ -88,7 +88,7 @@ class _NZDocsSiteState extends State<NZDocsSite> {
                     icon: const Icon(Icons.search_rounded),
                     tooltip: '搜索文档',
                     onPressed: () {
-                      NZToast.show(context, message: '搜索功能开发中...');
+                      _showSearchDialog(context, sections, isDark);
                     },
                   ),
                   _ThemeToggle(
@@ -169,6 +169,120 @@ class _NZDocsSiteState extends State<NZDocsSite> {
       return MediaQuery.of(context).platformBrightness == Brightness.dark;
     }
     return _themeModeIndex == 2;
+  }
+
+  void _showSearchDialog(
+    BuildContext context,
+    List<NZDocSection> sections,
+    bool isDark,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => _SearchDialog(
+        sections: sections,
+        isDark: isDark,
+        onSelect: (id) {
+          setState(() => _selectedSectionId = id);
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+}
+
+class _SearchDialog extends StatefulWidget {
+  final List<NZDocSection> sections;
+  final bool isDark;
+  final Function(String) onSelect;
+
+  const _SearchDialog({
+    required this.sections,
+    required this.isDark,
+    required this.onSelect,
+  });
+
+  @override
+  State<_SearchDialog> createState() => _SearchDialogState();
+}
+
+class _SearchDialogState extends State<_SearchDialog> {
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = widget.sections.where((s) {
+      final q = _query.toLowerCase();
+      return s.title.toLowerCase().contains(q) ||
+          (s.description?.toLowerCase().contains(q) ?? false);
+    }).toList();
+
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+      child: Dialog(
+        backgroundColor: widget.isDark ? const Color(0xFF1A1A1A) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          width: 500,
+          constraints: const BoxConstraints(maxHeight: 400),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              NZNavBar.search(
+                title: '搜索组件...',
+                onSearch: () {},
+                onSearchChanged: (v) => setState(() => _query = v),
+              ),
+              const SizedBox(height: 12),
+              if (filtered.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32),
+                  child: NZText.caption('未找到相关组件'),
+                )
+              else
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: filtered.length,
+                    itemBuilder: (context, index) {
+                      final s = filtered[index];
+                      return ListTile(
+                        leading: Icon(
+                          s.icon,
+                          color: NZColor.nezhaPrimary,
+                          size: 20,
+                        ),
+                        title: Text(
+                          s.title,
+                          style: TextStyle(
+                            color: widget.isDark ? Colors.white : Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        subtitle: s.description != null
+                            ? Text(
+                                s.description!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: widget.isDark
+                                      ? Colors.white38
+                                      : Colors.black38,
+                                  fontSize: 12,
+                                ),
+                              )
+                            : null,
+                        onTap: () => widget.onSelect(s.id),
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

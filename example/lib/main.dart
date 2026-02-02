@@ -930,6 +930,49 @@ NZNavBar(
 )''',
                         ),
                         _buildSection(
+                          'NoticeBar 公告栏',
+                          Column(
+                            children: [
+                              const NZNoticeBar(
+                                text: ['提示：这是一条标准的水平滚动公告，用于展示重要的通知信息。'],
+                                icon: Icon(Icons.campaign_rounded),
+                                suffix: Icon(Icons.chevron_right_rounded),
+                              ),
+                              const SizedBox(height: 12),
+                              const NZNoticeBar(
+                                theme: NZNoticeBarTheme.finance,
+                                text: ['[行情] 沪深300指数今日上涨 1.25%，科技板块领涨市场。'],
+                                icon: Icon(Icons.trending_up_rounded),
+                                speed: 60,
+                              ),
+                              const SizedBox(height: 12),
+                              const NZNoticeBar(
+                                theme: NZNoticeBarTheme.success,
+                                direction: NZNoticeBarDirection.vertical,
+                                text: [
+                                  '恭喜！您的账户已成功通过实名认证。',
+                                  '系统消息：新功能“智能选股”已上线。',
+                                  '提醒：请及时领取您的周度交易报告。',
+                                ],
+                                icon: Icon(Icons.check_circle_outline_rounded),
+                              ),
+                              const SizedBox(height: 12),
+                              NZNoticeBar(
+                                theme: NZNoticeBarTheme.error,
+                                text: ['警告：检测到您的账户存在异地登录风险，请立即检查。'],
+                                icon: const Icon(Icons.error_outline_rounded),
+                                suffix: const Icon(Icons.close_rounded),
+                                onSuffixTap: () => _showMsg('关闭公告'),
+                              ),
+                            ],
+                          ),
+                          code: '''NZNoticeBar(
+  theme: NZNoticeBarTheme.finance,
+  text: ['沪深300指数今日上涨 1.25%'],
+  icon: Icon(Icons.trending_up),
+)''',
+                        ),
+                        _buildSection(
                           'PopUp 弹窗',
                           Column(
                             children: [
