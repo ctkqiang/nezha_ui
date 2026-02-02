@@ -1,4 +1,4 @@
-package com.example.example
+package xin.nezha.ui
 
 import io.flutter.embedding.android.FlutterActivity
 

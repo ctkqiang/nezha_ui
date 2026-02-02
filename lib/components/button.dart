@@ -397,16 +397,21 @@ class NZImageButton extends StatelessWidget {
       child: Material(
         borderRadius: BorderRadius.circular(borderRadius),
         clipBehavior: Clip.antiAlias,
+        color: Colors.transparent,
         child: InkWell(
           onTap: onPressed,
+          splashColor: Colors.white.withValues(alpha: 0.2),
+          highlightColor: Colors.white.withValues(alpha: 0.1),
           child: Stack(
             children: [
               Positioned.fill(
-                child: Image(
+                child: Ink.image(
                   image: image,
                   fit: BoxFit.cover,
-                  color: Colors.black.withValues(alpha: 1 - opacity),
-                  colorBlendMode: BlendMode.darken,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withValues(alpha: 1 - opacity),
+                    BlendMode.darken,
+                  ),
                 ),
               ),
               Center(
