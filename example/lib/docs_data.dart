@@ -132,24 +132,7 @@ class MyApp extends StatelessWidget {
 - **生产就绪**：提供包括按钮、抽屉、下拉刷新在内的全套核心组件。
 
 ### 为什么选择哪吒 UI？
-我们不仅仅是提供组件，更是在提供一套完整的工程解决方案。所有的组件都遵循统一的设计语言，确保你的应用在视觉和交互上保持高度一致。
-
-### 快速开始
-1. **安装依赖**：
-   在 `pubspec.yaml` 中添加：
-   ```yaml
-   dependencies:
-     nezha_ui: ^1.0.0
-   ```
-   或者运行：`flutter pub add nezha_ui`
-
-2. **引入库**：
-   ```dart
-   import 'package:nezha_ui/nezha.dart';
-   ```
-
-3. **配置主题**：
-   使用 `NZTheme` 包裹你的应用根组件，或使用 `NezhaApp`。''',
+我们不仅仅是提供组件，更是在提供一套完整的工程解决方案。所有的组件都遵循统一的设计语言，确保你的应用在视觉 and 交互上保持高度一致。''',
       github: 'https://github.com/ctkqiang/nezha_ui.git',
     ),
     NZDocSection(
@@ -204,7 +187,7 @@ NZText.body('正文内容');''',
       id: 'Button',
       title: '按钮 (Button)',
       icon: Icons.smart_button_rounded,
-      description: '支持多种视觉状态和配置的交互式按钮组件。',
+      description: '支持多种视觉状态 and 配置的交互式按钮组件。',
       usage: [
         ['onPressed', 'VoidCallback?', '点击时触发的操作。为 null 时禁用按钮'],
         ['label', 'String?', '主要文本标签'],
@@ -212,28 +195,82 @@ NZText.body('正文内容');''',
         ['isLoading', 'bool', '激活时显示加载指示器'],
         ['block', 'bool', '强制按钮占据全宽'],
         ['icon', 'Widget?', '可选的前置图标'],
+        ['borderRadius', 'double', '圆角半径（默认 12.0）'],
+        ['height', 'double', '按钮高度（默认 48.0）'],
       ],
       preview: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          NZButton.primary(label: '主要按钮', onPressed: () {}),
+          Row(
+            children: [
+              Expanded(
+                child: NZButton.primary(label: '主要按钮', onPressed: () {}),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: NZButton.secondary(label: '次要按钮', onPressed: () {}),
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
-          NZButton.secondary(label: '次要按钮', onPressed: () {}),
+          Row(
+            children: [
+              Expanded(
+                child: NZButton.outline(label: '描边按钮', onPressed: () {}),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: NZButton.text(label: '文字按钮', onPressed: () {}),
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
-          NZButton.outline(label: '边框按钮', onPressed: () {}),
+          NZButton.primary(
+            label: '加载中状态',
+            isLoading: true,
+            block: true,
+            onPressed: () {},
+          ),
           const SizedBox(height: 12),
-          NZButton.text(label: '文字按钮', onPressed: () {}),
+          NZButton.primary(
+            label: '带图标按钮',
+            icon: const Icon(Icons.send_rounded, color: Colors.white, size: 18),
+            block: true,
+            onPressed: () {},
+          ),
+          const SizedBox(height: 12),
+          NZButton.primary(label: '禁用状态', block: true, onPressed: null),
         ],
       ),
       content: 'NZButton 为主要和次要操作提供了统一的接口，并内置了反馈机制。',
-      code: '''NZButton.primary(
+      code: '''// 主要按钮
+NZButton.primary(
   label: '立即开始',
   onPressed: () {},
 );
 
+// 加载中状态
 NZButton.primary(
   label: '处理中',
   isLoading: true,
+  onPressed: () {},
+);
+
+// 次要按钮 (小程序风格)
+NZButton.secondary(
+  label: '取消',
+  onPressed: () {},
+);
+
+// 描边按钮
+NZButton.outline(
+  label: '了解更多',
+  onPressed: () {},
+);
+
+// 文字按钮
+NZButton.text(
+  label: '忽略',
   onPressed: () {},
 );''',
     ),
@@ -244,41 +281,72 @@ NZButton.primary(
       description: '用于辅助导航或内容显示的覆盖层组件。',
       usage: [
         ['child', 'Widget', '要在抽屉内渲染的内容'],
-        ['position', 'NZDrawerPosition', '入口点：left, right, top, bottom'],
-        ['size', 'double?', '取决于位置的宽度或高度'],
-        ['showDragHandle', 'bool', '交互式拖拽手柄的可见性'],
+        ['position', 'NZDrawerPosition', '显示位置：left, right, top, bottom'],
+        ['size', 'double?', '尺寸（宽度或高度）'],
+        ['showDragHandle', 'bool', '显示拖拽手柄（仅 bottom）'],
+        ['borderRadius', 'double', '圆角半径（默认 16.0）'],
       ],
-      preview: Center(
-        child: NZButton.primary(
-          label: '打开底部抽屉',
-          onPressed: () => NZDrawer.show(
-            context: context,
-            position: NZDrawerPosition.bottom,
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  NZText.h3('抽屉标题'),
-                  const SizedBox(height: 16),
-                  NZText.body('此处放置上下文相关内容。'),
-                  const SizedBox(height: 32),
-                  NZButton.primary(
-                    label: '确认',
-                    block: true,
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
+      preview: Builder(
+        builder: (context) => Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            NZButton.outline(
+              label: '底部抽屉',
+              onPressed: () => NZDrawer.show(
+                context: context,
+                position: NZDrawerPosition.bottom,
+                child: _buildDrawerContent(context, '底部抽屉'),
               ),
             ),
-          ),
+            NZButton.outline(
+              label: '顶部抽屉',
+              onPressed: () => NZDrawer.show(
+                context: context,
+                position: NZDrawerPosition.top,
+                child: _buildDrawerContent(context, '顶部抽屉'),
+              ),
+            ),
+            NZButton.outline(
+              label: '左侧抽屉',
+              onPressed: () => NZDrawer.show(
+                context: context,
+                position: NZDrawerPosition.left,
+                child: _buildDrawerContent(context, '左侧抽屉'),
+              ),
+            ),
+            NZButton.outline(
+              label: '右侧抽屉',
+              onPressed: () => NZDrawer.show(
+                context: context,
+                position: NZDrawerPosition.right,
+                child: _buildDrawerContent(context, '右侧抽屉'),
+              ),
+            ),
+          ],
         ),
       ),
       content: 'NZDrawer 使用模态方式呈现临时信息，而不会丢失主上下文。',
-      code: '''NZDrawer.show(
+      code: '''// 底部显示 (默认)
+NZDrawer.show(
   context: context,
   position: NZDrawerPosition.bottom,
-  child: ContentWidget(),
+  child: MyWidget(),
+);
+
+// 顶部显示
+NZDrawer.show(
+  context: context,
+  position: NZDrawerPosition.top,
+  size: 300,
+  child: MyWidget(),
+);
+
+// 侧边显示
+NZDrawer.show(
+  context: context,
+  position: NZDrawerPosition.left,
+  child: MyWidget(),
 );''',
     ),
     NZDocSection(
@@ -303,7 +371,7 @@ NZButton.primary(
           NZText.body('下部区域'),
         ],
       ),
-      content: 'NZDivider 有助于在复杂布局中保持视觉层级和组织。',
+      content: 'NZDivider 有助于在复杂布局中保持视觉层级 and 组织。',
       code: '''const NZDivider();
 
 NZDivider(
@@ -342,20 +410,21 @@ NZDivider(
       id: 'FloatingActionButton',
       title: '悬浮按钮 (FAB)',
       icon: Icons.add_circle_outline_rounded,
-      description: '高级悬浮触发器，支持图标、标签和拖拽交互。',
+      description: '高级悬浮触发器，支持图标、标签 and 拖拽交互。',
       usage: [
         ['type', 'NZFloatingActionButtonType', '变体：standard, icon, image'],
         ['draggable', 'bool', '启用用户驱动的定位'],
         ['scrollController', 'ScrollController?', '滚动时自动隐藏功能'],
       ],
-      preview: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      preview: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 16,
+        runSpacing: 16,
         children: [
           NZFloatingActionButton.icon(
             icon: const Icon(Icons.message_rounded),
             onPressed: () {},
           ),
-          const SizedBox(width: 16),
           NZFloatingActionButton.standard(
             icon: const Icon(Icons.edit_rounded),
             label: '撰写',
@@ -430,10 +499,13 @@ NZDivider(
         ['onSearchChanged', 'ValueChanged<String>?', '输入内容变化回调'],
         ['onMiniAppShare', 'VoidCallback?', '小程序模式分享回调'],
         ['onMiniAppClose', 'VoidCallback?', '小程序模式关闭回调'],
+        ['leading', 'Widget?', '左侧自定义组件'],
+        ['actions', 'List<Widget>?', '右侧动作组件列表'],
+        ['height', 'double', '导航栏高度（默认 56.0）'],
       ],
       preview: Column(
         children: [
-          const NZNavBar(title: '标准导航栏', centerTitle: true),
+          const NZNavBar(title: '标准模式', centerTitle: true),
           const SizedBox(height: 16),
           const NZNavBar.logo(
             title: 'Nezha UI',
@@ -441,26 +513,306 @@ NZDivider(
                 'https://raw.githubusercontent.com/ctkqiang/nezha_ui/master/docs/assets/banner.png',
           ),
           const SizedBox(height: 16),
-          NZNavBar.search(title: '搜索文档', onSearch: () {}),
+          NZNavBar.search(
+            title: '搜索文档...',
+            onSearch: () {},
+            onSearchChanged: (v) {},
+          ),
           const SizedBox(height: 16),
-          const NZNavBar.miniApp(title: '小程序模式'),
+          Builder(
+            builder: (context) => NZNavBar.miniApp(
+              title: '小程序模式',
+              onMiniAppShare: () => NZToast.show(context, message: '分享点击'),
+              onMiniAppClose: () => NZToast.show(context, message: '关闭点击'),
+            ),
+          ),
+          const SizedBox(height: 16),
+          NZNavBar(
+            title: '自定义动作',
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications_none_rounded),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.settings_outlined),
+                onPressed: () {},
+              ),
+            ],
+          ),
         ],
       ),
-      content:
-          'NZNavBar 是一个多功能顶部导航组件，支持平滑的搜索框展开动画、品牌展示以及符合微信小程序规范的胶囊控制按钮。它会自动处理亮/暗色主题适配，确保在任何背景下都有良好的可读性。',
-      code: '''// 标准模式
+      content: 'NZNavBar 是一个高度可定制的导航栏组件，提供了多种内置模式，完美适配各种业务场景。',
+      code: '''// 1. 标准模式
 const NZNavBar(title: '标题');
 
-// 搜索模式
-NZNavBar.search(
-  title: '搜索',
-  onSearch: () => print('Searching...'),
+// 2. Logo 模式
+const NZNavBar.logo(
+  title: '品牌名称',
+  logoUrl: 'https://...',
 );
 
-// 小程序胶囊模式
+// 3. 搜索模式
+NZNavBar.search(
+  title: '搜索内容',
+  onSearch: () {
+    // 触发搜索
+  },
+  onSearchChanged: (value) {
+    // 监听输入变化
+  },
+);
+
+// 4. 小程序胶囊模式
 NZNavBar.miniApp(
-  title: '小程序',
-  onMiniAppClose: () => Navigator.pop(context),
+  title: '小程序标题',
+  onMiniAppShare: () => print('分享'),
+  onMiniAppClose: () => print('关闭'),
+);
+
+// 5. 自定义动作
+NZNavBar(
+  title: '设置',
+  actions: [
+    IconButton(icon: Icon(Icons.save), onPressed: () {}),
+  ],
+);''',
+    ),
+    NZDocSection(
+      id: 'ProgressButton',
+      title: '进度按钮 (ProgressButton)',
+      icon: Icons.hourglass_top_rounded,
+      description: '带有实时进度条背景的按钮，适用于下载、上传或耗时操作。',
+      usage: [
+        ['progress', 'double', '进度值 (0.0 到 1.0)'],
+        ['onPressed', 'VoidCallback?', '点击回调'],
+        ['label', 'String?', '按钮文本'],
+        ['child', 'Widget?', '自定义按钮内容'],
+        ['color', 'Color?', '进度条填充颜色'],
+        ['backgroundColor', 'Color?', '按钮背景底色'],
+        ['foregroundColor', 'Color?', '文本/图标颜色'],
+        ['width', 'double?', '按钮宽度'],
+        ['height', 'double', '按钮高度 (默认 48.0)'],
+        ['borderRadius', 'double', '圆角半径 (默认 12.0)'],
+        ['block', 'bool', '是否撑满宽度'],
+      ],
+      preview: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            children: [
+              NZProgressButton(
+                progress: 0.65,
+                label: '系统更新中 65%',
+                onPressed: () {
+                  NZToast.show(context, message: '正在检查更新...');
+                },
+                block: true,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: NZProgressButton(
+                      progress: 0.3,
+                      label: '上传资源',
+                      color: Colors.orange,
+                      onPressed: () {},
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: NZProgressButton(
+                      progress: 1.0,
+                      label: '同步完成',
+                      color: Colors.green,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              NZText.caption('提示：进度按钮常用于显示耗时操作的即时状态反馈。'),
+            ],
+          );
+        },
+      ),
+      content: 'NZProgressButton 通过 Stack 实现，底层是进度填充层，顶层是交互层，提供直观的状态反馈。',
+      code: '''// 基础用法
+NZProgressButton(
+  progress: 0.45,
+  label: '下载中 45%',
+  onPressed: () {},
+);
+
+// 自定义颜色和全宽
+NZProgressButton(
+  progress: 0.8,
+  label: '上传中',
+  color: Colors.orange,
+  block: true,
+  onPressed: () {},
+);
+
+// 完成状态
+NZProgressButton(
+  progress: 1.0,
+  label: '已完成',
+  color: Colors.green,
+  onPressed: () {},
+);''',
+    ),
+    NZDocSection(
+      id: 'ImageButton',
+      title: '图片按钮 (ImageButton)',
+      icon: Icons.image_rounded,
+      description: '使用图片作为背景的交互按钮，支持透明度遮罩和文字标签。',
+      usage: [
+        ['image', 'ImageProvider', '背景图片资源'],
+        ['label', 'String?', '按钮中心显示的文本'],
+        ['onPressed', 'VoidCallback?', '点击回调'],
+        ['opacity', 'double', '图片不透明度 (默认 0.8)'],
+        ['height', 'double', '按钮高度 (默认 180.0)'],
+        ['borderRadius', 'double', '圆角半径 (默认 12.0)'],
+        ['block', 'bool', '是否撑满宽度'],
+      ],
+      preview: Column(
+        children: [
+          NZImageButton(
+            image: const NetworkImage(
+              'https://picsum.photos/seed/nezha/800/400',
+            ),
+            label: '点击探索',
+            block: true,
+            onPressed: () {},
+          ),
+          const SizedBox(height: 16),
+          NZImageButton(
+            image: const NetworkImage('https://picsum.photos/seed/ui/800/400'),
+            label: '立即开启',
+            opacity: 0.6,
+            height: 120,
+            block: true,
+            onPressed: () {},
+          ),
+        ],
+      ),
+      content: 'NZImageButton 适合用于画廊、卡片入口或需要强视觉吸引力的点击区域。',
+      code: '''NZImageButton(
+  image: NetworkImage('https://...'),
+  label: '探索更多',
+  onPressed: () {},
+  block: true,
+);''',
+    ),
+    NZDocSection(
+      id: 'DraggableButton',
+      title: '拖拽按钮 (DraggableButton)',
+      icon: Icons.drag_indicator_rounded,
+      description: '可以在屏幕范围内自由拖动的悬浮组件。',
+      usage: [
+        ['child', 'Widget', '要拖动的子组件'],
+        ['onTap', 'VoidCallback?', '点击回调'],
+        ['initialPosition', 'Offset', '初始位置偏移量'],
+      ],
+      preview: Container(
+        height: 200,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.grey.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+        ),
+        child: Stack(
+          children: [
+            Center(child: NZText.caption('在此区域内尝试拖拽下方按钮')),
+            NZDraggableButton(
+              initialPosition: const Offset(20, 120),
+              onTap: () => NZToast.show(context, message: '点击了悬浮球'),
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: const BoxDecoration(
+                  color: NZColor.nezhaPrimary,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.ads_click_rounded, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+      content: 'NZDraggableButton 支持平滑的拖拽交互，并会自动吸附到屏幕边缘（如果需要）。',
+      code: '''NZDraggableButton(
+  initialPosition: Offset(20, 100),
+  onTap: () => print('点击'),
+  child: MyFloatingWidget(),
+);''',
+    ),
+    NZDocSection(
+      id: 'Toast',
+      title: '提示 (Toast)',
+      icon: Icons.notifications_active_rounded,
+      description: '轻量级的全局反馈组件，支持多种类型，模仿微信小程序风格设计。',
+      usage: [
+        ['message', 'String', '提示文本内容'],
+        ['type', 'NZToastType', '类型：success, error, loading, info, text'],
+        ['duration', 'Duration', '显示时长（默认 2 秒，loading 模式需手动关闭）'],
+        ['mask', 'bool', '是否显示透明遮罩，防止穿透点击'],
+      ],
+      preview: Builder(
+        builder: (context) => Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            NZButton.primary(
+              label: '成功提示',
+              onPressed: () => NZToast.success(context, '操作成功'),
+            ),
+            NZButton.outline(
+              label: '加载中',
+              onPressed: () {
+                NZToast.loading(context, '正在加载');
+                Future.delayed(const Duration(seconds: 2), () {
+                  NZToast.hide();
+                });
+              },
+            ),
+            NZButton.outline(
+              label: '错误提示',
+              onPressed: () => NZToast.error(context, '提交失败'),
+            ),
+            NZButton.outline(
+              label: '纯文字',
+              onPressed: () => NZToast.show(context, message: '这是一条普通消息'),
+            ),
+          ],
+        ),
+      ),
+      content: 'NZToast 通过 Overlay 实现全局显示，支持多种交互状态反馈。',
+      code: '''// 成功提示
+NZToast.success(context, '操作成功');
+
+// 加载中提示（需手动 hide）
+NZToast.loading(context, '正在加载');
+// ... 执行异步操作
+NZToast.hide();
+
+// 错误提示
+NZToast.error(context, '提交失败');
+
+// 自定义配置
+NZToast.show(
+  context,
+  message: '自定义消息',
+  type: NZToastType.info,
+  duration: Duration(seconds: 3),
 );''',
     ),
     NZDocSection(
@@ -484,4 +836,24 @@ NZNavBar.miniApp(
 );''',
     ),
   ];
+
+  static Widget _buildDrawerContent(BuildContext context, String title) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          NZText.h3(title),
+          const SizedBox(height: 16),
+          NZText.body('此处放置上下文相关内容。'),
+          const SizedBox(height: 32),
+          NZButton.primary(
+            label: '确认并关闭',
+            block: true,
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+  }
 }

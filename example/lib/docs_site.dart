@@ -78,18 +78,29 @@ class _NZDocsSiteState extends State<NZDocsSite> {
                       title: '设计规范',
                       isSelected: false,
                       isDark: isDark,
-                      onTap: () {},
+                      onTap: () {
+                        NZToast.show(context, message: '设计规范建设中...');
+                      },
                     ),
                   ],
+                  // 搜索按钮
+                  IconButton(
+                    icon: const Icon(Icons.search_rounded),
+                    tooltip: '搜索文档',
+                    onPressed: () {
+                      NZToast.show(context, message: '搜索功能开发中...');
+                    },
+                  ),
                   _ThemeToggle(
                     isDark: isDark,
                     currentIndex: _themeModeIndex,
                     onChanged: (idx) => setState(() => _themeModeIndex = idx),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 8),
                   if (githubUrl != null)
                     IconButton(
                       icon: const Icon(Icons.code_rounded),
+                      tooltip: 'GitHub 仓库',
                       onPressed: () async {
                         final url = Uri.parse(githubUrl);
                         if (await canLaunchUrl(url)) {
@@ -100,6 +111,7 @@ class _NZDocsSiteState extends State<NZDocsSite> {
                         }
                       },
                     ),
+                  const SizedBox(width: 12),
                 ],
                 leading: MediaQuery.of(context).size.width < 900
                     ? IconButton(
