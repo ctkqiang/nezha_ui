@@ -14,8 +14,8 @@ class NezhaUIExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return NezhaApp(
       title: 'NezhaUI 示例',
-      theme: NZTheme.lightTheme,
-      darkTheme: NZTheme.darkTheme,
+      theme: NZTheme.lightTheme(),
+      darkTheme: NZTheme.darkTheme(),
       showPerformanceOverlay: kProfileMode,
       debugShowCheckedModeBanner: kDebugMode,
       home: kIsWeb ? const NZDocsSite() : const HomePage(),
@@ -102,22 +102,38 @@ class _HomePageState extends State<HomePage> {
       title: '请选择操作',
       actionsAxis: Axis.vertical,
       actions: [
+        NZPopUpAction(label: '分享到微信', onPressed: () => Navigator.pop(context)),
+        NZPopUpAction(label: '保存到相册', onPressed: () => Navigator.pop(context)),
         NZPopUpAction(
-          label: '查看详情',
-          onPressed: () {
-            Navigator.pop(context);
-            _showMsg('正在打开详情...');
-          },
+          label: '取消',
+          onPressed: () => Navigator.pop(context),
+          color: Colors.grey,
         ),
-        NZPopUpAction(
-          label: '分享给好友',
-          onPressed: () {
-            Navigator.pop(context);
-            _showMsg('分享成功');
-          },
-        ),
-        NZPopUpAction(label: '取消', onPressed: () => Navigator.pop(context)),
       ],
+    );
+  }
+
+  void _showNZDialog() {
+    NZDialog.confirm(context, '这是一个全新的 NZDialog，感觉怎么样？');
+  }
+
+  void _showInputDialog() async {
+    final name = await NZDialog.input(
+      context,
+      title: '你的名字',
+      hintText: '请输入...',
+    );
+    if (name != null && name.isNotEmpty) {
+      _showMsg('你好，$name！');
+    }
+  }
+
+  void _showImageDialog() {
+    NZDialog.image(
+      context,
+      'https://picsum.photos/seed/nz_dialog/800/400',
+      title: '精选活动',
+      message: '参与活动赢取精美礼品，快来参加吧！',
     );
   }
 
@@ -1000,6 +1016,271 @@ NZNavBar(
   content: '提交后将无法修改，是否确认继续？',
   onConfirm: () => print('已确认'),
 );''',
+                        ),
+                        _buildSection(
+                          'Dialog 对话框 (NZDialog)',
+                          Column(
+                            children: [
+                              NZButton.primary(
+                                label: '显示基础对话框',
+                                block: true,
+                                onPressed: _showNZDialog,
+                              ),
+                              const SizedBox(height: 12),
+                              NZButton.secondary(
+                                label: '显示输入对话框',
+                                block: true,
+                                onPressed: _showInputDialog,
+                              ),
+                              const SizedBox(height: 12),
+                              NZButton.outline(
+                                label: '显示图片视觉对话框',
+                                block: true,
+                                onPressed: _showImageDialog,
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: NZButton.outline(
+                                      label: '成功提示',
+                                      onPressed: () =>
+                                          NZDialog.success(context, '操作成功完成'),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: NZButton.outline(
+                                      label: '错误反馈',
+                                      onPressed: () =>
+                                          NZDialog.error(context, '抱歉，系统出现异常'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: NZButton.outline(
+                                      label: '警告提示',
+                                      onPressed: () =>
+                                          NZDialog.warning(context, '该操作无法撤销'),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: NZButton.outline(
+                                      label: '详情信息',
+                                      onPressed: () =>
+                                          NZDialog.info(context, '这是该条目的详细说明'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              NZButton.outline(
+                                label: '状态展示',
+                                block: true,
+                                onPressed: () => NZDialog.status(
+                                  context,
+                                  title: '系统状态',
+                                  message: '所有服务运行正常',
+                                  statusWidget: const Center(
+                                    child: Icon(
+                                      Icons.cloud_done_rounded,
+                                      size: 64,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: NZButton.outline(
+                                      label: '进度展示',
+                                      onPressed: () =>
+                                          NZDialog.progress(context, 0.65),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: NZButton.outline(
+                                      label: '加载状态',
+                                      onPressed: () {
+                                        NZDialog.loading(
+                                          context,
+                                          message: '正在努力同步中...',
+                                        );
+                                        Future.delayed(
+                                          const Duration(seconds: 2),
+                                          () => Navigator.pop(context),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              NZButton.outline(
+                                label: '多按钮排列',
+                                block: true,
+                                onPressed: () {
+                                  NZDialog.show(
+                                    context,
+                                    title: '选择操作',
+                                    message: '请选择你想要执行的后续动作',
+                                    actions: [
+                                      NZDialogAction(
+                                        label: '置顶',
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                      NZDialogAction(
+                                        label: '加星',
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                      NZDialogAction(
+                                        label: '删除',
+                                        isDestructive: true,
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                      NZDialogAction(
+                                        label: '取消',
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          code: '''// 1. 成功提示
+NZDialog.success(context, '操作成功');
+
+// 2. 确认操作
+bool? ok = await NZDialog.confirm(context, '确认提交？');
+
+// 3. 输入内容
+String? val = await NZDialog.input(context, title: '反馈');
+
+// 4. 多按钮模式
+NZDialog.show(
+  context,
+  actions: [
+    NZDialogAction(label: '选项一'),
+    NZDialogAction(label: '选项二'),
+    NZDialogAction(label: '删除', isDestructive: true),
+  ],
+);''',
+                        ),
+                        _buildSection(
+                          'Tag 标签 (Chip)',
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                '不同尺寸',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  NZTag(label: 'Small', size: NZTagSize.small),
+                                  NZTag(
+                                    label: 'Medium',
+                                    size: NZTagSize.medium,
+                                  ),
+                                  NZTag(label: 'Large', size: NZTagSize.large),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                '不同样式',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  const NZTag(
+                                    label: 'Soft (Default)',
+                                    style: NZTagStyle.soft,
+                                  ),
+                                  const NZTag(
+                                    label: 'Outline',
+                                    style: NZTagStyle.outline,
+                                  ),
+                                  const NZTag(
+                                    label: 'Filled',
+                                    style: NZTagStyle.filled,
+                                  ),
+                                  NZTag(
+                                    label: 'Round',
+                                    round: true,
+                                    color: Colors.purple,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                '功能示例',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  NZTag(
+                                    label: '带图标',
+                                    leading: const Icon(
+                                      Icons.local_offer_rounded,
+                                    ),
+                                    onTap: () => _showMsg('点击了标签'),
+                                  ),
+                                  NZTag(
+                                    label: '可删除',
+                                    color: Colors.blue,
+                                    onDeleted: () => _showMsg('删除了标签'),
+                                  ),
+                                  NZTag.success('成功状态'),
+                                  NZTag.warning('警告状态'),
+                                  NZTag.error('错误状态'),
+                                ],
+                              ),
+                            ],
+                          ),
+                          code: '''// 基础用法
+NZTag(label: '标签文字')
+
+// 成功状态
+NZTag.success('已完成')
+
+// 带删除按钮
+NZTag(
+  label: '可删除',
+  onDeleted: () => print('deleted'),
+)
+
+// 填充样式
+NZTag(
+  label: '填充',
+  style: NZTagStyle.filled,
+)''',
                         ),
                         _buildSection(
                           'DropDownMenu 下拉菜单',

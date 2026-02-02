@@ -16,5 +16,7 @@ export 'components/swipe_list_tile.dart';
 export 'components/notice_bar.dart';
 export 'components/pop_up.dart';
 export 'components/dropdown_menu.dart';
+export 'components/dialog.dart';
+export 'components/tags.dart';
 
 export 'nezha_ui.dart';

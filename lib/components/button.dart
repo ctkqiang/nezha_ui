@@ -351,11 +351,14 @@ class NZProgressButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color effectiveProgressColor = color ?? NZColor.nezhaPrimary;
-    final Color effectiveBackgroundColor =
-        backgroundColor ?? const Color(0xFFF2F2F2);
-    final Color effectiveForegroundColor =
-        foregroundColor ?? (progress > 0.5 ? Colors.white : Colors.black87);
+    final Color effectiveBackgroundColor = backgroundColor ??
+        (isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFF2F2F2));
+
+    // 根据进度和背景色动态计算文本颜色，确保可读性
+    final Color effectiveForegroundColor = foregroundColor ??
+        (progress > 0.5 ? Colors.white : (isDark ? Colors.white : Colors.black87));
 
     return SizedBox(
       width: block ? double.infinity : width,
@@ -366,28 +369,42 @@ class NZProgressButton extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
+            // 进度背景层
             Positioned.fill(
               child: FractionallySizedBox(
                 alignment: Alignment.centerLeft,
                 widthFactor: progress.clamp(0.0, 1.0),
-                child: Container(color: effectiveProgressColor),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
+                  color: effectiveProgressColor,
+                ),
               ),
             ),
+            // 交互层和内容
             Positioned.fill(
               child: InkWell(
                 onTap: onPressed,
                 splashColor: effectiveForegroundColor.withValues(alpha: 0.1),
-                highlightColor: effectiveForegroundColor.withValues(
-                  alpha: 0.05,
-                ),
+                highlightColor: effectiveForegroundColor.withValues(alpha: 0.05),
                 child: Center(
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(
-                      color: effectiveForegroundColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: DefaultTextStyle.merge(
+                      style: TextStyle(
+                        color: effectiveForegroundColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                      child: child ??
+                          Text(
+                            label!,
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                     ),
-                    child: child ?? Text(label!),
                   ),
                 ),
               ),

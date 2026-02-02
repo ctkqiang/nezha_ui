@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   nezha_ui:
     path: ../
+  trading_view_flutter: ^0.0.7
 
 flutter_launcher_icons:
   android: true

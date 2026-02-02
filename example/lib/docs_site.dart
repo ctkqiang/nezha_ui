@@ -18,7 +18,7 @@ class _NZDocsSiteState extends State<NZDocsSite> {
   @override
   Widget build(BuildContext context) {
     final isDark = _calculateIsDark(context);
-    final theme = isDark ? NZTheme.darkTheme : NZTheme.lightTheme;
+    final theme = isDark ? NZTheme.darkTheme() : NZTheme.lightTheme();
     final sections = NZDocContent.getSections(context);
     final currentSection = sections.firstWhere(
       (s) => s.id == _selectedSectionId,

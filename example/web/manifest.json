@@ -1,12 +1,12 @@
 {
-    "name": "example",
-    "short_name": "example",
+    "name": "Nezha UI",
+    "short_name": "Nezha UI",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#F44336",
+    "theme_color": "#F44336",
+    "description": "Professional UI library for Flutter.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

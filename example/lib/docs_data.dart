@@ -1074,6 +1074,55 @@ NZToast.show(
   onChanged: (val) => setState(() => _selected = val),
 )''',
     ),
+    NZDocSection(
+      id: 'Dialog',
+      title: '对话框 (NZDialog)',
+      icon: Icons.picture_in_picture_alt_rounded,
+      description: '多功能、多样式的对话框组件，支持超过 10 种内置类型。',
+      usage: [
+        [
+          'type',
+          'NZDialogType',
+          '内置样式类型：basic, confirm, success, error, warning, info, input, loading, progress, image, status',
+        ],
+        ['title', 'String?', '对话框标题'],
+        ['message', 'String?', '对话框正文消息'],
+        ['actions', 'List<NZDialogAction>?', '自定义按钮列表'],
+        ['icon', 'IconData?', '顶部图标'],
+        ['progress', 'double?', '进度条数值 (0.0 - 1.0)'],
+      ],
+      preview: Builder(
+        builder: (context) => Column(
+          children: [
+            NZButton.primary(
+              label: '显示确认对话框',
+              block: true,
+              onPressed: () => NZDialog.confirm(context, '这是一个专业的确认对话框，感觉如何？'),
+            ),
+            const SizedBox(height: 12),
+            NZButton.outline(
+              label: '显示输入对话框',
+              block: true,
+              onPressed: () =>
+                  NZDialog.input(context, title: '设置昵称', hintText: '请输入你的温柔昵称'),
+            ),
+          ],
+        ),
+      ),
+      content:
+          'NZDialog 是 NezhaUI 中最强大的反馈组件之一。它集成了各种常见的交互场景，从基础的消息提示到复杂的表单输入、进度展示，都能通过简单的静态方法调用。',
+      code: '''// 1. 成功提示
+NZDialog.success(context, '操作已完成');
+
+// 2. 确认操作
+bool? ok = await NZDialog.confirm(context, '确认删除吗？');
+
+// 3. 输入内容
+String? text = await NZDialog.input(context, title: '反馈');
+
+// 4. 进度展示
+NZDialog.progress(context, 0.5, title: '上传中');''',
+    ),
   ];
 
   static Widget _buildDrawerContent(BuildContext context, String title) {

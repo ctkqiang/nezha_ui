@@ -159,9 +159,6 @@ class _NezhaAppState extends State<NezhaApp> {
     // 创建基础主题
     final ThemeData theme = widget.theme ?? ThemeData.fallback();
     final ThemeData darkTheme = widget.darkTheme ?? theme;
-    final ThemeData highContrastTheme = widget.highContrastTheme ?? theme;
-    final ThemeData highContrastDarkTheme =
-        widget.highContrastDarkTheme ?? darkTheme;
 
     // 确定当前应该应用的主题模式
     final ThemeMode mode = widget.themeMode;
@@ -173,7 +170,7 @@ class _NezhaAppState extends State<NezhaApp> {
     final ThemeData effectiveTheme = useDarkTheme ? darkTheme : theme;
 
     // 内部构建方法，用于应用 Material 特有的层级
-    Widget _buildApp(BuildContext context, Widget? child) {
+    Widget buildApp(BuildContext context, Widget? child) {
       return Material(
         color: effectiveTheme.scaffoldBackgroundColor,
         child: Directionality(
@@ -204,7 +201,7 @@ class _NezhaAppState extends State<NezhaApp> {
         routeInformationParser: widget.routeInformationParser,
         routerDelegate: widget.routerDelegate,
         backButtonDispatcher: widget.backButtonDispatcher,
-        builder: _buildApp,
+        builder: buildApp,
         title: widget.title,
         onGenerateTitle: widget.onGenerateTitle,
         color: widget.color ?? NZColor.nezhaPrimary,
@@ -234,7 +231,7 @@ class _NezhaAppState extends State<NezhaApp> {
         onGenerateRoute: widget.onGenerateRoute,
         onGenerateInitialRoutes: widget.onGenerateInitialRoutes,
         onUnknownRoute: widget.onUnknownRoute,
-        builder: _buildApp,
+        builder: buildApp,
         title: widget.title,
         onGenerateTitle: widget.onGenerateTitle,
         color: widget.color ?? NZColor.nezhaPrimary,
