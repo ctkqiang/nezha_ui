@@ -235,9 +235,9 @@ NZDivider(
       preview: Container(
         height: 160,
         decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.05),
+          color: Colors.grey.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.withOpacity(0.1)),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
         ),
         child: Center(child: NZText.caption('滚动可见性演示区域')),
       ),
@@ -312,7 +312,7 @@ NZDivider(
       preview: Container(
         height: 100,
         decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.05),
+          color: Colors.grey.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Center(child: NZText.caption('交互式刷新区域')),
@@ -321,6 +321,56 @@ NZDivider(
       code: '''NZPullToRefresh(
   onRefresh: () async => await fetchData(),
   child: ListView(...),
+);''',
+    ),
+    NZDocSection(
+      id: 'NavBar',
+      title: '导航栏 (NavBar)',
+      icon: Icons.view_headline_rounded,
+      description: '多功能顶栏，支持搜索模式、Logo 展示及小程序胶囊风格。',
+      usage: [
+        ['title', 'String?', '标题文本内容'],
+        ['titleWidget', 'Widget?', '自定义标题组件（优先级高于 title）'],
+        ['type', 'NZNavBarType', '类型：normal, search, logo, miniApp'],
+        ['logoUrl', 'String?', 'Logo 图片地址（仅 logo 模式）'],
+        ['centerTitle', 'bool', '标题是否居中显示（默认 true）'],
+        ['backgroundColor', 'Color?', '背景颜色（默认适配主题）'],
+        ['foregroundColor', 'Color?', '前景文字/图标颜色'],
+        ['onSearch', 'VoidCallback?', '搜索触发回调'],
+        ['onSearchChanged', 'ValueChanged<String>?', '输入内容变化回调'],
+        ['onMiniAppShare', 'VoidCallback?', '小程序模式分享回调'],
+        ['onMiniAppClose', 'VoidCallback?', '小程序模式关闭回调'],
+      ],
+      preview: Column(
+        children: [
+          const NZNavBar(title: '标准导航栏', centerTitle: true),
+          const SizedBox(height: 16),
+          const NZNavBar.logo(
+            title: 'Nezha UI',
+            logoUrl:
+                'https://raw.githubusercontent.com/ctkqiang/nezha_ui/master/docs/assets/banner.png',
+          ),
+          const SizedBox(height: 16),
+          NZNavBar.search(title: '搜索文档', onSearch: () {}),
+          const SizedBox(height: 16),
+          const NZNavBar.miniApp(title: '小程序模式'),
+        ],
+      ),
+      content:
+          'NZNavBar 是一个多功能顶部导航组件，支持平滑的搜索框展开动画、品牌展示以及符合微信小程序规范的胶囊控制按钮。它会自动处理亮/暗色主题适配，确保在任何背景下都有良好的可读性。',
+      code: '''// 标准模式
+const NZNavBar(title: '标题');
+
+// 搜索模式
+NZNavBar.search(
+  title: '搜索',
+  onSearch: () => print('Searching...'),
+);
+
+// 小程序胶囊模式
+NZNavBar.miniApp(
+  title: '小程序',
+  onMiniAppClose: () => Navigator.pop(context),
 );''',
     ),
     NZDocSection(

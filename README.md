@@ -80,6 +80,9 @@ class MyApp extends StatelessWidget {
 ### Markdown 渲染 (Markdown View)
 纯原生实现的轻量级 Markdown 解析组件，支持基础语法及高度样式定制。
 
+### 导航栏 (NavBar)
+多功能顶栏，提供标准、搜索、Logo 及小程序胶囊控制四种模式，深度适配亮/暗色主题。
+
 ## 文档
 
 请参考 [docs/nezha_ui.md](docs/nezha_ui.md) 获取完整的组件指南。
@@ -94,6 +97,7 @@ class MyApp extends StatelessWidget {
 - [下拉刷新](docs/pull_to_refresh.md)
 - [代码查看器](docs/code_view.md)
 - [Markdown 渲染](docs/markdown_view.md)
+- [导航栏组件](docs/navbar.md)
 - [分割线组件](docs/divider.md)
 
 ## 贡献
