@@ -68,6 +68,9 @@ class MyApp extends StatelessWidget {
 ### 代码查看器 (Code View)
 专业的语法高亮组件，内置 GitHub Light/Dark 主题，支持多语言识别。
 
+### Markdown 渲染 (Markdown View)
+纯原生实现的轻量级 Markdown 解析组件，支持基础语法及高度样式定制。
+
 ## 文档
 
 请参考 [docs/nezha_ui.md](docs/nezha_ui.md) 获取完整的组件指南。
@@ -78,6 +81,7 @@ class MyApp extends StatelessWidget {
 - [悬浮按钮](docs/floating_action_button.md)
 - [下拉刷新](docs/pull_to_refresh.md)
 - [代码查看器](docs/code_view.md)
+- [Markdown 渲染](docs/markdown_view.md)
 - [分割线组件](docs/divider.md)
 
 ## 贡献
