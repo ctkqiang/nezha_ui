@@ -20,20 +20,20 @@ NezhaUI 提供的高性能按钮系列，包含基础按钮和进度条按钮。
 ### 使用方法
 
 ```dart
-// 1. 最简单的按钮
+
 NZButton(
   onPressed: () => print('点击了'),
   child: Text('提交'),
 )
 
-// 2. 微信风格次要按钮
+
 NZButton(
   style: NZButtonStyle.secondary,
   onPressed: () {},
   child: Text('取消'),
 )
 
-// 3. 带图标的文字按钮
+
 NZButton(
   style: NZButtonStyle.text,
   onPressed: () {},
