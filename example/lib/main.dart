@@ -1,16 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/nezha.dart';
-import 'package:trading_view_flutter/src/web_initializer.dart';
-import 'trading_data_example.dart';
 import 'docs_site.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  if (kIsWeb) {
-    WebInitializer.initialize();
-  }
 
   runApp(const NezhaUIExample());
 }
@@ -1232,34 +1226,6 @@ NZNavBar(
   content: '提交后将无法修改，是否确认继续？',
   onConfirm: () => print('已确认'),
 );''',
-                        ),
-                        _buildSection(
-                          '金融图表 (NZTradingView)',
-
-                          NZTradingView(
-                            key: const ValueKey('main_tradingview'),
-                            id: 1,
-                            isLightWeightChart: true,
-                            symbol: 'KO',
-                            height: 300,
-                            interval: 'M',
-                            timezone: 'Asia/Shanghai',
-                            chartValue: TradingDataExample.fakeChartData,
-                            indicators: TradingDataExample.indicators,
-                            volume: TradingDataExample.fakeVolume,
-                          ),
-
-                          code: '''// 轻量级视图 (使用示例交易数据)
-NZTradingView(
-  symbol: 'KO',
-  height: 300,
-  isLightWeightChart: true,
-  interval: 'M',
-  timezone: 'Asia/Shanghai',
-  chartValue: TradingDataExample.fakeChartData,
-  indicators: TradingDataExample.indicators,
-  volume: TradingDataExample.fakeVolume,
-)''',
                         ),
                         _buildSection(
                           'Dialog 对话框 (NZDialog)',

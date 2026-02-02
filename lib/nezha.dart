@@ -18,6 +18,5 @@ export 'components/pop_up.dart';
 export 'components/dropdown_menu.dart';
 export 'components/dialog.dart';
 export 'components/tags.dart';
-export 'components/tradingview.dart';
 
 export 'nezha_ui.dart';
