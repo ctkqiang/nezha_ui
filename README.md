@@ -56,6 +56,15 @@ class MyApp extends StatelessWidget {
 
 ## 组件概览
 
+### 文本排版 (Text)
+高度规范化的排版组件，内置 H1-H3 标题、副标题、正文及说明文字样式。
+
+### 抽屉组件 (Drawer)
+灵活的抽屉导航，支持从左、上、右、下四个方向弹出，支持自定义圆角与尺寸。
+
+### 回到顶部 (BackToTop)
+自动监听滚动状态，点击后平滑滚动回顶部，提升长列表阅读体验。
+
 ### 按钮 (Buttons)
 支持主要、次要、描边及文字样式，包含进度追踪和图片背景变体。
 
@@ -78,6 +87,9 @@ class MyApp extends StatelessWidget {
 - [颜色规范](docs/colors.md)
 - [主题配置](docs/theme.md)
 - [按钮组件](docs/button.md)
+- [文本组件](docs/text.md)
+- [抽屉组件](docs/drawer.md)
+- [回到顶部](docs/back_to_top.md)
 - [悬浮按钮](docs/floating_action_button.md)
 - [下拉刷新](docs/pull_to_refresh.md)
 - [代码查看器](docs/code_view.md)

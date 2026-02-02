@@ -35,7 +35,7 @@ class _NZDocsSiteState extends State<NZDocsSite> {
       'content': '''NezhaUI 不仅仅是一个组件库，它是我们对技术追求与工程实践的结合。
 
 ### 我们的愿景
-让每一位开发者在编写代码时，都能感受到高效与便捷。每一个像素、每一行代码，都体现了我们对 product 质量的极致追求。
+让每一位开发者在编写代码时，都能感受到高效与便捷。每一个像素、每一行代码，都体现了我们对产品质量的极致追求。
 
 ### 贡献团队
 - **核心团队**：负责核心架构与技术把关。
@@ -336,12 +336,12 @@ NZFloatingActionButton.standard(
           const Spacer(),
           // 导航链接
           _buildNavLink(
-            'Home',
+            '首页',
             () => setState(() => _selectedSection = 'Home'),
             isDark,
           ),
           _buildNavLink(
-            'About',
+            '关于',
             () => setState(() => _selectedSection = 'About'),
             isDark,
           ),
@@ -365,7 +365,10 @@ NZFloatingActionButton.standard(
     bool isDark, {
     IconData? icon,
   }) {
-    final isSelected = _selectedSection == title;
+    final isSelected =
+        (_selectedSection == 'Home' && title == '首页') ||
+        (_selectedSection == 'About' && title == '关于') ||
+        (_selectedSection == title);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: InkWell(
@@ -403,9 +406,9 @@ NZFloatingActionButton.standard(
 
   Widget _buildThemeToggle(bool isDark) {
     final modes = [
-      {'icon': Icons.brightness_auto_rounded, 'label': 'Auto'},
-      {'icon': Icons.light_mode_rounded, 'label': 'Light'},
-      {'icon': Icons.dark_mode_rounded, 'label': 'Dark'},
+      {'icon': Icons.brightness_auto_rounded, 'label': '自动'},
+      {'icon': Icons.light_mode_rounded, 'label': '浅色'},
+      {'icon': Icons.dark_mode_rounded, 'label': '深色'},
     ];
 
     return Container(
@@ -475,7 +478,7 @@ NZFloatingActionButton.standard(
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.asset(
-              'example/assets/logo.png',
+              'assets/logo.png',
               width: 48,
               height: 48,
               errorBuilder: (context, error, stackTrace) => Container(
@@ -533,13 +536,13 @@ NZFloatingActionButton.standard(
             ),
           ),
         ),
+        _buildMenuItem('Text', 'Text 文本排版', Icons.text_fields_rounded, isDark),
         _buildMenuItem(
           'Buttons',
           'Button 按钮',
           Icons.smart_button_rounded,
           isDark,
         ),
-        _buildMenuItem('Text', 'Text 文本排版', Icons.text_fields_rounded, isDark),
         _buildMenuItem('Drawer', 'Drawer 抽屉', Icons.menu_open_rounded, isDark),
         _buildMenuItem(
           'BackToTop',
