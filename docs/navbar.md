@@ -21,19 +21,21 @@
 
 | 参数名 | 数据类型 | 默认值 | 说明 |
 | :--- | :--- | :--- | :--- |
-| title | `String?` | `null` | 标题文本内容。 |
-| titleWidget | `Widget?` | `null` | 自定义标题组件，优先级高于 `title`。 |
-| leading | `Widget?` | `null` | 左侧按钮，通常用于返回或菜单。 |
-| actions | `List<Widget>?` | `null` | 右侧操作按钮列表。 |
-| centerTitle | `bool` | `true` | 标题是否居中显示。 |
-| elevation | `double` | `0` | 阴影高度。 |
-| backgroundColor | `Color?` | `null` | 背景颜色。 |
-| foregroundColor | `Color?` | `null` | 前景（文字/图标）颜色。 |
-| logoUrl | `String?` | `null` | Logo 图片地址（仅 `logo` 模式）。 |
-| onSearch | `VoidCallback?` | `null` | 点击搜索按钮或提交搜索的回调。 |
-| onSearchChanged | `ValueChanged<String>?` | `null` | 搜索内容变化时的回调。 |
-| onMiniAppShare | `VoidCallback?` | `null` | 小程序模式分享点击回调。 |
-| onMiniAppClose | `VoidCallback?` | `null` | 小程序模式关闭点击回调。 |
+| **title** | `String?` | `null` | 标题文本内容。 |
+| **titleWidget** | `Widget?` | `null` | 自定义标题组件，优先级高于 `title`。 |
+| **leading** | `Widget?` | `null` | 左侧领先组件（通常为返回按钮或菜单图标）。 |
+| **actions** | `List<Widget>?` | `null` | 右侧操作按钮列表。 |
+| **centerTitle** | `bool` | `true` | 标题是否居中显示。 |
+| **elevation** | `double` | `0` | 阴影高度。 |
+| **backgroundColor** | `Color?` | `null` | 背景颜色。 |
+| **foregroundColor** | `Color?` | `null` | 前景颜色（影响文字和图标颜色）。 |
+| **type** | `NZNavBarType` | `normal` | 导航栏类型：`normal`, `search`, `logo`, `miniApp`。 |
+| **logoUrl** | `String?` | `null` | Logo 图片的 URL 地址（仅在 `logo` 模式下有效）。 |
+| **onSearch** | `VoidCallback?` | `null` | 点击搜索按钮或提交搜索时的回调。 |
+| **onSearchChanged** | `ValueChanged<String>?` | `null` | 搜索框内容变化时的回调。 |
+| **onMiniAppShare** | `VoidCallback?` | `null` | 小程序模式下的分享按钮点击回调。 |
+| **onMiniAppClose** | `VoidCallback?` | `null` | 小程序模式下的关闭按钮点击回调。 |
+| **height** | `double` | `56.0` | 导航栏高度。 |
 
 ---
 

@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   double _downloadProgress = 0.0;
   bool _isDownloading = false;
   bool _isSaving = false;
+  bool _showDraggable = false;
   double _appBarOpacity = 0.0;
 
   @override
@@ -73,15 +74,51 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showMsg(String message) {
-    _messengerKey.currentState?.clearSnackBars();
-    _messengerKey.currentState?.showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(milliseconds: 1500),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(20),
-      ),
+    NZToast.show(context, message: message);
+  }
+
+  void _showPopUp() {
+    NZPopUp.confirm(
+      context,
+      title: '确认提交',
+      content: '提交后将无法修改，是否确认继续？',
+      onConfirm: () => _showMsg('已确认提交'),
+    );
+  }
+
+  void _showDestructivePopUp() {
+    NZPopUp.confirm(
+      context,
+      title: '删除提示',
+      content: '确定要删除这条重要数据吗？此操作不可撤销。',
+      confirmLabel: '删除',
+      isDestructive: true,
+      onConfirm: () => _showMsg('数据已删除'),
+    );
+  }
+
+  void _showMultiActionPopUp() {
+    NZPopUp.show(
+      context,
+      title: '请选择操作',
+      actionsAxis: Axis.vertical,
+      actions: [
+        NZPopUpAction(
+          label: '查看详情',
+          onPressed: () {
+            Navigator.pop(context);
+            _showMsg('正在打开详情...');
+          },
+        ),
+        NZPopUpAction(
+          label: '分享给好友',
+          onPressed: () {
+            Navigator.pop(context);
+            _showMsg('分享成功');
+          },
+        ),
+        NZPopUpAction(label: '取消', onPressed: () => Navigator.pop(context)),
+      ],
     );
   }
 
@@ -349,6 +386,7 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
+                      centerTitle: true,
                       title: Opacity(
                         opacity: _appBarOpacity,
                         child: const Text(
@@ -360,7 +398,6 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      centerTitle: true,
                     ),
                   ),
                   SliverPadding(
@@ -573,7 +610,7 @@ func main() {
                               NZFloatingActionButton.image(
                                 onPressed: () {},
                                 image: const NetworkImage(
-                                  'https://placeholder.com/64',
+                                  'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=120&h=120&auto=format&fit=crop',
                                 ),
                                 icon: const Icon(Icons.auto_awesome_rounded),
                               ),
@@ -583,6 +620,102 @@ func main() {
   onPressed: () {},
   icon: Icon(Icons.add),
   label: '添加',
+)''',
+                        ),
+                        _buildSection(
+                          '轻提示 (NZToast)',
+                          Wrap(
+                            spacing: 12,
+                            runSpacing: 12,
+                            children: [
+                              NZButton.primary(
+                                label: '成功提示',
+                                onPressed: () =>
+                                    NZToast.success(context, '保存成功啦'),
+                              ),
+                              NZButton.primary(
+                                label: '错误提示',
+                                color: Colors.redAccent,
+                                onPressed: () =>
+                                    NZToast.error(context, '网络连接超时'),
+                              ),
+                              NZButton.primary(
+                                label: '加载中',
+                                color: Colors.blueAccent,
+                                onPressed: () {
+                                  NZToast.loading(context, '正在努力中...');
+                                  Future.delayed(
+                                    const Duration(seconds: 2),
+                                    () {
+                                      NZToast.hide();
+                                      NZToast.success(context, '加载完成');
+                                    },
+                                  );
+                                },
+                              ),
+                              NZButton.primary(
+                                label: '普通提示',
+                                color: Colors.grey,
+                                onPressed: () =>
+                                    NZToast.show(context, message: '这是一条普通消息'),
+                              ),
+                            ],
+                          ),
+                          code: '''// 成功提示
+NZToast.success(context, '保存成功啦');
+
+// 错误提示
+NZToast.error(context, '网络连接超时');
+
+// 加载中并自动隐藏
+NZToast.loading(context, '正在努力中...');
+Future.delayed(Duration(seconds: 2), () => NZToast.hide());''',
+                        ),
+                        _buildSection(
+                          '悬浮拖拽按钮 (NZDraggableButton)',
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('快看屏幕右下角！那个小球可以随意拖动，松手会自动贴边哦。'),
+                              const SizedBox(height: 12),
+                              NZButton.primary(
+                                label: _showDraggable ? '隐藏全局悬浮球' : '显示全局悬浮球',
+                                color: _showDraggable
+                                    ? Colors.redAccent
+                                    : NZColor.nezhaPrimary,
+                                block: true,
+                                onPressed: () {
+                                  setState(
+                                    () => _showDraggable = !_showDraggable,
+                                  );
+                                  _showMsg(
+                                    _showDraggable ? '悬浮球已现身' : '悬浮球已隐身',
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 8),
+                              NZText.caption('提示：DraggableButton 适合放客服、全局菜单等。'),
+                            ],
+                          ),
+                          code: '''NZDraggableButton(
+  initialPosition: Offset(300, 600),
+  onTap: () => NZToast.show(context, message: '点击了悬浮球'),
+  child: Container(
+    width: 60,
+    height: 60,
+    decoration: BoxDecoration(
+      color: NZColor.nezhaPrimary,
+      shape: BoxShape.circle,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black26,
+          blurRadius: 10,
+          offset: Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Icon(Icons.support_agent_rounded, color: Colors.white),
+  ),
 )''',
                         ),
                         _buildSection(
@@ -637,7 +770,8 @@ func main() {
                               ),
                               const SizedBox(height: 8),
                               NZNavBar.logo(
-                                logoUrl: 'https://placeholder.com/logo.png',
+                                logoUrl:
+                                    'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=100&h=100&auto=format&fit=crop',
                                 actions: [
                                   IconButton(
                                     icon: const Icon(
@@ -646,6 +780,35 @@ func main() {
                                     onPressed: () {},
                                   ),
                                 ],
+                              ),
+                              const SizedBox(height: 24),
+                              const Text(
+                                '小程序模式',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              NZNavBar.miniApp(
+                                title: '小程序风格',
+                                onMiniAppShare: () => _showMsg('分享'),
+                                onMiniAppClose: () => _showMsg('关闭'),
+                              ),
+                              const SizedBox(height: 24),
+                              const Text(
+                                '自定义颜色模式',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              const NZNavBar(
+                                title: '自定义配色',
+                                backgroundColor: NZColor.nezhaPrimary,
+                                foregroundColor: Colors.white,
+                                elevation: 4,
                               ),
                             ],
                           ),
@@ -659,7 +822,142 @@ NZNavBar(
 NZNavBar.search(
   title: '搜索',
   onSearch: () {},
+)
+
+// 小程序模式
+NZNavBar.miniApp(
+  title: '小程序',
+  onMiniAppShare: () {},
+)
+
+// 自定义样式
+NZNavBar(
+  title: '自定义',
+  backgroundColor: NZColor.nezhaPrimary,
+  foregroundColor: Colors.white,
 )''',
+                        ),
+                        _buildSection(
+                          'Swipe Action 滑动操作',
+                          Column(
+                            children: [
+                              NZSwipeListTile(
+                                rightActions: [
+                                  NZSwipeAction(
+                                    label: '编辑',
+                                    icon: const Icon(Icons.edit_rounded),
+                                    onTap: () => _showMsg('点击了编辑'),
+                                  ),
+                                  NZSwipeAction(
+                                    label: '删除',
+                                    backgroundColor: Colors.red,
+                                    icon: const Icon(
+                                      Icons.delete_outline_rounded,
+                                    ),
+                                    onTap: () => _showMsg('点击了删除'),
+                                  ),
+                                ],
+                                child: const ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: NZColor.red100,
+                                    child: Icon(
+                                      Icons.person_rounded,
+                                      color: NZColor.red500,
+                                    ),
+                                  ),
+                                  title: Text('左滑试试看'),
+                                  subtitle: Text('支持多个操作按钮'),
+                                ),
+                              ),
+                              const Divider(height: 1, indent: 16),
+                              NZSwipeListTile(
+                                leftActions: [
+                                  NZSwipeAction(
+                                    label: '收藏',
+                                    backgroundColor: Colors.orange,
+                                    icon: const Icon(Icons.star_rounded),
+                                    onTap: () => _showMsg('点击了收藏'),
+                                  ),
+                                ],
+                                child: const ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: NZColor.orange100,
+                                    child: Icon(
+                                      Icons.star_outline_rounded,
+                                      color: Colors.orange,
+                                    ),
+                                  ),
+                                  title: Text('右滑试试看'),
+                                  subtitle: Text('支持左侧滑出按钮'),
+                                ),
+                              ),
+                              const Divider(height: 1, indent: 16),
+                              NZSwipeListTile(
+                                topActions: [
+                                  NZSwipeAction(
+                                    label: '置顶',
+                                    backgroundColor: Colors.blue,
+                                    icon: const Icon(
+                                      Icons.vertical_align_top_rounded,
+                                    ),
+                                    onTap: () => _showMsg('点击了置顶'),
+                                  ),
+                                ],
+                                child: const ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: Color(0xFFE3F2FD),
+                                    child: Icon(
+                                      Icons.info_outline_rounded,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                  title: Text('上下滑动 (实验性)'),
+                                  subtitle: Text('支持 4 个方向的滑动操作'),
+                                ),
+                              ),
+                            ],
+                          ),
+                          code: '''NZSwipeListTile(
+  rightActions: [
+    NZSwipeAction(
+      label: '删除',
+      backgroundColor: Colors.red,
+      icon: Icon(Icons.delete),
+      onTap: () => print('delete'),
+    ),
+  ],
+  child: ListTile(title: Text('滑动我')),
+)''',
+                        ),
+                        _buildSection(
+                          'PopUp 弹窗',
+                          Column(
+                            children: [
+                              NZButton.primary(
+                                label: '显示确认弹窗',
+                                block: true,
+                                onPressed: _showPopUp,
+                              ),
+                              const SizedBox(height: 12),
+                              NZButton.secondary(
+                                label: '显示危险操作弹窗',
+                                block: true,
+                                onPressed: _showDestructivePopUp,
+                              ),
+                              const SizedBox(height: 12),
+                              NZButton.outline(
+                                label: '显示多按钮弹窗',
+                                block: true,
+                                onPressed: _showMultiActionPopUp,
+                              ),
+                            ],
+                          ),
+                          code: '''NZPopUp.confirm(
+  context,
+  title: '确认提交',
+  content: '提交后将无法修改，是否确认继续？',
+  onConfirm: () => print('已确认'),
+);''',
                         ),
                       ]),
                     ),
@@ -679,16 +977,33 @@ NZNavBar.search(
               onPressed: () => _showMsg('点击了发布'),
             ),
           ),
-          NZFloatingActionButton.image(
-            initialPosition: const Offset(20, 350),
-            draggable: true,
-            image: const NetworkImage(
-              'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop',
-            ),
-            icon: const Icon(Icons.palette_rounded, color: Colors.white),
-            onPressed: () => _showMsg('进入创意调色盘'),
-          ),
+          _buildGlobalDraggableButton(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildGlobalDraggableButton() {
+    if (!_showDraggable) return const SizedBox.shrink();
+
+    return NZDraggableButton(
+      initialPosition: const Offset(300, 600),
+      onTap: () => NZToast.show(context, message: '点击了悬浮球'),
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: NZColor.nezhaPrimary,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: const Icon(Icons.support_agent_rounded, color: Colors.white),
       ),
     );
   }

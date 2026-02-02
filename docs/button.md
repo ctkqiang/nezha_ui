@@ -71,23 +71,31 @@ NZButton.primary(
 
 ## NZProgressButton 进度按钮
 
-带背景进度显示的按钮，常用于下载、上传等场景。
+带背景进度显示的按钮，常用于下载、上传等长耗时操作场景。
 
 ### 1. 参数说明
 
 | 参数 | 类型 | 必填 | 默认值 | 说明 |
 | :--- | :--- | :--- | :--- | :--- |
-| progress | double | 是 | - | 进度值 (0.0 - 1.0) |
-| color | Color | 否 | Primary | 进度条填充颜色 |
-| backgroundColor | Color | 否 | #F2F2F2 | 按钮底色 |
-| foregroundColor | Color | 否 | 动态 | 文本颜色 (随进度自动切换黑/白) |
+| **progress** | `double` | 是 | - | 进度值 (0.0 - 1.0) |
+| **onPressed** | `VoidCallback?` | 是 | - | 点击回调 |
+| **label** | `String?` | 否 | `null` | 按钮文本 |
+| **color** | `Color?` | 否 | Primary | 进度条填充颜色 |
+| **backgroundColor** | `Color?` | 否 | #F2F2F2 | 按钮底色 |
+| **foregroundColor** | `Color?` | 否 | 动态 | 文本颜色 (随进度自动切换黑/白) |
+| **width** | `double?` | 否 | `null` | 宽度 |
+| **height** | `double` | 否 | `48.0` | 高度 |
+| **borderRadius** | `double` | 否 | `12.0` | 圆角半径 |
+| **block** | `bool` | 否 | `false` | 是否撑满宽度 |
 
 ### 2. 使用方法
+
 ```dart
 NZProgressButton(
-  progress: 0.6,
-  label: '正在下载 60%',
-  onPressed: () {},
+  progress: 0.65,
+  label: '系统更新中 65%',
+  onPressed: () => print('点击了进度按钮'),
+  block: true,
 )
 ```
 
@@ -95,19 +103,22 @@ NZProgressButton(
 
 ## NZImageButton 图片按钮
 
-以图片作为背景的沉浸式按钮。
+以图片作为背景的沉浸式按钮，适用于视觉引导、Banner 点击等场景。
 
 ### 1. 参数说明
 
 | 参数 | 类型 | 必填 | 默认值 | 说明 |
 | :--- | :--- | :--- | :--- | :--- |
-| image | ImageProvider | 是 | - | 背景图片源 |
-| opacity | double | 否 | 0.8 | 图片透明度 (用于遮罩文字) |
-| color | Color | 否 | Transparent | 按钮底色 |
-| foregroundColor | Color | 否 | White | 文本和水波纹颜色 |
-| borderRadius | double | 否 | 12.0 | 圆角半径 |
+| **image** | `ImageProvider` | 是 | - | 背景图片源 |
+| **onPressed** | `VoidCallback?` | 是 | - | 点击回调 |
+| **label** | `String?` | 否 | `null` | 按钮文本 |
+| **opacity** | `double` | 否 | `0.8` | 图片透明度 (用于遮罩文字) |
+| **color** | `Color?` | 否 | Transparent | 按钮底色 |
+| **foregroundColor** | `Color?` | 否 | White | 文本和水波纹颜色 |
+| **borderRadius** | `double` | 否 | `12.0` | 圆角半径 |
 
 ### 2. 使用方法
+
 ```dart
 NZImageButton(
   image: AssetImage('assets/banner.png'),
@@ -120,13 +131,31 @@ NZImageButton(
 
 ## NZDraggableButton 悬浮拖拽按钮
 
-可以随手势在屏幕上任意拖动的按钮，常用于客服入口、悬浮菜单等。
+可以随手势在屏幕上任意拖动的按钮，支持自动贴边动画。常用于客服入口、悬浮菜单等。
 
-### 1. 使用方法
+### 1. 参数说明
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+| :--- | :--- | :--- | :--- | :--- |
+| **child** | `Widget` | 是 | - | 按钮显示的组件 |
+| **onTap** | `VoidCallback?` | 否 | `null` | 点击回调 |
+| **initialPosition** | `Offset` | 否 | `(20, 100)` | 初始位置 |
+| **padding** | `EdgeInsets` | 否 | `zero` | 拖动范围限制的内边距 |
+
+### 2. 使用方法
+
 ```dart
 NZDraggableButton(
   initialPosition: Offset(300, 500),
   onTap: () => print('点击了悬浮球'),
-  child: MyFloatingWidget(),
+  child: Container(
+    width: 60,
+    height: 60,
+    decoration: BoxDecoration(
+      color: Colors.blue,
+      shape: BoxShape.circle,
+    ),
+    child: Icon(Icons.support_agent, color: Colors.white),
+  ),
 )
 ```

@@ -835,6 +835,97 @@ NZToast.show(
   theme: NZCodeTheme.githubDark,
 );''',
     ),
+    NZDocSection(
+      id: 'SwipeListTile',
+      title: '滑动单元格 (SwipeListTile)',
+      icon: Icons.swipe_rounded,
+      description: '支持多方向滑动的列表项操作组件，提供丝滑的交互体验。',
+      usage: [
+        ['child', 'Widget', '单元格内容'],
+        ['leftActions', 'List<NZSwipeAction>', '右滑显示的按钮列表'],
+        ['rightActions', 'List<NZSwipeAction>', '左滑显示的按钮列表'],
+        ['topActions', 'List<NZSwipeAction>', '下滑显示的按钮列表'],
+        ['bottomActions', 'List<NZSwipeAction>', '上滑显示的按钮列表'],
+        ['onTap', 'VoidCallback?', '点击单元格回调'],
+        ['onLongPress', 'VoidCallback?', '长按单元格回调'],
+        ['disabled', 'bool', '是否禁用滑动交互'],
+      ],
+      preview: Column(
+        children: [
+          NZSwipeListTile(
+            rightActions: [
+              NZSwipeAction(
+                label: '删除',
+                backgroundColor: Colors.red,
+                icon: const Icon(Icons.delete_outline_rounded),
+                onTap: () {},
+              ),
+            ],
+            child: const ListTile(
+              title: Text('左滑试试'),
+              subtitle: Text('可以滑出删除按钮'),
+            ),
+          ),
+          const Divider(height: 1),
+          NZSwipeListTile(
+            leftActions: [
+              NZSwipeAction(
+                label: '收藏',
+                backgroundColor: Colors.orange,
+                icon: const Icon(Icons.star_rounded),
+                onTap: () {},
+              ),
+            ],
+            child: const ListTile(
+              title: Text('右滑试试'),
+              subtitle: Text('可以滑出收藏按钮'),
+            ),
+          ),
+        ],
+      ),
+      content:
+          'NZSwipeListTile 模拟了原生移动端和微信小程序的滑动交互逻辑。它能够自动处理手势冲突，并支持在四个方向上配置独立的操作按钮。每个操作按钮都可以自定义图标、文字和背景色。',
+      code: '''NZSwipeListTile(
+   rightActions: [
+     NZSwipeAction(
+       label: '删除',
+       backgroundColor: Colors.red,
+       icon: Icon(Icons.delete),
+       onTap: () => print('Delete'),
+     ),
+   ],
+   child: ListTile(title: Text('滑动操作')),
+ )''',
+    ),
+    NZDocSection(
+      id: 'PopUp',
+      title: '弹窗 (PopUp)',
+      icon: Icons.chat_bubble_outline_rounded,
+      description: '微信风格的对话框组件，用于重要的交互提示或确认操作。',
+      usage: [
+        ['title', 'String?', '弹窗标题'],
+        ['content', 'String?', '弹窗内容描述'],
+        ['actions', 'List<NZPopUpAction>', '操作按钮列表'],
+        ['actionsAxis', 'Axis', '按钮排列方向'],
+      ],
+      preview: Column(
+        children: [
+          NZButton.primary(
+            label: '显示确认弹窗',
+            block: true,
+            onPressed: () {}, // 预览中仅展示 UI
+          ),
+        ],
+      ),
+      content:
+          'NZPopUp 遵循微信小程序的视觉设计规范，提供一致的确认和提示体验。它支持横向和纵向的按钮排列，并能自动处理圆角和边框细节。',
+      code: '''NZPopUp.confirm(
+   context,
+   title: '确认提交',
+   content: '提交后将无法修改，是否确认继续？',
+   onConfirm: () => print('已确认'),
+ );''',
+    ),
   ];
 
   static Widget _buildDrawerContent(BuildContext context, String title) {

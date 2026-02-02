@@ -1,27 +1,52 @@
 # NZDivider 分割线组件
 
-用于在内容之间绘制细线的简单组件。
+`NZDivider` 是一个用于在不同内容块之间提供视觉分割的轻量级组件。它遵循 NezhaUI 的极简设计语言，支持高度自定义的边距、厚度和色彩。
 
-### 参数说明
+---
+
+## 核心特性
+
+- **高度自适应**：通过 `height` 参数灵活控制分割线占用的垂直空间。
+- **精确缩进**：支持 `indent` 和 `endIndent`，轻松实现不通栏的精致分割效果。
+- **主题兼容**：默认颜色适配 NezhaUI 的浅灰色调，自然融入各种 UI 场景。
+
+---
+
+## 参数说明
 
 | 参数名 | 数据类型 | 默认值 | 说明 |
 | :--- | :--- | :--- | :--- |
-| height | double | 16.0 | 分割线占据的总高度（包含上下间距） |
-| thickness | double | 1.0 | 线条本身的厚度 |
-| indent | double? | null | 线条左侧的缩进距离 |
-| endIndent | double? | null | 线条右侧的缩进距离 |
-| color | Color? | 浅灰色 | 线条的颜色 |
+| **height** | `double` | `16.0` | 分割线占据的总高度（包含上下间距）。 |
+| **thickness** | `double` | `1.0` | 线条本身的厚度。 |
+| **indent** | `double?` | `null` | 线条左侧的缩进距离。 |
+| **endIndent** | `double?` | `null` | 线条右侧的缩进距离。 |
+| **color** | `Color?` | `Color(0xFFEEEEEE)` | 线条的颜色。 |
 
-### 使用方法
+---
 
+## 使用方法
+
+### 1. 基础分割线
+最简单的用法，用于列表项或内容块之间的垂直间距。
 ```dart
+const NZDivider()
+```
 
-NZDivider()
-
+### 2. 自定义样式
+通过调整厚度和缩进，实现特定的视觉设计。
+```dart
 NZDivider(
-  thickness: 2.0,
-  indent: 20.0,
-  endIndent: 20.0,
-  color: Colors.red,
+  height: 40.0,      // 增加垂直间距
+  thickness: 1.5,    // 稍微加粗
+  indent: 20.0,      // 左侧留白
+  endIndent: 20.0,   // 右侧留白
+  color: Colors.blue.withValues(alpha: 0.1), // 浅蓝色线条
 )
 ```
+
+---
+
+## 最佳实践
+
+- **列表项分割**：建议使用默认的 `1.0` 厚度，并配合适当的 `indent` 以对齐列表图标或标题。
+- **模块分割**：建议将 `height` 设为 `32.0` 或更大，以提供更清晰的呼吸感。
