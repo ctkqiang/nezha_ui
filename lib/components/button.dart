@@ -18,66 +18,172 @@ enum NZButtonStyle {
 
 /// NZButton 是 NezhaUI 提供的高性能、高可定制化的按钮组件。
 ///
-/// 支持多种样式类型，包括主要按钮、次要按钮、描边按钮和文字按钮。
-/// 支持在文字前后添加图标（支持 [IconData]、[Widget] 或图片资源）。
-///
-/// ### 使用示例：
-///
-/// ```dart
-/// // 基础主要按钮
-/// NZButton(
-///   onPressed: () => print('Tap'),
-///   child: Text('提交'),
-/// )
-///
-/// // 带图标的文字按钮
-/// NZButton(
-///   style: NZButtonStyle.text,
-///   onPressed: () {},
-///   icon: Icon(Icons.share, size: 18),
-///   child: Text('分享'),
-/// )
-/// ```
+/// 提供了命名构造函数（如 [NZButton.primary]）以简化代码编写，
+/// 并支持 [label] 简写、加载状态 [isLoading] 和通栏布局 [block]。
 class NZButton extends StatelessWidget {
   /// 点击回调
   final VoidCallback? onPressed;
 
-  /// 按钮内容
-  final Widget child;
+  /// 按钮内容组件，优先级高于 [label]
+  final Widget? child;
 
-  /// 按钮样式，默认为 [NZButtonStyle.primary]
+  /// 按钮文字简写
+  final String? label;
+
+  /// 按钮样式
   final NZButtonStyle style;
 
-  /// 按钮宽度，如果不设置则根据内容自适应
+  /// 按钮宽度，设置 [block] 为 true 时失效
   final double? width;
 
   /// 按钮高度，默认为 48.0
   final double height;
 
   /// 内部边距
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// 圆角半径，默认为 12.0
   final double borderRadius;
 
-  /// 按钮图标，显示在文字前面
+  /// 按钮图标
   final Widget? icon;
 
   /// 图标与文字之间的间距
   final double iconGap;
 
+  /// 是否处于加载状态
+  final bool isLoading;
+
+  /// 是否通栏（全宽）显示
+  final bool block;
+
   const NZButton({
     super.key,
     required this.onPressed,
-    required this.child,
+    this.child,
+    this.label,
     this.style = NZButtonStyle.primary,
     this.width,
     this.height = 48.0,
-    this.padding = const EdgeInsets.symmetric(horizontal: 24.0),
+    this.padding,
     this.borderRadius = 12.0,
     this.icon,
     this.iconGap = 8.0,
-  });
+    this.isLoading = false,
+    this.block = false,
+  }) : assert(child != null || label != null, '必须提供 child 或 label');
+
+  /// 快速创建主要按钮 (背景色为主色，文字为白色)
+  factory NZButton.primary({
+    Key? key,
+    required VoidCallback? onPressed,
+    String? label,
+    Widget? child,
+    double? width,
+    double height = 48.0,
+    double borderRadius = 12.0,
+    Widget? icon,
+    double iconGap = 8.0,
+    bool isLoading = false,
+    bool block = false,
+  }) => NZButton(
+    key: key,
+    onPressed: onPressed,
+    label: label,
+    style: NZButtonStyle.primary,
+    width: width,
+    height: height,
+    borderRadius: borderRadius,
+    icon: icon,
+    iconGap: iconGap,
+    isLoading: isLoading,
+    block: block,
+    child: child,
+  );
+
+  /// 快速创建次要按钮 (微信风格：灰色背景，绿色文字)
+  factory NZButton.secondary({
+    Key? key,
+    required VoidCallback? onPressed,
+    String? label,
+    Widget? child,
+    double? width,
+    double height = 48.0,
+    double borderRadius = 12.0,
+    Widget? icon,
+    double iconGap = 8.0,
+    bool isLoading = false,
+    bool block = false,
+  }) => NZButton(
+    key: key,
+    onPressed: onPressed,
+    label: label,
+    style: NZButtonStyle.secondary,
+    width: width,
+    height: height,
+    borderRadius: borderRadius,
+    icon: icon,
+    iconGap: iconGap,
+    isLoading: isLoading,
+    block: block,
+    child: child,
+  );
+
+  /// 快速创建描边按钮 (透明背景，主色边框)
+  factory NZButton.outline({
+    Key? key,
+    required VoidCallback? onPressed,
+    String? label,
+    Widget? child,
+    double? width,
+    double height = 48.0,
+    double borderRadius = 12.0,
+    Widget? icon,
+    double iconGap = 8.0,
+    bool isLoading = false,
+    bool block = false,
+  }) => NZButton(
+    key: key,
+    onPressed: onPressed,
+    label: label,
+    style: NZButtonStyle.outline,
+    width: width,
+    height: height,
+    borderRadius: borderRadius,
+    icon: icon,
+    iconGap: iconGap,
+    isLoading: isLoading,
+    block: block,
+    child: child,
+  );
+
+  /// 快速创建文字按钮 (无背景，无边框)
+  factory NZButton.text({
+    Key? key,
+    required VoidCallback? onPressed,
+    String? label,
+    Widget? child,
+    double? width,
+    double height = 48.0,
+    double borderRadius = 12.0,
+    Widget? icon,
+    double iconGap = 8.0,
+    bool isLoading = false,
+    bool block = false,
+  }) => NZButton(
+    key: key,
+    onPressed: onPressed,
+    label: label,
+    style: NZButtonStyle.text,
+    width: width,
+    height: height,
+    borderRadius: borderRadius,
+    icon: icon,
+    iconGap: iconGap,
+    isLoading: isLoading,
+    block: block,
+    child: child,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +211,7 @@ class NZButton extends StatelessWidget {
         break;
     }
 
-    final bool isEnabled = onPressed != null;
+    final bool isEnabled = onPressed != null && !isLoading;
     final Color effectiveForegroundColor = isEnabled
         ? foregroundColor
         : foregroundColor.withValues(alpha: 0.5);
@@ -117,38 +223,53 @@ class NZButton extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (icon != null) ...[
+        if (isLoading) ...[
+          SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                effectiveForegroundColor,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ] else if (icon != null) ...[
           IconTheme.merge(
             data: IconThemeData(color: effectiveForegroundColor, size: 18),
             child: icon!,
           ),
           SizedBox(width: iconGap),
         ],
-        DefaultTextStyle.merge(
-          style: TextStyle(
-            color: effectiveForegroundColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
+        Flexible(
+          child: DefaultTextStyle.merge(
+            style: TextStyle(
+              color: effectiveForegroundColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+              overflow: TextOverflow.ellipsis,
+            ),
+            child: child ?? Text(label!),
           ),
-          child: child,
         ),
       ],
     );
 
     return SizedBox(
-      width: width,
+      width: block ? double.infinity : width,
       height: height,
       child: Material(
         color: effectiveBackgroundColor,
         borderRadius: BorderRadius.circular(borderRadius),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: onPressed,
+          onTap: isEnabled ? onPressed : null,
           splashColor: effectiveForegroundColor.withValues(alpha: 0.1),
           highlightColor: effectiveForegroundColor.withValues(alpha: 0.05),
           child: Container(
-            padding: padding,
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 24.0),
             decoration: BoxDecoration(
               border: borderSide != BorderSide.none
                   ? Border.fromBorderSide(borderSide)
@@ -165,60 +286,33 @@ class NZButton extends StatelessWidget {
 }
 
 /// NZProgressButton 是一个带有进度条显示功能的按钮。
-///
-/// 它可以显示从 0% 到 100% 的进度状态，非常适合用于下载、上传或长耗时任务。
-///
-/// ### 使用示例：
-///
-/// ```dart
-/// NZProgressButton(
-///   progress: _downloadProgress, // 0.0 到 1.0 之间的数值
-///   onPressed: () {
-///     // 开始任务
-///   },
-///   child: Text(_downloadProgress > 0 ? '下载中...' : '开始下载'),
-/// )
-/// ```
 class NZProgressButton extends StatelessWidget {
-  /// 当前进度，范围为 0.0 到 1.0
   final double progress;
-
-  /// 点击回调
   final VoidCallback? onPressed;
-
-  /// 按钮内容
-  final Widget child;
-
-  /// 进度条颜色，默认为主色调
+  final Widget? child;
+  final String? label;
   final Color? progressColor;
-
-  /// 按钮背景色
   final Color? backgroundColor;
-
-  /// 文字/图标颜色
   final Color? foregroundColor;
-
-  /// 按钮宽度
   final double? width;
-
-  /// 按钮高度
   final double height;
-
-  /// 圆角半径
   final double borderRadius;
+  final bool block;
 
   const NZProgressButton({
     super.key,
     required this.progress,
     required this.onPressed,
-    required this.child,
+    this.child,
+    this.label,
     this.progressColor,
     this.backgroundColor,
     this.foregroundColor,
     this.width,
     this.height = 48.0,
     this.borderRadius = 12.0,
-  });
+    this.block = false,
+  }) : assert(child != null || label != null, '必须提供 child 或 label');
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +323,7 @@ class NZProgressButton extends StatelessWidget {
         foregroundColor ?? (progress > 0.5 ? Colors.white : Colors.black87);
 
     return SizedBox(
-      width: width,
+      width: block ? double.infinity : width,
       height: height,
       child: Material(
         color: effectiveBackgroundColor,
@@ -237,7 +331,6 @@ class NZProgressButton extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
-            // 进度条背景层
             Positioned.fill(
               child: FractionallySizedBox(
                 alignment: Alignment.centerLeft,
@@ -245,7 +338,6 @@ class NZProgressButton extends StatelessWidget {
                 child: Container(color: effectiveProgressColor),
               ),
             ),
-            // 按钮交互层
             Positioned.fill(
               child: InkWell(
                 onTap: onPressed,
@@ -260,13 +352,124 @@ class NZProgressButton extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
-                    child: child,
+                    child: child ?? Text(label!),
                   ),
                 ),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// NZImageButton 是一个带有背景图片的按钮。
+class NZImageButton extends StatelessWidget {
+  final VoidCallback? onPressed;
+  final Widget? child;
+  final String? label;
+  final ImageProvider image;
+  final double? width;
+  final double height;
+  final double borderRadius;
+  final double opacity;
+  final bool block;
+
+  const NZImageButton({
+    super.key,
+    required this.onPressed,
+    required this.image,
+    this.child,
+    this.label,
+    this.width,
+    this.height = 120.0,
+    this.borderRadius = 16.0,
+    this.opacity = 0.6,
+    this.block = false,
+  }) : assert(child != null || label != null, '必须提供 child 或 label');
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: block ? double.infinity : width,
+      height: height,
+      child: Material(
+        borderRadius: BorderRadius.circular(borderRadius),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onPressed,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image(
+                  image: image,
+                  fit: BoxFit.cover,
+                  color: Colors.black.withValues(alpha: 1 - opacity),
+                  colorBlendMode: BlendMode.darken,
+                ),
+              ),
+              Center(
+                child: DefaultTextStyle.merge(
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  child: child ?? Text(label!),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// NZDraggableButton 是一个可以拖动的悬浮按钮。
+class NZDraggableButton extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  final Offset initialPosition;
+
+  const NZDraggableButton({
+    super.key,
+    required this.child,
+    this.onTap,
+    this.initialPosition = const Offset(20, 100),
+  });
+
+  @override
+  State<NZDraggableButton> createState() => _NZDraggableButtonState();
+}
+
+class _NZDraggableButtonState extends State<NZDraggableButton> {
+  late Offset _position;
+
+  @override
+  void initState() {
+    super.initState();
+    _position = widget.initialPosition;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: _position.dx,
+      top: _position.dy,
+      child: Draggable(
+        feedback: Material(
+          color: Colors.transparent,
+          child: Opacity(opacity: 0.8, child: widget.child),
+        ),
+        childWhenDragging: Container(),
+        onDragEnd: (details) {
+          setState(() {
+            _position = details.offset;
+          });
+        },
+        child: GestureDetector(onTap: widget.onTap, child: widget.child),
       ),
     );
   }
