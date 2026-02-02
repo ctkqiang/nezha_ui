@@ -14,34 +14,107 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.35.7'
+          channel: 'stable'
       
-      - run: |
+      - name: Build Flutter Web
+        run: |
+          echo "Current directory:"
+          pwd
+          ls -la
+          
+          echo "Checking example directory..."
+          if [ ! -d "example" ]; then
+            echo "Error: example directory not found"
+            ls -la
+            exit 1
+          fi
+          
           # 进入 example 目录
           cd example
           
-          # 启用 Web 并安装依赖
+          echo "Current directory (in example):"
+          pwd
+          ls -la
+          
+          # 检查 pubspec.yaml
+          if [ ! -f "pubspec.yaml" ]; then
+            echo "Error: pubspec.yaml not found in example directory"
+            exit 1
+          fi
+          
+          # 启用 Web 支持
           flutter config --enable-web
+          
+          echo "Flutter devices (to verify web support):"
+          flutter devices
+          
+          # 安装依赖
+          echo "Installing dependencies..."
           flutter pub get
+          
+          # 清理旧的构建
+          echo "Cleaning build..."
           flutter clean
           
           # 获取标签信息
           TAG_NAME="${GITHUB_REF#refs/tags/}"
           VERSION="${TAG_NAME#v}"
           
-          # 构建 Web 应用
-          flutter build web \
-            --release \
-            --web-renderer canvaskit \
-            --dart-define=APP_VERSION="$VERSION" \
-            --dart-define=TAG_NAME="$TAG_NAME" \
-            --base-href /
+          echo "Building for tag: $TAG_NAME"
+          echo "Version: $VERSION"
+          
+          # 检查 Flutter 版本
+          echo "Flutter version info:"
+          flutter --version
+          
+          # 尝试不同的构建命令
+          echo "Building Flutter web application..."
+          
+          # 方法1：先尝试标准构建
+          if flutter build web --help | grep -q "web-renderer"; then
+            echo "Using --web-renderer parameter"
+            flutter build web \
+              --release \
+              --web-renderer canvaskit \
+              --dart-define=APP_VERSION="$VERSION" \
+              --dart-define=TAG_NAME="$TAG_NAME" \
+              --base-href /
+          else
+            echo "Using --web-renderer=canvaskit parameter (alternative format)"
+            flutter build web \
+              --release \
+              --web-renderer=canvaskit \
+              --dart-define=APP_VERSION="$VERSION" \
+              --dart-define=TAG_NAME="$TAG_NAME" \
+              --base-href /
+          fi
+          
+          echo "Build completed successfully"
+          
+          # 显示构建结果
+          echo "Build output:"
+          ls -la build/web/
+          
+          # 检查构建文件
+          if [ ! -f "build/web/index.html" ]; then
+            echo "Error: index.html not found in build/web/"
+            exit 1
+          fi
+          
+          echo "Build file sizes:"
+          du -sh build/web/*
       
-      - uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./example/build/web
           publish_branch: gh-pages
-          commit_message: "Deploy Flutter Web ${{ github.ref_name }} from example directory"
+          keep_files: false
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: "Deploy Flutter Web ${{ github.ref_name }}"
