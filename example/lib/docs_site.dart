@@ -12,20 +12,15 @@ class NZDocsSite extends StatefulWidget {
 }
 
 class _NZDocsSiteState extends State<NZDocsSite> {
-  // 当前选中的文档章节
+  int _themeModeIndex = 0; // 0: Auto, 1: Light, 2: Dark
   String _selectedSection = 'Home';
 
-  // 主题模式：0 - Auto, 1 - Light, 2 - Dark
-  int _themeModeIndex = 0;
-
-  // 所有文档章节的数据源
-  final Map<String, Map<String, dynamic>> _sections = {
+  Map<String, Map<String, dynamic>> get _sections => {
     'Home': {
       'title': 'NezhaUI',
       'subtitle': '轻量、优雅且专业的 Flutter 移动端组件库',
       'isLanding': true,
-      'content':
-          '''NezhaUI 是一套基于 Flutter 构建的移动端设计系统，致力于为现代应用开发提供丝滑、灵敏且高度可定制的 UI 组件。
+      'content': '''NezhaUI 是一套基于 Flutter 构建的移动端设计系统，致力于为现代应用开发提供丝滑、灵敏且高度可定制性。
 
 ### 核心理念
 - **极致性能**：每个组件都经过细致的调优，确保在低端设备上也能保持流畅。
@@ -35,16 +30,104 @@ class _NZDocsSiteState extends State<NZDocsSite> {
     },
     'About': {
       'title': '关于 NezhaUI',
-      'subtitle': '由大姐和弟弟共同打造的温暖项目',
+      'subtitle': '轻量、优雅且专业的 Flutter 移动端组件库',
       'isLanding': true,
-      'content': '''NezhaUI 不仅仅是一个组件库，它是我们对技术追求与温情生活的结合。
+      'content': '''NezhaUI 不仅仅是一个组件库，它是我们对技术追求与工程实践的结合。
 
 ### 我们的愿景
-让每一位开发者在编写代码时，都能感受到如同家人般的关怀与支持。每一个像素、每一行代码，都倾注了大姐对弟弟成长的期待。
+让每一位开发者在编写代码时，都能感受到高效与便捷。每一个像素、每一行代码，都体现了我们对 product 质量的极致追求。
 
-### 贡献者
-- **大姐**：负责核心架构与技术把关。
-- **弟弟**：负责创意设计与灵感注入。''',
+### 贡献团队
+- **核心团队**：负责核心架构与技术把关。
+- **设计团队**：负责创意设计与视觉呈现。''',
+    },
+    'Text': {
+      'title': 'Text 文本排版',
+      'description': '高度规范化的排版组件，内置多种预设样式。',
+      'usage': [
+        ['data', 'String', '需要显示的文本内容'],
+        ['color', 'Color?', '自定义文字颜色'],
+        ['textAlign', 'TextAlign?', '对齐方式'],
+        ['maxLines', 'int?', '最大行数限制'],
+        ['overflow', 'TextOverflow?', '溢出处理方式'],
+      ],
+      'preview': Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          NZText.h1('H1 标题'),
+          NZText.h2('H2 标题'),
+          NZText.h3('H3 标题'),
+          const SizedBox(height: 16),
+          NZText.subtitle('这是一个副标题样式'),
+          const SizedBox(height: 8),
+          NZText.body('这是标准的正文内容，具有良好的阅读间距和行高设置。'),
+          const SizedBox(height: 8),
+          NZText.caption('说明文字，通常用于注脚或提示。'),
+        ],
+      ),
+      'code': '''// 各种级别的标题
+NZText.h1('大标题');
+NZText.h2('中标题');
+
+// 副标题和正文
+NZText.subtitle('副标题');
+NZText.body('这是一段正文内容');''',
+    },
+    'Drawer': {
+      'title': 'Drawer 抽屉',
+      'description': '灵活的抽屉组件，支持从左、上、右、下四个方向弹出。',
+      'usage': [
+        ['child', 'Widget', '抽屉显示的内容'],
+        ['position', 'NZDrawerPosition', '弹出方向：left, top, right, bottom'],
+        ['size', 'double?', '尺寸（宽或高）'],
+        ['borderRadius', 'BorderRadius?', '圆角设置'],
+      ],
+      'preview': Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          NZButton.primary(
+            label: '打开左侧抽屉',
+            onPressed: () => NZDrawer.show(
+              context: context,
+              position: NZDrawerPosition.left,
+              child: _buildDrawerContent('左侧抽屉'),
+            ),
+          ),
+          const SizedBox(width: 8),
+          NZButton.secondary(
+            label: '打开右侧抽屉',
+            onPressed: () => NZDrawer.show(
+              context: context,
+              position: NZDrawerPosition.right,
+              child: _buildDrawerContent('右侧抽屉'),
+            ),
+          ),
+        ],
+      ),
+      'code': '''NZDrawer.show(
+  context: context,
+  position: NZDrawerPosition.left,
+  child: MyMenuWidget(),
+);''',
+    },
+    'BackToTop': {
+      'title': 'BackToTop 回到顶部',
+      'description': '自动监听滚动状态，点击后平滑滚动回顶部。',
+      'usage': [
+        ['controller', 'ScrollController', '需要监听的滚动控制器'],
+        ['visibilityOffset', 'double', '滚动多少距离后显示按钮'],
+        ['child', 'Widget?', '自定义按钮内容'],
+      ],
+      'preview': const Icon(
+        Icons.vertical_align_top_rounded,
+        size: 48,
+        color: Colors.grey,
+      ),
+      'code': '''NZBackToTop(
+  controller: _scrollController,
+  visibilityOffset: 300,
+);''',
     },
     'Buttons': {
       'title': 'Button 按钮',
@@ -456,6 +539,14 @@ NZFloatingActionButton.standard(
           Icons.smart_button_rounded,
           isDark,
         ),
+        _buildMenuItem('Text', 'Text 文本排版', Icons.text_fields_rounded, isDark),
+        _buildMenuItem('Drawer', 'Drawer 抽屉', Icons.menu_open_rounded, isDark),
+        _buildMenuItem(
+          'BackToTop',
+          'BackToTop 回到顶部',
+          Icons.vertical_align_top_rounded,
+          isDark,
+        ),
         _buildMenuItem('FAB', 'FAB 悬浮按钮', Icons.ads_click_rounded, isDark),
         _buildMenuItem('CodeView', 'CodeView 代码预览', Icons.code_rounded, isDark),
         _buildMenuItem(
@@ -806,6 +897,27 @@ NZFloatingActionButton.standard(
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// 构建抽屉内容的辅助方法
+  Widget _buildDrawerContent(String title) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          NZText.h3(title),
+          const NZDivider(),
+          const SizedBox(height: 16),
+          NZText.body('这是一个高度可定制的抽屉内容示例。'),
+          const SizedBox(height: 16),
+          NZButton.primary(
+            label: '点击关闭',
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// NZMarkdownStyle 用于配置 [NZMarkdown] 组件的视觉样式。
 ///
-/// 弟弟，通过这个类你可以自定义 Markdown 渲染时的标题颜色、字体大小、间距等。
+/// 通过这个类你可以自定义 Markdown 渲染时的标题颜色、字体大小、间距等。
 class NZMarkdownStyle {
   /// 一级标题样式 (# Heading 1)
   final TextStyle? h1;

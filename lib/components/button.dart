@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/theme/colors.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /// NZButton 样式类型
 enum NZButtonStyle {
@@ -412,9 +411,6 @@ class NZImageButton extends StatelessWidget {
   final double opacity;
   final bool block;
 
-  /// 跳转链接 (如果提供，点击时将尝试打开该 URL)
-  final String? url;
-
   /// 按钮背景颜色 (如果不提供，则显示图片本身)
   final Color? color;
 
@@ -434,37 +430,7 @@ class NZImageButton extends StatelessWidget {
     this.opacity = 0.8,
     this.color,
     this.foregroundColor,
-    this.url,
-  });
-
-  /// 快速创建 GitHub 按钮
-  factory NZImageButton.github({
-    required String githubUrl,
-    double height = 48.0,
-    double? width,
-    String? label = 'GitHub',
-  }) {
-    return NZImageButton(
-      image: const AssetImage('assets/example/assets/github.png'),
-      url: githubUrl,
-      height: height,
-      width: width,
-      label: label,
-      opacity: 1.0,
-    );
-  }
-
-  Future<void> _handleTap() async {
-    if (onPressed != null) {
-      onPressed!();
-    }
-    if (url != null) {
-      final Uri uri = Uri.parse(url!);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      }
-    }
-  }
+  }) : assert(child != null || label != null, '必须提供 child 或 label');
 
   @override
   Widget build(BuildContext context) {
@@ -476,7 +442,7 @@ class NZImageButton extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         color: color ?? Colors.transparent,
         child: InkWell(
-          onTap: _handleTap,
+          onTap: onPressed,
           splashColor: (foregroundColor ?? Colors.white).withValues(alpha: 0.2),
           highlightColor: (foregroundColor ?? Colors.white).withValues(
             alpha: 0.1,
@@ -493,17 +459,16 @@ class NZImageButton extends StatelessWidget {
                   ),
                 ),
               ),
-              if (child != null || label != null)
-                Center(
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(
-                      color: foregroundColor ?? Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    child: child ?? Text(label!),
+              Center(
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    color: foregroundColor ?? Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
+                  child: child ?? Text(label!),
                 ),
+              ),
             ],
           ),
         ),

@@ -54,6 +54,18 @@ class NZText extends StatelessWidget {
         ),
       );
 
+  /// 副标题样式
+  factory NZText.subtitle(String data, {Color? color, TextAlign? textAlign}) =>
+      NZText(
+        data,
+        textAlign: textAlign,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+          color: color,
+        ),
+      );
+
   /// 正文样式 (普通)
   factory NZText.body(String data, {Color? color, TextAlign? textAlign}) =>
       NZText(
