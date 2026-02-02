@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/nezha.dart';
 import 'package:nezha_ui/components/code_view.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'docs_site.dart';
 
 void main() {
   runApp(const NezhaUIExample());
@@ -13,12 +15,12 @@ class NezhaUIExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NezhaApp(
-      title: 'NezhaUI Example',
+      title: 'NezhaUI 示例',
       theme: NZTheme.lightTheme,
       darkTheme: NZTheme.darkTheme,
       showPerformanceOverlay: kProfileMode,
       debugShowCheckedModeBanner: kDebugMode,
-      home: const HomePage(),
+      home: kIsWeb ? const NZDocsSite() : const HomePage(),
     );
   }
 }
