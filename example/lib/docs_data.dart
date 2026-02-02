@@ -908,14 +908,38 @@ NZToast.show(
         ['actions', 'List<NZPopUpAction>', '操作按钮列表'],
         ['actionsAxis', 'Axis', '按钮排列方向'],
       ],
-      preview: Column(
-        children: [
-          NZButton.primary(
-            label: '显示确认弹窗',
-            block: true,
-            onPressed: () {}, // 预览中仅展示 UI
-          ),
-        ],
+      preview: Builder(
+        builder: (context) => Column(
+          children: [
+            NZButton.primary(
+              label: '显示确认弹窗',
+              block: true,
+              onPressed: () {
+                NZPopUp.confirm(
+                  context,
+                  title: '确认提交',
+                  content: '提交后将无法修改，是否确认继续？',
+                  onConfirm: () => NZToast.show(context, message: '已确认提交'),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            NZButton.secondary(
+              label: '显示警示弹窗',
+              block: true,
+              onPressed: () {
+                NZPopUp.confirm(
+                  context,
+                  title: '删除提示',
+                  content: '确定要删除这条重要数据吗？此操作不可撤销。',
+                  confirmLabel: '删除',
+                  isDestructive: true,
+                  onConfirm: () => NZToast.show(context, message: '数据已删除'),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       content:
           'NZPopUp 遵循微信小程序的视觉设计规范，提供一致的确认和提示体验。它支持横向和纵向的按钮排列，并能自动处理圆角和边框细节。',
@@ -972,16 +996,24 @@ NZToast.show(
       usage: [
         ['items', 'List<NZDropDownMenuItem<T>>', '菜单选项列表'],
         ['value', 'T?', '当前选中的值'],
-        ['onChanged', 'ValueChanged<T?>?', '选项改变时的回调'],
+        ['onChanged', 'ValueChanged<T?>?', '选中项改变时的回调'],
         ['hint', 'String', '占位文本（默认“请选择”）'],
+        ['type', 'NZDropDownMenuType', '样式类型（outline, filled, borderless）'],
+        ['size', 'NZDropDownMenuSize', '尺寸（small, medium, large）'],
         ['isExpanded', 'bool', '是否强制占据父容器宽度'],
-        ['activeColor', 'Color?', '激活状态的颜色（默认 NZColor.nezhaPrimary）'],
+        ['activeColor', 'Color?', '激活状态的颜色'],
       ],
       preview: StatefulBuilder(
         builder: (context, setState) {
           String? selectedValue;
+          String? selectedValue2;
+          String? selectedValue3;
+
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              NZText.caption('基础用法 (Medium Outline)'),
+              const SizedBox(height: 8),
               NZDropDownMenu<String>(
                 value: selectedValue,
                 hint: '选择操作',
@@ -996,17 +1028,37 @@ NZToast.show(
                     label: '分享好友',
                     icon: Icons.share_outlined,
                   ),
-                  NZDropDownMenuItem(
-                    value: 'delete',
-                    label: '删除记录',
-                    icon: Icons.delete_outline_rounded,
-                  ),
                 ],
                 onChanged: (val) => setState(() => selectedValue = val),
               ),
-              const SizedBox(height: 12),
-              NZText.caption(
-                  selectedValue != null ? '已选择: $selectedValue' : '请点击上方菜单选择'),
+              const SizedBox(height: 24),
+              NZText.caption('填充样式 (Small Filled)'),
+              const SizedBox(height: 8),
+              NZDropDownMenu<String>(
+                value: selectedValue2,
+                type: NZDropDownMenuType.filled,
+                size: NZDropDownMenuSize.small,
+                hint: '排序方式',
+                items: const [
+                  NZDropDownMenuItem(value: 'new', label: '最新优先'),
+                  NZDropDownMenuItem(value: 'hot', label: '最热优先'),
+                ],
+                onChanged: (val) => setState(() => selectedValue2 = val),
+              ),
+              const SizedBox(height: 24),
+              NZText.caption('通栏展示 (Large Outline)'),
+              const SizedBox(height: 8),
+              NZDropDownMenu<String>(
+                value: selectedValue3,
+                isExpanded: true,
+                size: NZDropDownMenuSize.large,
+                hint: '选择收货地址',
+                items: const [
+                  NZDropDownMenuItem(value: 'home', label: '我的家'),
+                  NZDropDownMenuItem(value: 'company', label: '公司地址'),
+                ],
+                onChanged: (val) => setState(() => selectedValue3 = val),
+              ),
             ],
           );
         },

@@ -55,6 +55,26 @@ NZDropDownMenu<String>(
 )
 ```
 
+### 多样化样式
+
+支持 `outline` (默认)、`filled` 和 `borderless` 三种类型，以及 `small`、`medium`、`large` 三种尺寸。
+
+```dart
+// 填充样式
+NZDropDownMenu<String>(
+  type: NZDropDownMenuType.filled,
+  items: items,
+  onChanged: (val) {},
+)
+
+// 不同尺寸
+NZDropDownMenu<String>(
+  size: NZDropDownMenuSize.small,
+  items: items,
+  onChanged: (val) {},
+)
+```
+
 ## API
 
 ### NZDropDownMenu 属性
@@ -66,6 +86,14 @@ NZDropDownMenu<String>(
 | onChanged | 选项改变时的回调 | `ValueChanged<T?>?` | - |
 | hint | 占位文本 | `String` | `'请选择'` |
 | isExpanded | 是否撑满宽度 | `bool` | `false` |
+| type | 样式类型 (`outline`, `filled`, `borderless`) | `NZDropDownMenuType` | `outline` |
+| size | 尺寸 (`small`, `medium`, `large`) | `NZDropDownMenuSize` | `medium` |
+| borderRadius | 圆角半径 | `double?` | `8.0` |
+| elevation | 菜单阴影高度 | `double` | `8.0` |
+| itemHeight | 选项高度 | `double` | `48.0` |
+| menuMaxHeight | 菜单最大高度 | `double` | `300.0` |
+| icon | 右侧图标 | `IconData?` | `arrow_down` |
+| showCheckIcon | 是否显示选中打钩图标 | `bool` | `true` |
 | backgroundColor | 背景颜色 | `Color?` | `Colors.white` |
 | textColor | 文本颜色 | `Color?` | `Colors.black87` |
 | activeColor | 激活状态颜色 | `Color?` | `NZColor.nezhaPrimary` |

@@ -1004,7 +1004,16 @@ NZNavBar(
                         _buildSection(
                           'DropDownMenu 下拉菜单',
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              const Text(
+                                '基础用法 (Medium Outline)',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
                               NZDropDownMenu<String>(
                                 value: _selectedDropdownValue,
                                 hint: '点击展开菜单',
@@ -1031,16 +1040,69 @@ NZNavBar(
                                   _showMsg('选择了: $val');
                                 },
                               ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                '填充样式 (Small Filled)',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              NZDropDownMenu<String>(
+                                type: NZDropDownMenuType.filled,
+                                size: NZDropDownMenuSize.small,
+                                hint: '排序方式',
+                                items: const [
+                                  NZDropDownMenuItem(
+                                    value: 'new',
+                                    label: '最新优先',
+                                  ),
+                                  NZDropDownMenuItem(
+                                    value: 'hot',
+                                    label: '最热优先',
+                                  ),
+                                ],
+                                onChanged: (val) => _showMsg('排序: $val'),
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                '无边框样式 (Large)',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              NZDropDownMenu<String>(
+                                type: NZDropDownMenuType.borderless,
+                                size: NZDropDownMenuSize.large,
+                                hint: '选择分类',
+                                items: const [
+                                  NZDropDownMenuItem(
+                                    value: 'tech',
+                                    label: '科技资讯',
+                                    icon: Icons.computer_rounded,
+                                  ),
+                                  NZDropDownMenuItem(
+                                    value: 'life',
+                                    label: '生活百态',
+                                    icon: Icons.coffee_rounded,
+                                  ),
+                                ],
+                                onChanged: (val) => _showMsg('分类: $val'),
+                              ),
                             ],
                           ),
                           code: '''NZDropDownMenu<String>(
-  value: _selected,
-  hint: '请选择',
+  type: NZDropDownMenuType.filled,
+  size: NZDropDownMenuSize.small,
+  hint: '排序方式',
   items: const [
-    NZDropDownMenuItem(value: '1', label: '选项一', icon: Icons.star),
-    NZDropDownMenuItem(value: '2', label: '选项二', icon: Icons.settings),
+    NZDropDownMenuItem(value: 'new', label: '最新优先'),
+    NZDropDownMenuItem(value: 'hot', label: '最热优先'),
   ],
-  onChanged: (val) => setState(() => _selected = val),
+  onChanged: (val) => print(val),
 )''',
                         ),
                       ]),
