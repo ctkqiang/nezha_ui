@@ -136,13 +136,13 @@ NZFloatingActionButton.standard(
         ['style', 'NZMarkdownStyle?', '自定义样式配置，如字体大小、颜色等'],
       ],
       'preview': const NZMarkdown(
-        data: '''### 弟弟快看！
-这是大姐为你写的 **Markdown** 组件。
+        data: '''### 快速开始
+这是 NezhaUI 提供的原生 **Markdown** 渲染组件。
 - 支持 **加粗**
 - 支持 *斜体*
 - 支持 `行内代码`
 
-> 这是一个引用块，是不是很优雅？''',
+> 这是一个引用块，展示了优雅的排版效果。''',
       ),
       'code': '''NZMarkdown(
   data: """

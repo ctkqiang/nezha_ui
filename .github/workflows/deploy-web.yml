@@ -1,0 +1,47 @@
+name: Deploy Flutter Web from Example Directory
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+      
+      - run: |
+          # 进入 example 目录
+          cd example
+          
+          # 启用 Web 并安装依赖
+          flutter config --enable-web
+          flutter pub get
+          flutter clean
+          
+          # 获取标签信息
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG_NAME#v}"
+          
+          # 构建 Web 应用
+          flutter build web \
+            --release \
+            --web-renderer canvaskit \
+            --dart-define=APP_VERSION="$VERSION" \
+            --dart-define=TAG_NAME="$TAG_NAME" \
+            --base-href /
+      
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./example/build/web
+          publish_branch: gh-pages
+          commit_message: "Deploy Flutter Web ${{ github.ref_name }} from example directory"
