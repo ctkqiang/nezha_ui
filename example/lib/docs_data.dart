@@ -964,6 +964,64 @@ NZToast.show(
    icon: Icon(Icons.trending_up),
  )''',
     ),
+    NZDocSection(
+      id: 'DropDownMenu',
+      title: '下拉菜单 (DropDownMenu)',
+      icon: Icons.arrow_drop_down_circle_rounded,
+      description: '微信风格的下拉选择菜单，使用项目主色调作为强调色。',
+      usage: [
+        ['items', 'List<NZDropDownMenuItem<T>>', '菜单选项列表'],
+        ['value', 'T?', '当前选中的值'],
+        ['onChanged', 'ValueChanged<T?>?', '选项改变时的回调'],
+        ['hint', 'String', '占位文本（默认“请选择”）'],
+        ['isExpanded', 'bool', '是否强制占据父容器宽度'],
+        ['activeColor', 'Color?', '激活状态的颜色（默认 NZColor.nezhaPrimary）'],
+      ],
+      preview: StatefulBuilder(
+        builder: (context, setState) {
+          String? selectedValue;
+          return Column(
+            children: [
+              NZDropDownMenu<String>(
+                value: selectedValue,
+                hint: '选择操作',
+                items: const [
+                  NZDropDownMenuItem(
+                    value: 'edit',
+                    label: '编辑资料',
+                    icon: Icons.edit_outlined,
+                  ),
+                  NZDropDownMenuItem(
+                    value: 'share',
+                    label: '分享好友',
+                    icon: Icons.share_outlined,
+                  ),
+                  NZDropDownMenuItem(
+                    value: 'delete',
+                    label: '删除记录',
+                    icon: Icons.delete_outline_rounded,
+                  ),
+                ],
+                onChanged: (val) => setState(() => selectedValue = val),
+              ),
+              const SizedBox(height: 12),
+              NZText.caption(
+                  selectedValue != null ? '已选择: $selectedValue' : '请点击上方菜单选择'),
+            ],
+          );
+        },
+      ),
+      content: 'NZDropDownMenu 模拟了微信原生的下拉交互体验，通过 Overlay 实现浮层显示，确保不会被父容器裁剪。',
+      code: '''NZDropDownMenu<String>(
+  value: _selected,
+  hint: '请选择',
+  items: const [
+    NZDropDownMenuItem(value: '1', label: '选项一', icon: Icons.star),
+    NZDropDownMenuItem(value: '2', label: '选项二', icon: Icons.settings),
+  ],
+  onChanged: (val) => setState(() => _selected = val),
+)''',
+    ),
   ];
 
   static Widget _buildDrawerContent(BuildContext context, String title) {

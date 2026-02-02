@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/nezha.dart';
-import 'package:nezha_ui/components/code_view.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'docs_site.dart';
 
 void main() {
@@ -42,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   bool _isSaving = false;
   bool _showDraggable = false;
   double _appBarOpacity = 0.0;
+  String? _selectedDropdownValue;
 
   @override
   void initState() {
@@ -758,7 +757,7 @@ Future.delayed(Duration(seconds: 2), () => NZToast.hide());''',
                                 title: '搜索组件',
                                 onSearch: () {},
                                 onSearchChanged: (val) =>
-                                    print('Searching: $val'),
+                                    debugPrint('Searching: $val'),
                               ),
                               const SizedBox(height: 24),
                               const Text(
@@ -1001,6 +1000,48 @@ NZNavBar(
   content: '提交后将无法修改，是否确认继续？',
   onConfirm: () => print('已确认'),
 );''',
+                        ),
+                        _buildSection(
+                          'DropDownMenu 下拉菜单',
+                          Column(
+                            children: [
+                              NZDropDownMenu<String>(
+                                value: _selectedDropdownValue,
+                                hint: '点击展开菜单',
+                                isExpanded: true,
+                                items: const [
+                                  NZDropDownMenuItem(
+                                    value: 'option1',
+                                    label: '查看个人资料',
+                                    icon: Icons.person_outline_rounded,
+                                  ),
+                                  NZDropDownMenuItem(
+                                    value: 'option2',
+                                    label: '修改密码',
+                                    icon: Icons.lock_outline_rounded,
+                                  ),
+                                  NZDropDownMenuItem(
+                                    value: 'option3',
+                                    label: '退出登录',
+                                    icon: Icons.logout_rounded,
+                                  ),
+                                ],
+                                onChanged: (val) {
+                                  setState(() => _selectedDropdownValue = val);
+                                  _showMsg('选择了: $val');
+                                },
+                              ),
+                            ],
+                          ),
+                          code: '''NZDropDownMenu<String>(
+  value: _selected,
+  hint: '请选择',
+  items: const [
+    NZDropDownMenuItem(value: '1', label: '选项一', icon: Icons.star),
+    NZDropDownMenuItem(value: '2', label: '选项二', icon: Icons.settings),
+  ],
+  onChanged: (val) => setState(() => _selected = val),
+)''',
                         ),
                       ]),
                     ),

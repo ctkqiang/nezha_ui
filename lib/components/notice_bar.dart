@@ -212,19 +212,54 @@ class _NZNoticeBarState extends State<NZNoticeBar>
                       },
                     )
                   : AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 600),
                       transitionBuilder: (child, animation) {
                         return SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0, 1),
-                            end: Offset.zero,
-                          ).animate(animation),
+                          position:
+                              Tween<Offset>(
+                                begin: const Offset(0, 1),
+                                end: Offset.zero,
+                              ).animate(
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeOutQuart,
+                                ),
+                              ),
                           child: FadeTransition(
                             opacity: animation,
                             child: child,
                           ),
                         );
                       },
+                      layoutBuilder:
+                          (
+                            Widget? currentChild,
+                            List<Widget> previousChildren,
+                          ) {
+                            return Stack(
+                              alignment: Alignment.centerLeft,
+                              children: [
+                                ...previousChildren.map((child) {
+                                  if (child is! FadeTransition) return child;
+                                  final animation = child.opacity;
+                                  return SlideTransition(
+                                    position:
+                                        Tween<Offset>(
+                                          begin: Offset.zero,
+                                          end: const Offset(0, -1),
+                                        ).animate(
+                                          CurvedAnimation(
+                                            parent: animation,
+                                            curve: Curves.easeInQuart,
+                                          ),
+                                        ),
+                                    child: child,
+                                  );
+                                }),
+                                if (currentChild != null) currentChild,
+                              ],
+                            );
+                          },
                       child: Container(
                         key: ValueKey<int>(_currentIndex),
                         alignment: Alignment.centerLeft,
