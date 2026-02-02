@@ -23,7 +23,8 @@ jobs:
       - name: Build Web
         run: |
           cd example
-          flutter build web --release --base-href /
+          # 修正参数：在 Wasm 模式下不需要显式 --web-renderer，或者参数名应为 --renderer
+          flutter build web --release --wasm --base-href /
           
           # 强力修正 base href 以适配自定义域名
           sed -i 's/<base href=".*">/<base href="\/">/g' build/web/index.html
