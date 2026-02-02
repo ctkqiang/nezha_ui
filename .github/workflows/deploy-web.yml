@@ -76,6 +76,12 @@ jobs:
           echo "4. Full build test:"
           flutter build web --release --base-href /nezha_ui/
           
+          echo "5. Fix index.html base href (Double check):"
+          sed -i 's/<base href="\$FLUTTER_BASE_HREF">/<base href="\/nezha_ui\/">/g' build/web/index.html || echo "Sed failed or already set"
+          
+          echo "6. Add .nojekyll file:"
+          touch build/web/.nojekyll
+          
           echo ""
           echo "Build result:"
           if [ -d "build/web" ]; then
