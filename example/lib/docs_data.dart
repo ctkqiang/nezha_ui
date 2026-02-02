@@ -32,6 +32,93 @@ class NZDocSection {
 class NZDocContent {
   static List<NZDocSection> getSections(BuildContext context) => [
     NZDocSection(
+      id: 'NezhaApp',
+      title: '应用入口 (NezhaApp)',
+      icon: Icons.apps_rounded,
+      description: '基于 Material 设计语言的定制化应用入口组件，深度集成 NezhaUI 主题系统。',
+      usage: [
+        ['home', 'Widget?', '应用程序的主页入口'],
+        ['theme', 'ThemeData?', '亮色模式下的主题配置'],
+        ['darkTheme', 'ThemeData?', '暗色模式下的主题配置'],
+        [
+          'themeMode',
+          'ThemeMode',
+          '主题切换模式：system (跟随系统), light (亮色), dark (暗色)',
+        ],
+        ['title', 'String', '应用程序在操作系统任务管理器中显示的标题'],
+        ['routes', 'Map<String, WidgetBuilder>?', '应用程序的静态路由表'],
+        ['initialRoute', 'String?', '应用程序启动时的初始路由'],
+        ['onGenerateRoute', 'RouteFactory?', '动态生成路由的回调函数'],
+        ['navigatorObservers', 'List<NavigatorObserver>', '用于监听导航事件的观察者列表'],
+        [
+          'localizationsDelegates',
+          'Iterable<LocalizationsDelegate>?',
+          '国际化资源代理列表',
+        ],
+        ['supportedLocales', 'Iterable<Locale>', '应用程序支持的语言区域列表'],
+        ['debugShowCheckedModeBanner', 'bool', '是否在右上角显示 "Debug" 标志'],
+        ['builder', 'TransitionBuilder?', '用于在导航器之上构建组件的回调（如全局 Loading）'],
+      ],
+      preview: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.grey.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+        ),
+        child: Column(
+          children: [
+            const Icon(
+              Icons.auto_awesome_motion_rounded,
+              size: 48,
+              color: NZColor.nezhaPrimary,
+            ),
+            const SizedBox(height: 12),
+            NZText.body('NezhaApp 是应用程序的灵魂容器。'),
+            const SizedBox(height: 8),
+            NZText.caption('它统一管理了主题、路由、国际化以及全局交互。'),
+          ],
+        ),
+      ),
+      content:
+          'NezhaApp 是 NezhaUI 的核心入口组件。它不仅封装了标准的 MaterialApp 功能，还自动处理了 NezhaUI 特有的颜色系统和响应式布局适配。通过使用 NezhaApp，你可以轻松实现全局主题切换、精细的 UI 控制以及丝滑的英雄 (Hero) 动画支持。',
+      code: '''import 'package:flutter/material.dart';
+import 'package:nezha_ui/nezha.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return NezhaApp(
+      title: 'Nezha UI Demo',
+      // 配置亮色主题
+      theme: NZTheme.lightTheme,
+      // 配置暗色主题
+      darkTheme: NZTheme.darkTheme,
+      // 设置主题模式为跟随系统
+      themeMode: ThemeMode.system,
+      // 应用程序主页
+      home: const MyHomePage(),
+      // 路由配置
+      routes: {
+        '/settings': (context) => const SettingsPage(),
+      },
+      // 国际化配置
+      supportedLocales: const [
+        Locale('zh', 'CN'),
+        Locale('en', 'US'),
+      ],
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}''',
+    ),
+    NZDocSection(
       id: 'Home',
       title: '哪吒 UI (NezhaUI)',
       subtitle: '为 Flutter 开发者提供优雅且精准的开发体验。',
@@ -43,6 +130,9 @@ class NZDocContent {
 - **流畅交互**：每个组件都经过细致的性能调优，确保动画过渡自然顺滑。
 - **品牌定制**：深度集成 `NZTheme` 系统，支持无缝切换主题与品牌色。
 - **生产就绪**：提供包括按钮、抽屉、下拉刷新在内的全套核心组件。
+
+### 为什么选择哪吒 UI？
+我们不仅仅是提供组件，更是在提供一套完整的工程解决方案。所有的组件都遵循统一的设计语言，确保你的应用在视觉和交互上保持高度一致。
 
 ### 快速开始
 1. **安装依赖**：

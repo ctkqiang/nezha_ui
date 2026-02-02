@@ -24,36 +24,108 @@ class _NZDocsSiteState extends State<NZDocsSite> {
       (s) => s.id == _selectedSectionId,
     );
     final githubUrl = sections.firstWhere((s) => s.id == 'Home').github;
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Theme(
       data: theme,
       child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: isDark
             ? const Color(0xFF111111)
             : const Color(0xFFFAFAFA),
+        drawer: MediaQuery.of(context).size.width < 900
+            ? NZDrawer(
+                position: NZDrawerPosition.left,
+                child: _Sidebar(
+                  isDark: isDark,
+                  sections: sections,
+                  selectedId: _selectedSectionId,
+                  onSectionSelected: (id) {
+                    setState(() => _selectedSectionId = id);
+                    Navigator.pop(context);
+                  },
+                ),
+              )
+            : null,
+        floatingActionButton: NZFloatingActionButton(
+          onPressed: () {},
+          backgroundColor: NZColor.nezhaPrimary,
+          type: NZFloatingActionButtonType.icon,
+          icon: const Icon(Icons.feedback_rounded, color: Colors.white),
+        ),
         body: SelectionArea(
           child: Column(
             children: [
-              _Navbar(
-                isDark: isDark,
-                selectedId: _selectedSectionId,
-                onSectionSelected: (id) =>
-                    setState(() => _selectedSectionId = id),
-                themeModeIndex: _themeModeIndex,
-                onThemeModeChanged: (idx) =>
-                    setState(() => _themeModeIndex = idx),
-                githubUrl: githubUrl,
+              NZNavBar.logo(
+                title: 'NezhaUI',
+                logoUrl:
+                    'https://raw.githubusercontent.com/ctkqiang/nezha_ui/master/docs/assets/banner.png',
+                backgroundColor: isDark
+                    ? const Color(0xFF111111).withValues(alpha: 0.7)
+                    : Colors.white.withValues(alpha: 0.8),
+                foregroundColor: isDark ? Colors.white : Colors.black,
+                actions: [
+                  if (MediaQuery.of(context).size.width >= 900) ...[
+                    _NavLink(
+                      title: '组件库',
+                      isSelected:
+                          _selectedSectionId != 'Home' &&
+                          _selectedSectionId != 'About',
+                      isDark: isDark,
+                      onTap: () => setState(() => _selectedSectionId = 'Text'),
+                    ),
+                    _NavLink(
+                      title: '设计规范',
+                      isSelected: false,
+                      isDark: isDark,
+                      onTap: () {},
+                    ),
+                  ],
+                  _ThemeToggle(
+                    isDark: isDark,
+                    currentIndex: _themeModeIndex,
+                    onChanged: (idx) => setState(() => _themeModeIndex = idx),
+                  ),
+                  const SizedBox(width: 12),
+                  if (githubUrl != null)
+                    IconButton(
+                      icon: const Icon(Icons.code_rounded),
+                      onPressed: () async {
+                        final url = Uri.parse(githubUrl);
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
+                      },
+                    ),
+                ],
+                leading: MediaQuery.of(context).size.width < 900
+                    ? IconButton(
+                        icon: const Icon(Icons.menu_rounded),
+                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
+                      )
+                    : null,
               ),
               Expanded(
                 child: Row(
                   children: [
-                    _Sidebar(
-                      isDark: isDark,
-                      sections: sections,
-                      selectedId: _selectedSectionId,
-                      onSectionSelected: (id) =>
-                          setState(() => _selectedSectionId = id),
-                    ),
+                    if (MediaQuery.of(context).size.width >= 900)
+                      _Sidebar(
+                        isDark: isDark,
+                        sections: sections,
+                        selectedId: _selectedSectionId,
+                        onSectionSelected: (id) =>
+                            setState(() => _selectedSectionId = id),
+                      ),
+                    if (MediaQuery.of(context).size.width >= 900)
+                      Container(
+                        width: 1,
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.05)
+                            : const Color(0xFFF0F0F0),
+                      ),
                     Expanded(
                       child: Container(
                         color: isDark ? const Color(0xFF111111) : Colors.white,
@@ -85,108 +157,6 @@ class _NZDocsSiteState extends State<NZDocsSite> {
       return MediaQuery.of(context).platformBrightness == Brightness.dark;
     }
     return _themeModeIndex == 2;
-  }
-}
-
-class _Navbar extends StatelessWidget {
-  final bool isDark;
-  final String selectedId;
-  final Function(String) onSectionSelected;
-  final int themeModeIndex;
-  final Function(int) onThemeModeChanged;
-  final String? githubUrl;
-
-  const _Navbar({
-    required this.isDark,
-    required this.selectedId,
-    required this.onSectionSelected,
-    required this.themeModeIndex,
-    required this.onThemeModeChanged,
-    this.githubUrl,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          height: 72,
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          decoration: BoxDecoration(
-            color: isDark
-                ? const Color(0xFF111111).withValues(alpha: 0.7)
-                : Colors.white.withValues(alpha: 0.8),
-            border: Border(
-              bottom: BorderSide(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : const Color(0xFFF0F0F0),
-                width: 1,
-              ),
-            ),
-          ),
-          child: Row(
-            children: [
-              _Logo(isDark: isDark, githubUrl: githubUrl),
-              const SizedBox(width: 80),
-              _NavLink(
-                title: '组件库',
-                isSelected: selectedId != 'Home' && selectedId != 'About',
-                isDark: isDark,
-                onTap: () => onSectionSelected('Text'),
-              ),
-              _NavLink(
-                title: '设计规范',
-                isSelected: false,
-                isDark: isDark,
-                onTap: () {},
-              ),
-              _NavLink(
-                title: '开发指南',
-                isSelected: false,
-                isDark: isDark,
-                onTap: () {},
-              ),
-              const Spacer(),
-              _ThemeToggle(
-                isDark: isDark,
-                currentIndex: themeModeIndex,
-                onChanged: onThemeModeChanged,
-              ),
-              const SizedBox(width: 24),
-              _ActionButton(
-                icon: Icons.language_rounded,
-                isDark: isDark,
-                onTap: () {},
-              ),
-              const SizedBox(width: 8),
-              _ActionButton(
-                icon: Icons.search_rounded,
-                isDark: isDark,
-                onTap: () {},
-              ),
-              if (githubUrl != null) ...[
-                const SizedBox(width: 8),
-                _ActionButton(
-                  icon: Icons.code_rounded,
-                  isDark: isDark,
-                  onTap: () async {
-                    final url = Uri.parse(githubUrl!);
-                    if (await canLaunchUrl(url)) {
-                      await launchUrl(
-                        url,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    }
-                  },
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 
@@ -558,47 +528,72 @@ class _SidebarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 6),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: isSelected
                   ? (isDark
-                        ? NZColor.nezhaPrimary.withValues(alpha: 0.1)
-                        : NZColor.nezhaPrimary.withValues(alpha: 0.05))
+                        ? NZColor.nezhaPrimary.withValues(alpha: 0.15)
+                        : NZColor.nezhaPrimary.withValues(alpha: 0.08))
                   : Colors.transparent,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
+              border: isSelected
+                  ? Border.all(
+                      color: NZColor.nezhaPrimary.withValues(alpha: 0.1),
+                    )
+                  : null,
             ),
             child: Row(
               children: [
-                Icon(
-                  section.icon,
-                  size: 18,
-                  color: isSelected
-                      ? NZColor.nezhaPrimary
-                      : (isDark ? Colors.white38 : Colors.black38),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? NZColor.nezhaPrimary.withValues(alpha: 0.1)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    section.icon,
+                    size: 18,
+                    color: isSelected
+                        ? NZColor.nezhaPrimary
+                        : (isDark ? Colors.white24 : Colors.black26),
+                  ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     section.title,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: isSelected
-                          ? FontWeight.w600
+                          ? FontWeight.w700
                           : FontWeight.w500,
                       color: isSelected
                           ? NZColor.nezhaPrimary
                           : (isDark ? Colors.white70 : Colors.black87),
+                      letterSpacing: isSelected ? 0.2 : 0,
                     ),
                   ),
                 ),
+                if (isSelected)
+                  Container(
+                    width: 4,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: NZColor.nezhaPrimary,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -621,65 +616,94 @@ class _LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 900;
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 120),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 24 : 80,
+        vertical: isMobile ? 60 : 120,
+      ),
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 800),
+          constraints: const BoxConstraints(maxWidth: 1000),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Version Badge
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
+                  horizontal: 14,
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
                   color: NZColor.nezhaPrimary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  'v0.1.0-alpha',
-                  style: TextStyle(
-                    color: NZColor.nezhaPrimary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                  border: Border.all(
+                    color: NZColor.nezhaPrimary.withValues(alpha: 0.2),
                   ),
                 ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: NZColor.nezhaPrimary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    NZText.caption(
+                      'v1.0.0 Stable',
+                      color: NZColor.nezhaPrimary,
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 32),
-              Text(
-                section.title,
-                style: TextStyle(
-                  fontSize: 56,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -2,
+              const SizedBox(height: 40),
+
+              // Hero Title
+              ShaderMask(
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: [
+                    isDark ? Colors.white : Colors.black,
+                    isDark
+                        ? Colors.white.withValues(alpha: 0.6)
+                        : Colors.black.withValues(alpha: 0.5),
+                  ],
+                ).createShader(bounds),
+                child: NZText.h1(
+                  section.title,
                   color: isDark ? Colors.white : Colors.black,
                 ),
               ),
-              if (section.subtitle != null) ...[
-                const SizedBox(height: 24),
-                Text(
-                  section.subtitle!,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w400,
-                    color: isDark ? Colors.white60 : Colors.black54,
-                    height: 1.4,
+
+              const SizedBox(height: 32),
+
+              // Subtitle
+              if (section.subtitle != null)
+                Container(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: NZText.subtitle(
+                    section.subtitle!,
+                    color: isDark ? Colors.white70 : Colors.black54,
                   ),
                 ),
-              ],
-              const SizedBox(height: 64),
-              NZMarkdown(data: section.content),
-              const SizedBox(height: 64),
-              Row(
+
+              const SizedBox(height: 60),
+
+              // CTA Buttons
+              Wrap(
+                spacing: 16,
+                runSpacing: 16,
                 children: [
                   NZButton.primary(
                     label: '立即开始',
                     onPressed: onGetStarted,
-                    width: 160,
+                    icon: const Icon(Icons.rocket_launch_rounded),
+                    block: isMobile,
                   ),
-                  const SizedBox(width: 16),
                   NZButton.outline(
                     label: 'GitHub 仓库',
                     onPressed: () async {
@@ -693,106 +717,305 @@ class _LandingPage extends StatelessWidget {
                         }
                       }
                     },
-                    width: 160,
-                    icon: const Icon(Icons.code_rounded, size: 18),
+                    icon: const Icon(Icons.code_rounded),
+                    block: isMobile,
                   ),
                 ],
               ),
+              SizedBox(height: isMobile ? 60 : 100),
+
+              // Features Grid
+              const NZDivider(height: 1),
+              SizedBox(height: isMobile ? 60 : 80),
+              NZText.h2('核心优势'),
+              const SizedBox(height: 48),
+              _buildFeatureGrid(context),
+              SizedBox(height: isMobile ? 60 : 100),
+
+              // Markdown Content
+              NZMarkdown(data: section.content),
+              SizedBox(height: isMobile ? 60 : 100),
             ],
           ),
         ),
       ),
     );
   }
+
+  Widget _buildFeatureGrid(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 900;
+    final features = [
+      ('性能卓越', '基于原生渲染，确保丝滑流畅的交互体验。', Icons.bolt_rounded),
+      ('主题定制', '强大的主题系统，支持深浅模式一键切换。', Icons.palette_rounded),
+      ('开箱即用', '丰富的组件库，满足各种业务开发需求。', Icons.auto_awesome_rounded),
+      ('文档详尽', '完善的 API 文档和代码示例。', Icons.menu_book_rounded),
+    ];
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: isMobile ? 1 : 2,
+        crossAxisSpacing: 32,
+        mainAxisSpacing: 32,
+        childAspectRatio: isMobile ? 2.8 : 2.5,
+      ),
+      itemCount: features.length,
+      itemBuilder: (context, index) {
+        final f = features[index];
+        return Container(
+          padding: EdgeInsets.all(isMobile ? 20 : 32),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1A1A1A) : Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : const Color(0xFFF0F0F0),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
+                blurRadius: 40,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: NZColor.nezhaPrimary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(f.$3, color: NZColor.nezhaPrimary, size: 28),
+              ),
+              const SizedBox(width: 20),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    NZText.label(
+                      f.$1,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                    const SizedBox(height: 6),
+                    NZText.caption(
+                      f.$2,
+                      color: isDark ? Colors.white38 : Colors.black45,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
-class _DocContentView extends StatelessWidget {
+class _DocContentView extends StatefulWidget {
   final NZDocSection section;
   final bool isDark;
 
   const _DocContentView({required this.section, required this.isDark});
 
   @override
+  State<_DocContentView> createState() => _DocContentViewState();
+}
+
+class _DocContentViewState extends State<_DocContentView> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 64),
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 900),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      section.title,
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -1,
-                        color: isDark ? Colors.white : Colors.black,
+    final isMobile = MediaQuery.of(context).size.width < 900;
+
+    return Stack(
+      children: [
+        NZPullToRefresh(
+          onRefresh: () async {
+            await Future.delayed(const Duration(seconds: 1));
+          },
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 20 : 80,
+              vertical: isMobile ? 32 : 64,
+            ),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title and Description
+                    if (isMobile)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: NZText.h1(
+                                  widget.section.title,
+                                  color: widget.isDark
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                              if (widget.section.github != null)
+                                IconButton(
+                                  icon: const Icon(Icons.code_rounded),
+                                  onPressed: () async {
+                                    final url = Uri.parse(
+                                      widget.section.github!,
+                                    );
+                                    if (await canLaunchUrl(url)) {
+                                      await launchUrl(
+                                        url,
+                                        mode: LaunchMode.externalApplication,
+                                      );
+                                    }
+                                  },
+                                ),
+                            ],
+                          ),
+                          if (widget.section.description != null) ...[
+                            const SizedBox(height: 16),
+                            NZText.body(
+                              widget.section.description!,
+                              color: widget.isDark
+                                  ? Colors.white70
+                                  : Colors.black54,
+                            ),
+                          ],
+                        ],
+                      )
+                    else
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                NZText.h1(
+                                  widget.section.title,
+                                  color: widget.isDark
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                                if (widget.section.description != null) ...[
+                                  const SizedBox(height: 16),
+                                  NZText.body(
+                                    widget.section.description!,
+                                    color: widget.isDark
+                                        ? Colors.white70
+                                        : Colors.black54,
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          if (widget.section.github != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: IconButton(
+                                icon: const Icon(Icons.code_rounded),
+                                onPressed: () async {
+                                  final url = Uri.parse(widget.section.github!);
+                                  if (await canLaunchUrl(url)) {
+                                    await launchUrl(
+                                      url,
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                        ],
                       ),
-                    ),
-                  ),
-                  if (section.github != null)
-                    _ActionButton(
-                      icon: Icons.code_rounded,
-                      isDark: isDark,
-                      onTap: () async {
-                        final url = Uri.parse(section.github!);
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(
-                            url,
-                            mode: LaunchMode.externalApplication,
-                          );
-                        }
-                      },
-                    ),
-                ],
+
+                    SizedBox(height: isMobile ? 40 : 80),
+
+                    // Preview Section
+                    if (widget.section.preview != null) ...[
+                      const _SectionHeader(title: '组件预览'),
+                      const SizedBox(height: 32),
+                      _PreviewCard(
+                        child: widget.section.preview!,
+                        isDark: widget.isDark,
+                        isMobile: isMobile,
+                      ),
+                      SizedBox(height: isMobile ? 40 : 80),
+                    ],
+
+                    // Usage/API Table
+                    if (widget.section.usage != null) ...[
+                      const _SectionHeader(title: '参数说明'),
+                      const SizedBox(height: 32),
+                      _UsageTable(
+                        usage: widget.section.usage!,
+                        isDark: widget.isDark,
+                      ),
+                      SizedBox(height: isMobile ? 40 : 80),
+                    ],
+
+                    // Code View
+                    if (widget.section.code != null) ...[
+                      const _SectionHeader(title: '代码实现'),
+                      const SizedBox(height: 32),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(
+                                alpha: widget.isDark ? 0.3 : 0.05,
+                              ),
+                              blurRadius: 30,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: NZCodeView(
+                            code: widget.section.code!,
+                            theme: widget.isDark
+                                ? NZCodeTheme.githubDark
+                                : NZCodeTheme.githubLight,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: isMobile ? 60 : 100),
+                    ],
+                  ],
+                ),
               ),
-              if (section.description != null) ...[
-                const SizedBox(height: 16),
-                Text(
-                  section.description!,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: isDark ? Colors.white38 : Colors.black45,
-                    height: 1.6,
-                  ),
-                ),
-              ],
-              const SizedBox(height: 64),
-              if (section.preview != null) ...[
-                const _SectionHeader(title: '组件预览'),
-                const SizedBox(height: 24),
-                _PreviewCard(child: section.preview!, isDark: isDark),
-                const SizedBox(height: 64),
-              ],
-              if (section.usage != null) ...[
-                const _SectionHeader(title: '参数说明'),
-                const SizedBox(height: 24),
-                _UsageTable(usage: section.usage!, isDark: isDark),
-                const SizedBox(height: 64),
-              ],
-              if (section.code != null) ...[
-                const _SectionHeader(title: '代码实现'),
-                const SizedBox(height: 24),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: NZCodeView(
-                    code: section.code!,
-                    theme: isDark
-                        ? NZCodeTheme.githubDark
-                        : NZCodeTheme.githubLight,
-                  ),
-                ),
-              ],
-            ],
+            ),
           ),
         ),
-      ),
+        Positioned(
+          right: isMobile ? 20 : 40,
+          bottom: isMobile ? 20 : 40,
+          child: NZBackToTop(
+            scrollController: _scrollController,
+            child: const Icon(Icons.arrow_upward_rounded, color: Colors.white),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -831,13 +1054,18 @@ class _SectionHeader extends StatelessWidget {
 class _PreviewCard extends StatelessWidget {
   final Widget child;
   final bool isDark;
-  const _PreviewCard({required this.child, required this.isDark});
+  final bool isMobile;
+  const _PreviewCard({
+    required this.child,
+    required this.isDark,
+    required this.isMobile,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(48),
+      padding: EdgeInsets.all(isMobile ? 24 : 48),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1A1A1A) : Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -868,6 +1096,7 @@ class _UsageTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
@@ -876,67 +1105,73 @@ class _UsageTable extends StatelessWidget {
               : const Color(0xFFF0F0F0),
         ),
       ),
-      child: Table(
-        columnWidths: const {
-          0: FlexColumnWidth(1.2),
-          1: FlexColumnWidth(1),
-          2: FlexColumnWidth(2.5),
-        },
-        children: [
-          TableRow(
-            decoration: BoxDecoration(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.02)
-                  : const Color(0xFFF9F9F9),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
-              ),
-            ),
-            children: ['Property', 'Type', 'Description']
-                .map(
-                  (h) => Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      h,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 13,
-                        color: isDark ? Colors.white54 : Colors.black45,
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-          ...usage.map(
-            (row) => TableRow(
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 600),
+            child: Table(
+              columnWidths: const {
+                0: FlexColumnWidth(1.2),
+                1: FlexColumnWidth(1),
+                2: FlexColumnWidth(2.5),
+              },
+              children: [
+                TableRow(
+                  decoration: BoxDecoration(
                     color: isDark
-                        ? Colors.white.withValues(alpha: 0.05)
-                        : const Color(0xFFF0F0F0),
+                        ? Colors.white.withValues(alpha: 0.02)
+                        : const Color(0xFFF9F9F9),
                   ),
+                  children: ['Property', 'Type', 'Description']
+                      .map(
+                        (h) => Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            h,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                              color: isDark ? Colors.white54 : Colors.black45,
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
-              ),
-              children: row
-                  .map(
-                    (cell) => Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text(
-                        cell,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: cell == row[1] ? 'monospace' : null,
-                          color: isDark ? Colors.white70 : Colors.black87,
+                ...usage.map(
+                  (row) => TableRow(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          color: isDark
+                              ? Colors.white.withValues(alpha: 0.05)
+                              : const Color(0xFFF0F0F0),
                         ),
                       ),
                     ),
-                  )
-                  .toList(),
+                    children: row
+                        .map(
+                          (cell) => Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Text(
+                              cell,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: cell == row[1] ? 'monospace' : null,
+                                color: isDark ? Colors.white70 : Colors.black87,
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

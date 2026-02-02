@@ -556,26 +556,109 @@ func main() {
 )''',
                         ),
                         _buildSection(
-                          '悬浮按钮 (NZFloatingActionButton)',
-                          const Text(
-                            '悬浮按钮支持标准、图标和图片三种模式，并且可以随滚动自动隐藏或支持自由拖拽。',
-                            style: TextStyle(color: Colors.black54),
+                          'Floating Action Button 悬浮按钮',
+                          Wrap(
+                            spacing: 16,
+                            runSpacing: 16,
+                            children: [
+                              NZFloatingActionButton.standard(
+                                onPressed: () {},
+                                icon: const Icon(Icons.add_rounded),
+                                label: '添加',
+                              ),
+                              NZFloatingActionButton.icon(
+                                onPressed: () {},
+                                icon: const Icon(Icons.edit_rounded),
+                              ),
+                              NZFloatingActionButton.image(
+                                onPressed: () {},
+                                image: const NetworkImage(
+                                  'https://placeholder.com/64',
+                                ),
+                                icon: const Icon(Icons.auto_awesome_rounded),
+                              ),
+                            ],
                           ),
-                          code: '''// 标准悬浮按钮 (带文字)
-NZFloatingActionButton.standard(
-  label: '发布',
-  icon: const Icon(Icons.add_rounded),
-  scrollController: _scrollController,
-  onPressed: () => _showMsg('点击了发布'),
-),
+                          code: '''NZFloatingActionButton.standard(
+  onPressed: () {},
+  icon: Icon(Icons.add),
+  label: '添加',
+)''',
+                        ),
+                        _buildSection(
+                          'Navigation Bar 导航栏',
+                          Column(
+                            children: [
+                              const Text(
+                                '普通模式',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              NZNavBar(
+                                title: '标题',
+                                leading: IconButton(
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios_new_rounded,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                                actions: [
+                                  IconButton(
+                                    icon: const Icon(Icons.more_horiz_rounded),
+                                    onPressed: () {},
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+                              const Text(
+                                '搜索模式',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              NZNavBar.search(
+                                title: '搜索组件',
+                                onSearch: () {},
+                                onSearchChanged: (val) =>
+                                    print('Searching: $val'),
+                              ),
+                              const SizedBox(height: 24),
+                              const Text(
+                                'Logo 模式',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              NZNavBar.logo(
+                                logoUrl: 'https://placeholder.com/logo.png',
+                                actions: [
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.notifications_none_rounded,
+                                    ),
+                                    onPressed: () {},
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          code: '''// 普通模式
+NZNavBar(
+  title: '标题',
+  leading: IconButton(icon: Icon(Icons.arrow_back)),
+)
 
-// 图片悬浮按钮 (支持拖拽)
-NZFloatingActionButton.image(
-  initialPosition: const Offset(20, 350),
-  draggable: true,
-  image: NetworkImage('...'),
-  icon: const Icon(Icons.auto_awesome_rounded),
-  onPressed: () => _showMsg('触发了图片 FAB'),
+// 搜索模式
+NZNavBar.search(
+  title: '搜索',
+  onSearch: () {},
 )''',
                         ),
                       ]),
