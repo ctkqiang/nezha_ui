@@ -220,9 +220,11 @@ class _HomePageState extends State<HomePage> {
                     progress: _downloadProgress,
                     width: double.infinity,
                     onPressed: _simulateDownload,
-                    child: Text(_isDownloading
-                        ? '正在处理... ${(_downloadProgress * 100).toInt()}%'
-                        : '开始异步任务'),
+                    child: Text(
+                      _isDownloading
+                          ? '正在处理... ${(_downloadProgress * 100).toInt()}%'
+                          : '开始异步任务',
+                    ),
                   ),
                   if (_isDownloading)
                     Padding(
@@ -267,10 +269,7 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(width: 16),
                     const Text(
                       '累计点击次数',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                      ),
+                      style: TextStyle(fontSize: 16, color: Colors.black87),
                     ),
                     const Spacer(),
                     Text(
@@ -285,15 +284,12 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 20),
             Center(
               child: Text(
                 'NezhaUI Version 0.0.1',
-                style: TextStyle(
-                  color: Colors.grey.shade400,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
               ),
             ),
             const SizedBox(height: 40),
@@ -309,3 +305,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
