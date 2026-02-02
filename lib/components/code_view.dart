@@ -76,40 +76,42 @@ class NZCodeView extends StatelessWidget {
       child: Stack(
         children: [
           SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (showLineNumbers)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 16,
-                      ),
-                      decoration: BoxDecoration(
-                        color: lineNumberBgColor,
-                        border: Border(right: BorderSide(color: borderColor)),
-                      ),
-                      child: Column(
-                        children: List.generate(
-                          lineCount,
-                          (index) => Text(
-                            '${index + 1}',
-                            style: TextStyle(
-                              color: lineNumberColor,
-                              fontFamily: 'monospace',
-                              fontSize: fontSize,
-                              height: 1.5,
+            scrollDirection: Axis.vertical,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (showLineNumbers)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: lineNumberBgColor,
+                          border: Border(right: BorderSide(color: borderColor)),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            lineCount,
+                            (index) => Text(
+                              '${index + 1}',
+                              style: TextStyle(
+                                color: lineNumberColor,
+                                fontFamily: 'monospace',
+                                fontSize: fontSize,
+                                height: 1.5,
+                              ),
+                              textAlign: TextAlign.right,
                             ),
-                            textAlign: TextAlign.right,
                           ),
                         ),
                       ),
-                    ),
-                  Padding(
-                    padding: padding,
-                    child: SingleChildScrollView(
+                    Padding(
+                      padding: padding,
                       child: RichText(
                         text: TextSpan(
                           style: TextStyle(
@@ -122,8 +124,8 @@ class NZCodeView extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
