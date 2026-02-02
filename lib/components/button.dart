@@ -57,6 +57,12 @@ class NZButton extends StatelessWidget {
   /// 是否通栏（全宽）显示
   final bool block;
 
+  /// 自定义背景颜色
+  final Color? color;
+
+  /// 自定义前景（文字和图标）颜色
+  final Color? foregroundColor;
+
   const NZButton({
     super.key,
     required this.onPressed,
@@ -71,6 +77,8 @@ class NZButton extends StatelessWidget {
     this.iconGap = 8.0,
     this.isLoading = false,
     this.block = false,
+    this.color,
+    this.foregroundColor,
   }) : assert(child != null || label != null, '必须提供 child 或 label');
 
   /// 快速创建主要按钮 (背景色为主色，文字为白色)
@@ -86,6 +94,8 @@ class NZButton extends StatelessWidget {
     double iconGap = 8.0,
     bool isLoading = false,
     bool block = false,
+    Color? color,
+    Color? foregroundColor,
   }) => NZButton(
     key: key,
     onPressed: onPressed,
@@ -98,6 +108,8 @@ class NZButton extends StatelessWidget {
     iconGap: iconGap,
     isLoading: isLoading,
     block: block,
+    color: color,
+    foregroundColor: foregroundColor,
     child: child,
   );
 
@@ -114,6 +126,8 @@ class NZButton extends StatelessWidget {
     double iconGap = 8.0,
     bool isLoading = false,
     bool block = false,
+    Color? color,
+    Color? foregroundColor,
   }) => NZButton(
     key: key,
     onPressed: onPressed,
@@ -126,6 +140,8 @@ class NZButton extends StatelessWidget {
     iconGap: iconGap,
     isLoading: isLoading,
     block: block,
+    color: color,
+    foregroundColor: foregroundColor,
     child: child,
   );
 
@@ -142,6 +158,8 @@ class NZButton extends StatelessWidget {
     double iconGap = 8.0,
     bool isLoading = false,
     bool block = false,
+    Color? color,
+    Color? foregroundColor,
   }) => NZButton(
     key: key,
     onPressed: onPressed,
@@ -154,6 +172,8 @@ class NZButton extends StatelessWidget {
     iconGap: iconGap,
     isLoading: isLoading,
     block: block,
+    color: color,
+    foregroundColor: foregroundColor,
     child: child,
   );
 
@@ -170,6 +190,8 @@ class NZButton extends StatelessWidget {
     double iconGap = 8.0,
     bool isLoading = false,
     bool block = false,
+    Color? color,
+    Color? foregroundColor,
   }) => NZButton(
     key: key,
     onPressed: onPressed,
@@ -182,42 +204,48 @@ class NZButton extends StatelessWidget {
     iconGap: iconGap,
     isLoading: isLoading,
     block: block,
+    color: color,
+    foregroundColor: foregroundColor,
     child: child,
   );
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor;
-    Color foregroundColor;
+    Color defaultBackgroundColor;
+    Color defaultForegroundColor;
     BorderSide borderSide = BorderSide.none;
 
     switch (style) {
       case NZButtonStyle.primary:
-        backgroundColor = NZColor.nezhaPrimary;
-        foregroundColor = Colors.white;
+        defaultBackgroundColor = NZColor.nezhaPrimary;
+        defaultForegroundColor = Colors.white;
         break;
       case NZButtonStyle.secondary:
-        backgroundColor = const Color(0xFFF2F2F2);
-        foregroundColor = const Color(0xFF07C160);
+        defaultBackgroundColor = const Color(0xFFF2F2F2);
+        defaultForegroundColor = const Color(0xFF07C160);
         break;
       case NZButtonStyle.outline:
-        backgroundColor = Colors.transparent;
-        foregroundColor = NZColor.nezhaPrimary;
+        defaultBackgroundColor = Colors.transparent;
+        defaultForegroundColor = NZColor.nezhaPrimary;
         borderSide = const BorderSide(color: NZColor.nezhaPrimary, width: 1.0);
         break;
       case NZButtonStyle.text:
-        backgroundColor = Colors.transparent;
-        foregroundColor = NZColor.nezhaPrimary;
+        defaultBackgroundColor = Colors.transparent;
+        defaultForegroundColor = NZColor.nezhaPrimary;
         break;
     }
 
+    final Color effectiveBackgroundColor = color ?? defaultBackgroundColor;
+    final Color effectiveForegroundColor =
+        foregroundColor ?? defaultForegroundColor;
+
     final bool isEnabled = onPressed != null && !isLoading;
-    final Color effectiveForegroundColor = isEnabled
-        ? foregroundColor
-        : foregroundColor.withValues(alpha: 0.5);
-    final Color effectiveBackgroundColor = isEnabled
-        ? backgroundColor
-        : backgroundColor.withValues(alpha: 0.5);
+    final Color finalForegroundColor = isEnabled
+        ? effectiveForegroundColor
+        : effectiveForegroundColor.withValues(alpha: 0.5);
+    final Color finalBackgroundColor = isEnabled
+        ? effectiveBackgroundColor
+        : effectiveBackgroundColor.withValues(alpha: 0.5);
 
     Widget content = Row(
       mainAxisSize: MainAxisSize.min,
@@ -229,15 +257,13 @@ class NZButton extends StatelessWidget {
             height: 18,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                effectiveForegroundColor,
-              ),
+              valueColor: AlwaysStoppedAnimation<Color>(finalForegroundColor),
             ),
           ),
           const SizedBox(width: 8),
         ] else if (icon != null) ...[
           IconTheme.merge(
-            data: IconThemeData(color: effectiveForegroundColor, size: 18),
+            data: IconThemeData(color: finalForegroundColor, size: 18),
             child: icon!,
           ),
           SizedBox(width: iconGap),
@@ -245,7 +271,7 @@ class NZButton extends StatelessWidget {
         Flexible(
           child: DefaultTextStyle.merge(
             style: TextStyle(
-              color: effectiveForegroundColor,
+              color: finalForegroundColor,
               fontSize: 16,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
@@ -261,18 +287,20 @@ class NZButton extends StatelessWidget {
       width: block ? double.infinity : width,
       height: height,
       child: Material(
-        color: effectiveBackgroundColor,
+        color: finalBackgroundColor,
         borderRadius: BorderRadius.circular(borderRadius),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: isEnabled ? onPressed : null,
-          splashColor: effectiveForegroundColor.withValues(alpha: 0.1),
-          highlightColor: effectiveForegroundColor.withValues(alpha: 0.05),
+          splashColor: finalForegroundColor.withValues(alpha: 0.1),
+          highlightColor: finalForegroundColor.withValues(alpha: 0.05),
           child: Container(
             padding: padding ?? const EdgeInsets.symmetric(horizontal: 24.0),
             decoration: BoxDecoration(
               border: borderSide != BorderSide.none
-                  ? Border.fromBorderSide(borderSide)
+                  ? Border.fromBorderSide(
+                      borderSide.copyWith(color: effectiveForegroundColor),
+                    )
                   : null,
               borderRadius: BorderRadius.circular(borderRadius),
             ),

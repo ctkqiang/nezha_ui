@@ -52,3 +52,14 @@ NezhaApp.router(
   theme: NZTheme.lightTheme,
 )
 ```
+
+---
+
+## 核心组件概览
+
+NezhaUI 提供了一系列精心设计的组件，你可以点击下方链接查看详细的 API 说明：
+
+- [NZButton 按钮系列](button.md): 包含基础按钮、进度按钮、图片按钮和悬浮拖拽按钮。
+- [NZDivider 分割线](divider.md): 支持自定义间距、粗细和颜色的水平分割线。
+- [NZColor 色彩体系](colors.md): 预设了 10 种主色调及其梯度，满足各种品牌色需求。
+- [NZTheme 主题配置](theme.md): 快速集成浅色与深色模式，保持全局视觉一致性。

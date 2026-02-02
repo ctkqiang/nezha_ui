@@ -180,11 +180,20 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             NZButton.primary(
                               label: '主要操作',
-                              onPressed: _incrementCounter,
+                              onPressed: () => _showMsg('点击了主要操作'),
                             ),
-                            NZButton.secondary(label: '次要操作', onPressed: () {}),
-                            NZButton.outline(label: '描边按钮', onPressed: () {}),
-                            NZButton.text(label: '文字按钮', onPressed: () {}),
+                            NZButton.secondary(
+                              label: '次要操作',
+                              onPressed: () => _showMsg('点击了次要操作'),
+                            ),
+                            NZButton.outline(
+                              label: '描边按钮',
+                              onPressed: () => _showMsg('点击了描边按钮'),
+                            ),
+                            NZButton.text(
+                              label: '文字按钮',
+                              onPressed: () => _showMsg('点击了文字按钮'),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 20),
@@ -193,6 +202,44 @@ class _HomePageState extends State<HomePage> {
                           block: true,
                           isLoading: _isSaving,
                           onPressed: _simulateSave,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Custom Colors Section
+                  _buildSection(
+                    '自定义色彩 (Custom Colors)',
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 16,
+                      children: [
+                        NZButton.primary(
+                          label: '薄荷绿',
+                          color: NZColor.nezhaGreen,
+                          onPressed: () => _showMsg('清新薄荷绿'),
+                        ),
+                        NZButton.primary(
+                          label: '活力橙',
+                          color: NZColor.nezhaOrange,
+                          onPressed: () => _showMsg('活力阳光橙'),
+                        ),
+                        NZButton.primary(
+                          label: '魅惑紫',
+                          color: NZColor.nezhaPurple,
+                          onPressed: () => _showMsg('神秘魅惑紫'),
+                        ),
+                        NZButton.outline(
+                          label: '樱花粉',
+                          color: NZColor.nezhaPink,
+                          foregroundColor: NZColor.nezhaPink,
+                          onPressed: () => _showMsg('浪漫樱花粉'),
+                        ),
+                        NZButton.secondary(
+                          label: '警告红',
+                          color: NZColor.nezhaRed.withValues(alpha: 0.1),
+                          foregroundColor: NZColor.nezhaRed,
+                          onPressed: () => _showMsg('危险警示红'),
                         ),
                       ],
                     ),
@@ -208,17 +255,17 @@ class _HomePageState extends State<HomePage> {
                         NZButton.primary(
                           label: '添加',
                           icon: const Icon(Icons.add_rounded),
-                          onPressed: () {},
+                          onPressed: () => _showMsg('执行添加操作'),
                         ),
                         NZButton.outline(
                           label: '下载',
                           icon: const Icon(Icons.cloud_download_outlined),
-                          onPressed: () {},
+                          onPressed: () => _showMsg('开始云端下载'),
                         ),
                         NZButton.text(
                           label: '分享',
                           icon: const Icon(Icons.share_outlined),
-                          onPressed: () {},
+                          onPressed: () => _showMsg('准备分享内容'),
                         ),
                       ],
                     ),
