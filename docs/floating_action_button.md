@@ -5,8 +5,8 @@
 ## 核心特性
 
 - **多样式支持**：提供 Standard (Extended)、Icon-only、Image 三种内置模式。
-- **可拖拽 (Draggable)**：支持在屏幕上自由拖动位置。
-- **图片背景 (Image)**：允许使用网络或本地图片作为按钮背景。
+- **智能拖拽 (Draggable)**：支持在屏幕上自由拖动，松手后自动吸附至屏幕边缘，交互丝滑。
+- **图片背景 (Image)**：允许使用图片作为背景，并自动叠加优雅的渐变蒙层以增强对比度。
 - **滚动隐藏 (Scroll to Hide)**：通过关联 `ScrollController`，在页面向下滚动时自动缩放隐藏，向上滚动时恢复显示。
 - **高度定制**：背景色、前景色、英雄动画 (Hero) 等均可配置。
 
@@ -62,15 +62,14 @@ NZFloatingActionButton.standard(
 )
 ```
 
-### 2. 自由拖拽
+### 2. 智能拖拽与边缘吸附
 
-设置 `draggable: true` 即可让按钮动起来。你可以通过 `initialPosition` 设置它的初始位置。
+设置 `draggable: true` 即可开启拖拽功能。组件内置了边缘吸附逻辑，松手后会自动弹回最近的侧边。
 
 ```dart
 NZFloatingActionButton.icon(
   icon: const Icon(Icons.support_agent_rounded),
   draggable: true,
-  initialPosition: const Offset(300, 500),
   onPressed: () => print('呼叫助手'),
 )
 ```

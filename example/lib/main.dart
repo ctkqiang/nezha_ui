@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/nezha.dart';
+import 'package:nezha_ui/components/code_view.dart';
 
 void main() {
   runApp(const NezhaUIExample());
@@ -150,35 +151,13 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF6F8FA),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE1E4E8)),
-                ),
-                child: SingleChildScrollView(
-                  child: RichText(
-                    text: TextSpan(
-                      style: const TextStyle(
-                        color: Color(0xFF24292E),
-                        fontFamily: 'monospace',
-                        fontSize: 13,
-                        height: 1.5,
-                      ),
-                      children: _highlightGitHubLight(code),
-                    ),
-                  ),
-                ),
-              ),
+              child: NZCodeView(code: code, theme: NZCodeTheme.githubLight),
             ),
             const SizedBox(height: 16),
             NZButton.primary(
               label: '复制示例代码',
               block: true,
               onPressed: () {
-                // TODO: 复制到剪贴板
                 Navigator.pop(context);
                 _showMsg('代码已复制到剪贴板');
               },
@@ -187,76 +166,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  List<TextSpan> _highlightGitHubLight(String code) {
-    // 简单的 GitHub Light 风格正则高亮
-    final List<TextSpan> spans = [];
-    final pattern = RegExp(
-      r'(\/\/.*)|'
-      r'(".*?"|'
-      "'"
-      r".*?')|"
-      r'(\b(?:void|class|final|const|var|if|else|return|await|async|import|package|extends|super|this|new|true|false)\b)|'
-      r'(\b(?:NZButton|NZDivider|NZPullToRefresh|NZFloatingActionButton|NZProgressButton|NZImageButton|Text|Container|Column|Row|SizedBox|Icon|NetworkImage|SliverAppBar|CustomScrollView|FlexibleSpaceBar|Offset|Color|Colors)\b)|'
-      r'(\d+)',
-      multiLine: true,
-    );
-
-    int lastMatchEnd = 0;
-    for (final match in pattern.allMatches(code)) {
-      if (match.start > lastMatchEnd) {
-        spans.add(TextSpan(text: code.substring(lastMatchEnd, match.start)));
-      }
-
-      if (match.group(1) != null) {
-        spans.add(
-          TextSpan(
-            text: match.group(1),
-            style: const TextStyle(
-              color: Color(0xFF6A737D),
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        );
-      } else if (match.group(2) != null) {
-        spans.add(
-          TextSpan(
-            text: match.group(2),
-            style: const TextStyle(color: Color(0xFF032F62)),
-          ),
-        );
-      } else if (match.group(3) != null) {
-        spans.add(
-          TextSpan(
-            text: match.group(3),
-            style: const TextStyle(color: Color(0xFFD73A49)),
-          ),
-        );
-      } else if (match.group(4) != null) {
-        spans.add(
-          TextSpan(
-            text: match.group(4),
-            style: const TextStyle(color: Color(0xFF6F42C1)),
-          ),
-        );
-      } else if (match.group(5) != null) {
-        spans.add(
-          TextSpan(
-            text: match.group(5),
-            style: const TextStyle(color: Color(0xFF005CC5)),
-          ),
-        );
-      }
-
-      lastMatchEnd = match.end;
-    }
-
-    if (lastMatchEnd < code.length) {
-      spans.add(TextSpan(text: code.substring(lastMatchEnd)));
-    }
-
-    return spans;
   }
 
   Widget _buildSection(String title, Widget content, {String? code}) {
@@ -607,6 +516,41 @@ NZButton.primary(
                           code: '''NZButton.primary(
   label: '计数',
   onPressed: _incrementCounter,
+)''',
+                        ),
+                        _buildSection(
+                          '代码查看器 (NZCodeView)',
+                          const Column(
+                            children: [
+                              NZCodeView(
+                                code: '''// C++ 示例代码，展示 NZCodeView 对 C++ 语法高亮的支持
+#include <iostream>
+
+int main() {
+    std::cout << "Hello NezhaUI from C++" << std::endl;
+    return 0;
+}''',
+                                theme: NZCodeTheme.githubLight,
+                              ),
+                              SizedBox(height: 12),
+
+                              NZCodeView(
+                                code:
+                                    '''// Golang 示例代码，展示 NZCodeView 对 Golang 语法高亮的支持
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello NezhaUI from Golang")
+}''',
+                                theme: NZCodeTheme.githubDark,
+                              ),
+                            ],
+                          ),
+                          code: '''NZCodeView(
+  code: '...',
+  theme: NZCodeTheme.githubLight,
 )''',
                         ),
                         _buildSection(
