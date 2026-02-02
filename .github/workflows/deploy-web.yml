@@ -1,109 +1,50 @@
-name: Debug Flutter Web Build
+name: Build and Deploy Flutter Web
 
 on:
   push:
     tags: ['v*']
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  debug:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
       
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
       
-      - name: Debug Information
-        run: |
-          echo "=== Debug Information ==="
-          echo "Current Flutter version:"
-          flutter --version
-          
-          echo ""
-          echo "Available devices:"
-          flutter devices
-          
-          echo ""
-          echo "Check web support:"
-          flutter config
-          
-          echo ""
-          echo "Directory structure:"
-          find . -maxdepth 3 -type d | sort
-          
-          echo ""
-          echo "Check if example directory exists:"
-          if [ -d "example" ]; then
-            echo "example directory found"
-            echo "Contents of example:"
-            ls -la example/
-            
-            if [ -f "example/pubspec.yaml" ]; then
-              echo "example/pubspec.yaml exists"
-              echo "App name:"
-              grep '^name:' example/pubspec.yaml
-            fi
-          else
-            echo "ERROR: example directory not found"
-          fi
-          
-          echo ""
-          echo "Flutter build web help:"
-          flutter build web --help || echo "Failed to get help"
-      
-      - name: Try Build
-        if: success()
+      - name: Build Web
         run: |
           cd example
+          flutter build web --release --base-href /
           
-          echo "Testing build command..."
+          # 强力修正 base href 以适配自定义域名
+          sed -i 's/<base href=".*">/<base href="\/">/g' build/web/index.html
           
-          # 测试各种构建命令
-          echo "1. Testing basic build:"
-          flutter build web --release --dry-run && echo "Basic build works" || echo "Basic build failed"
-          
-          echo ""
-          echo "2. Testing with base-href:"
-          flutter build web --release --base-href / --dry-run && echo "With base-href works" || echo "With base-href failed"
-          
-          echo ""
-          echo "3. Testing with dart-define:"
-          flutter build web --release --dart-define=TEST=1 --dry-run && echo "With dart-define works" || echo "With dart-define failed"
-          
-          echo ""
-          echo "4. Full build test:"
-          flutter build web --release --base-href /nezha_ui/
-          
-          echo "5. Fix index.html base href (More robust):"
-          # 使用更通用的正则表达式，不管之前是什么，都强制改成 /nezha_ui/
-          sed -i 's/<base href=".*">/<base href="\/nezha_ui\/">/g' build/web/index.html
-          
-          echo "6. Add .nojekyll, 404.html and CNAME:"
+          # 添加 .nojekyll 和 CNAME
           touch build/web/.nojekyll
-          cp build/web/index.html build/web/404.html
           echo "www.ctkqiang.xin" > build/web/CNAME
-          
-          echo ""
-          echo "7. Final build artifacts check:"
-          ls -R build/web/
-          grep "base href" build/web/index.html
-          
-          echo ""
-          echo "Build result:"
-          if [ -d "build/web" ]; then
-            echo "SUCCESS: Build directory created"
-            ls -la build/web/
-          else
-            echo "FAILED: Build directory not created"
-          fi
-      
-      - name: Deploy if Successful
-        if: success()
-        uses: peaceiris/actions-gh-pages@v3
+          cp build/web/index.html build/web/404.html
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./example/build/web
-          publish_branch: gh-pages
-          commit_message: "Deploy from debug build"
+          path: example/build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
