@@ -15,6 +15,9 @@ class _NZDocsSiteState extends State<NZDocsSite> {
   // 当前选中的文档章节
   String _selectedSection = 'Home';
 
+  // 主题模式：0 - Auto, 1 - Light, 2 - Dark
+  int _themeModeIndex = 0;
+
   // 所有文档章节的数据源
   final Map<String, Map<String, dynamic>> _sections = {
     'Home': {
@@ -28,7 +31,20 @@ class _NZDocsSiteState extends State<NZDocsSite> {
 - **极致性能**：每个组件都经过细致的调优，确保在低端设备上也能保持流畅。
 - **专业美学**：遵循现代设计规范，提供一致且高级的视觉体验。
 - **高度定制**：深度集成 NZTheme 系统，轻松适配各种品牌风格。''',
-      'github': 'https://github.com/ctkqiang/nezha_ui',
+      'github': 'https://github.com/ctkqiang/nezha_ui.git',
+    },
+    'About': {
+      'title': '关于 NezhaUI',
+      'subtitle': '由大姐和弟弟共同打造的温暖项目',
+      'isLanding': true,
+      'content': '''NezhaUI 不仅仅是一个组件库，它是我们对技术追求与温情生活的结合。
+
+### 我们的愿景
+让每一位开发者在编写代码时，都能感受到如同家人般的关怀与支持。每一个像素、每一行代码，都倾注了大姐对弟弟成长的期待。
+
+### 贡献者
+- **大姐**：负责核心架构与技术把关。
+- **弟弟**：负责创意设计与灵感注入。''',
     },
     'Buttons': {
       'title': 'Button 按钮',
@@ -141,70 +157,273 @@ NZFloatingActionButton.standard(
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Row(
-        children: [
-          // 固定侧边栏：在 Web 端始终保持展开状态
-          Container(
-            width: 280,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF6F8FA),
-              border: Border(right: BorderSide(color: Colors.grey[200]!)),
+    // 根据 _themeModeIndex 获取当前主题
+    final isDark =
+        _themeModeIndex == 2 ||
+        (_themeModeIndex == 0 &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
+    final theme = isDark ? NZTheme.darkTheme : NZTheme.lightTheme;
+
+    return Theme(
+      data: theme,
+      child: Builder(
+        builder: (context) {
+          final theme = Theme.of(context);
+          return Scaffold(
+            backgroundColor: theme.scaffoldBackgroundColor,
+            body: SelectionArea(
+              child: Column(
+                children: [
+                  _buildNavbar(context, isDark),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        // 固定侧边栏
+                        Container(
+                          width: 280,
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? const Color(0xFF1E1E1E)
+                                : const Color(0xFFF6F8FA),
+                            border: Border(
+                              right: BorderSide(
+                                color: isDark
+                                    ? Colors.white10
+                                    : Colors.grey[200]!,
+                              ),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              _buildSidebarHeader(isDark),
+                              Expanded(child: _buildSidebarMenu(isDark)),
+                              _buildSidebarFooter(isDark),
+                            ],
+                          ),
+                        ),
+                        // 主内容区域
+                        Expanded(
+                          child:
+                              _sections[_selectedSection]!['isLanding'] == true
+                              ? _buildLandingPage(context, isDark)
+                              : _buildDocContent(context, isDark),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Column(
+          );
+        },
+      ),
+    );
+  }
+
+  /// 构建顶部导航栏
+  Widget _buildNavbar(BuildContext context, bool isDark) {
+    return Container(
+      height: 64,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1A1A1A) : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: isDark ? Colors.white10 : Colors.grey[200]!,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          // Banner Logo
+          Image.asset(
+            'docs/assets/banner.png',
+            height: 32,
+            errorBuilder: (context, error, stackTrace) => Row(
               children: [
-                _buildSidebarHeader(),
-                Expanded(child: _buildSidebarMenu()),
-                _buildSidebarFooter(),
+                Icon(Icons.bolt_rounded, color: NZColor.nezhaPrimary, size: 24),
+                const SizedBox(width: 8),
+                const Text(
+                  'NezhaUI',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
               ],
             ),
           ),
-          // 主内容区域：根据当前选中的章节显示不同的内容
-          Expanded(
-            child: _sections[_selectedSection]!['isLanding'] == true
-                ? _buildLandingPage()
-                : _buildDocContent(),
+          const Spacer(),
+          // 导航链接
+          _buildNavLink(
+            'Home',
+            () => setState(() => _selectedSection = 'Home'),
+            isDark,
           ),
+          _buildNavLink(
+            'About',
+            () => setState(() => _selectedSection = 'About'),
+            isDark,
+          ),
+          _buildNavLink(
+            'GitHub',
+            () {}, // 这里可以添加跳转逻辑
+            isDark,
+            icon: Icons.open_in_new_rounded,
+          ),
+          const SizedBox(width: 24),
+          // 主题切换
+          _buildThemeToggle(isDark),
         ],
       ),
     );
   }
 
+  Widget _buildNavLink(
+    String title,
+    VoidCallback onTap,
+    bool isDark, {
+    IconData? icon,
+  }) {
+    final isSelected = _selectedSection == title;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  color: isSelected
+                      ? NZColor.nezhaPrimary
+                      : (isDark ? Colors.white70 : Colors.black87),
+                ),
+              ),
+              if (icon != null) ...[
+                const SizedBox(width: 4),
+                Icon(
+                  icon,
+                  size: 14,
+                  color: isDark ? Colors.white38 : Colors.black38,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeToggle(bool isDark) {
+    final modes = [
+      {'icon': Icons.brightness_auto_rounded, 'label': 'Auto'},
+      {'icon': Icons.light_mode_rounded, 'label': 'Light'},
+      {'icon': Icons.dark_mode_rounded, 'label': 'Dark'},
+    ];
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? Colors.white10 : Colors.grey[100],
+        borderRadius: BorderRadius.circular(20),
+      ),
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        children: List.generate(3, (index) {
+          final isSelected = _themeModeIndex == index;
+          return GestureDetector(
+            onTap: () => setState(() => _themeModeIndex = index),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? (isDark ? Colors.white24 : Colors.white)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: isSelected && !isDark
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 4,
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    modes[index]['icon'] as IconData,
+                    size: 16,
+                    color: isSelected
+                        ? NZColor.nezhaPrimary
+                        : (isDark ? Colors.white38 : Colors.black38),
+                  ),
+                  if (isSelected) ...[
+                    const SizedBox(width: 6),
+                    Text(
+                      modes[index]['label'] as String,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
   /// 构建侧边栏头部（Logo 和版本号）
-  Widget _buildSidebarHeader() {
+  Widget _buildSidebarHeader(bool isDark) {
     return Container(
       padding: const EdgeInsets.all(32),
       alignment: Alignment.centerLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: NZColor.nezhaPrimary,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.bolt_rounded,
-              color: Colors.white,
-              size: 32,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              'example/assets/logo.png',
+              width: 48,
+              height: 48,
+              errorBuilder: (context, error, stackTrace) => Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: NZColor.nezhaPrimary,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.bolt_rounded,
+                  color: Colors.white,
+                  size: 32,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'NezhaUI',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               letterSpacing: -0.5,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
           Text(
             '版本 v1.0.0',
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey[500],
+              color: isDark ? Colors.white38 : Colors.grey[500],
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -214,32 +433,43 @@ NZFloatingActionButton.standard(
   }
 
   /// 构建侧边栏菜单列表
-  Widget _buildSidebarMenu() {
+  Widget _buildSidebarMenu(bool isDark) {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
-        _buildMenuItem('Home', '概览首页', Icons.home_rounded),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+        _buildMenuItem('Home', '概览首页', Icons.home_rounded, isDark),
+        _buildMenuItem('About', '关于我们', Icons.info_outline_rounded, isDark),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
           child: Text(
             '核心组件',
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: isDark ? Colors.white24 : Colors.grey,
             ),
           ),
         ),
-        _buildMenuItem('Buttons', 'Button 按钮', Icons.smart_button_rounded),
-        _buildMenuItem('FAB', 'FAB 悬浮按钮', Icons.ads_click_rounded),
-        _buildMenuItem('CodeView', 'CodeView 代码预览', Icons.code_rounded),
-        _buildMenuItem('Markdown', 'Markdown 渲染', Icons.article_rounded),
+        _buildMenuItem(
+          'Buttons',
+          'Button 按钮',
+          Icons.smart_button_rounded,
+          isDark,
+        ),
+        _buildMenuItem('FAB', 'FAB 悬浮按钮', Icons.ads_click_rounded, isDark),
+        _buildMenuItem('CodeView', 'CodeView 代码预览', Icons.code_rounded, isDark),
+        _buildMenuItem(
+          'Markdown',
+          'Markdown 渲染',
+          Icons.article_rounded,
+          isDark,
+        ),
       ],
     );
   }
 
   /// 构建单个菜单项
-  Widget _buildMenuItem(String id, String title, IconData icon) {
+  Widget _buildMenuItem(String id, String title, IconData icon, bool isDark) {
     final isSelected = _selectedSection == id;
     return InkWell(
       onTap: () => setState(() => _selectedSection = id),
@@ -249,7 +479,7 @@ NZFloatingActionButton.standard(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected
-              ? NZColor.nezhaPrimary.withValues(alpha: 0.1)
+              ? NZColor.nezhaPrimary.withOpacity(0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
@@ -258,7 +488,9 @@ NZFloatingActionButton.standard(
             Icon(
               icon,
               size: 20,
-              color: isSelected ? NZColor.nezhaPrimary : Colors.black54,
+              color: isSelected
+                  ? NZColor.nezhaPrimary
+                  : (isDark ? Colors.white54 : Colors.black54),
             ),
             const SizedBox(width: 12),
             Text(
@@ -266,7 +498,9 @@ NZFloatingActionButton.standard(
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? NZColor.nezhaPrimary : Colors.black87,
+                color: isSelected
+                    ? NZColor.nezhaPrimary
+                    : (isDark ? Colors.white70 : Colors.black87),
               ),
             ),
           ],
@@ -276,14 +510,17 @@ NZFloatingActionButton.standard(
   }
 
   /// 构建侧边栏页脚（版权信息和外链）
-  Widget _buildSidebarFooter() {
+  Widget _buildSidebarFooter(bool isDark) {
     return Container(
       padding: const EdgeInsets.all(24),
       child: Column(
         children: [
           Text(
             '© 2026 钟智强',
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            style: TextStyle(
+              fontSize: 12,
+              color: isDark ? Colors.white24 : Colors.grey[600],
+            ),
           ),
           const SizedBox(height: 8),
           Row(
@@ -291,10 +528,14 @@ NZFloatingActionButton.standard(
             children: [
               _buildFooterLink(
                 'GitHub 仓库',
-                'https://github.com/ctkqiang/nezha_ui',
+                'https://github.com/ctkqiang/nezha_ui.git',
+                isDark,
               ),
-              const Text(' · ', style: TextStyle(color: Colors.grey)),
-              _buildFooterLink('开源协议', '#'),
+              Text(
+                ' · ',
+                style: TextStyle(color: isDark ? Colors.white10 : Colors.grey),
+              ),
+              _buildFooterLink('开源协议', '#', isDark),
             ],
           ),
         ],
@@ -303,20 +544,20 @@ NZFloatingActionButton.standard(
   }
 
   /// 构建页脚辅助链接
-  Widget _buildFooterLink(String text, String url) {
+  Widget _buildFooterLink(String text, String url, bool isDark) {
     return Text(
       text,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 12,
-        color: Colors.blue,
+        color: isDark ? Colors.blue[300] : Colors.blue,
         decoration: TextDecoration.underline,
       ),
     );
   }
 
   /// 构建产品落地页（Landing Page）
-  Widget _buildLandingPage() {
-    final home = _sections['Home']!;
+  Widget _buildLandingPage(BuildContext context, bool isDark) {
+    final home = _sections[_selectedSection]!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(80),
       child: Column(
@@ -325,7 +566,7 @@ NZFloatingActionButton.standard(
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: NZColor.nezhaPrimary.withValues(alpha: 0.1),
+              color: NZColor.nezhaPrimary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -340,16 +581,20 @@ NZFloatingActionButton.standard(
           const SizedBox(height: 24),
           Text(
             home['title'],
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 64,
               fontWeight: FontWeight.bold,
               letterSpacing: -2,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             home['subtitle'],
-            style: TextStyle(fontSize: 24, color: Colors.grey[600]),
+            style: TextStyle(
+              fontSize: 24,
+              color: isDark ? Colors.white54 : Colors.grey[600],
+            ),
           ),
           const SizedBox(height: 48),
           Row(
@@ -366,16 +611,41 @@ NZFloatingActionButton.standard(
             ],
           ),
           const SizedBox(height: 80),
-          const Divider(),
+          Divider(color: isDark ? Colors.white10 : Colors.grey[200]),
           const SizedBox(height: 80),
-          NZMarkdown(data: home['content']),
+          NZMarkdown(
+            data: home['content'],
+            style: NZMarkdownStyle.defaultStyle(context).copyWith(
+              p: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: isDark ? Colors.white70 : Colors.black87,
+                height: 1.6,
+              ),
+              h1: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black,
+                fontSize: 28,
+              ),
+              h2: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black,
+                fontSize: 24,
+              ),
+              h3: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black,
+                fontSize: 20,
+              ),
+              codeBackground: isDark ? Colors.white10 : const Color(0xFFF6F8FA),
+              blockquoteBorderColor: isDark ? Colors.white24 : Colors.grey[300],
+            ),
+          ),
         ],
       ),
     );
   }
 
   /// 构建具体的组件文档内容
-  Widget _buildDocContent() {
+  Widget _buildDocContent(BuildContext context, bool isDark) {
     final current = _sections[_selectedSection]!;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,23 +660,31 @@ NZFloatingActionButton.standard(
               children: [
                 Text(
                   current['title'],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   current['description'],
-                  style: const TextStyle(fontSize: 18, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: isDark ? Colors.white54 : Colors.black54,
+                  ),
                 ),
                 const SizedBox(height: 48),
-                const Text(
+                Text(
                   'API 参数参考',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
                 ),
                 const SizedBox(height: 24),
-                _buildUsageTable(current['usage']),
+                _buildUsageTable(current['usage'], isDark),
               ],
             ),
           ),
@@ -415,19 +693,26 @@ NZFloatingActionButton.standard(
         Expanded(
           flex: 2,
           child: Container(
-            color: const Color(0xFFFAFBFC),
+            color: isDark ? const Color(0xFF141414) : const Color(0xFFFAFBFC),
             child: Column(
               children: [
                 Expanded(
-                  child: _buildPreviewSection('组件实时预览', current['preview']),
+                  child: _buildPreviewSection(
+                    '组件实时预览',
+                    current['preview'],
+                    isDark,
+                  ),
                 ),
                 Expanded(
                   child: _buildPreviewSection(
                     '核心代码示例',
                     NZCodeView(
                       code: current['code'],
-                      theme: NZCodeTheme.githubDark,
+                      theme: isDark
+                          ? NZCodeTheme.githubDark
+                          : NZCodeTheme.githubLight,
                     ),
+                    isDark,
                   ),
                 ),
               ],
@@ -439,7 +724,7 @@ NZFloatingActionButton.standard(
   }
 
   /// 构建预览板块（包含标题和内容）
-  Widget _buildPreviewSection(String title, Widget content) {
+  Widget _buildPreviewSection(String title, Widget content, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -447,10 +732,10 @@ NZFloatingActionButton.standard(
           padding: const EdgeInsets.fromLTRB(32, 32, 32, 16),
           child: Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: isDark ? Colors.white24 : Colors.grey,
             ),
           ),
         ),
@@ -464,10 +749,10 @@ NZFloatingActionButton.standard(
   }
 
   /// 构建参数说明表格
-  Widget _buildUsageTable(List<List<String>> usage) {
+  Widget _buildUsageTable(List<List<String>> usage, bool isDark) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: isDark ? Colors.white10 : Colors.grey[200]!),
         borderRadius: BorderRadius.circular(12),
       ),
       child: ClipRRect(
@@ -480,16 +765,21 @@ NZFloatingActionButton.standard(
           },
           children: [
             TableRow(
-              decoration: const BoxDecoration(color: Color(0xFFF6F8FA)),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? Colors.white.withOpacity(0.02)
+                    : const Color(0xFFF6F8FA),
+              ),
               children: ['属性名称', '参数类型', '功能描述']
                   .map(
                     (h) => Padding(
                       padding: const EdgeInsets.all(16),
                       child: Text(
                         h,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
+                          color: isDark ? Colors.white70 : Colors.black,
                         ),
                       ),
                     ),
@@ -504,9 +794,9 @@ NZFloatingActionButton.standard(
                         padding: const EdgeInsets.all(16),
                         child: Text(
                           cell,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: Colors.black87,
+                            color: isDark ? Colors.white54 : Colors.black87,
                           ),
                         ),
                       ),

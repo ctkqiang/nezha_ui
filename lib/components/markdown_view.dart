@@ -44,6 +44,32 @@ class NZMarkdownStyle {
     this.padding,
   });
 
+  /// 拷贝并生成新的样式
+  NZMarkdownStyle copyWith({
+    TextStyle? h1,
+    TextStyle? h2,
+    TextStyle? h3,
+    TextStyle? p,
+    TextStyle? code,
+    TextStyle? blockquote,
+    Color? codeBackground,
+    Color? blockquoteBorderColor,
+    EdgeInsets? padding,
+  }) {
+    return NZMarkdownStyle(
+      h1: h1 ?? this.h1,
+      h2: h2 ?? this.h2,
+      h3: h3 ?? this.h3,
+      p: p ?? this.p,
+      code: code ?? this.code,
+      blockquote: blockquote ?? this.blockquote,
+      codeBackground: codeBackground ?? this.codeBackground,
+      blockquoteBorderColor:
+          blockquoteBorderColor ?? this.blockquoteBorderColor,
+      padding: padding ?? this.padding,
+    );
+  }
+
   /// 默认样式工厂方法，根据当前的 [BuildContext] 自动生成适配主题的样式。
   factory NZMarkdownStyle.defaultStyle(BuildContext context) {
     final theme = Theme.of(context);
