@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// 代码查看器主题
 enum NZCodeTheme {
@@ -27,6 +28,9 @@ class NZCodeView extends StatelessWidget {
   /// 是否显示行号 (预留功能)
   final bool showLineNumbers;
 
+  /// 是否显示复制按钮
+  final bool showCopyButton;
+
   const NZCodeView({
     super.key,
     required this.code,
@@ -34,6 +38,7 @@ class NZCodeView extends StatelessWidget {
     this.fontSize = 13.0,
     this.padding = const EdgeInsets.all(16.0),
     this.showLineNumbers = true,
+    this.showCopyButton = true,
   });
 
   @override
@@ -68,57 +73,94 @@ class NZCodeView extends StatelessWidget {
         border: Border.all(color: borderColor),
       ),
       clipBehavior: Clip.antiAlias,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (showLineNumbers)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: lineNumberBgColor,
-                    border: Border(right: BorderSide(color: borderColor)),
-                  ),
-                  child: Column(
-                    children: List.generate(
-                      lineCount,
-                      (index) => Text(
-                        '${index + 1}',
-                        style: TextStyle(
-                          color: lineNumberColor,
-                          fontFamily: 'monospace',
-                          fontSize: fontSize,
-                          height: 1.5,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (showLineNumbers)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        color: lineNumberBgColor,
+                        border: Border(right: BorderSide(color: borderColor)),
+                      ),
+                      child: Column(
+                        children: List.generate(
+                          lineCount,
+                          (index) => Text(
+                            '${index + 1}',
+                            style: TextStyle(
+                              color: lineNumberColor,
+                              fontFamily: 'monospace',
+                              fontSize: fontSize,
+                              height: 1.5,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
                         ),
-                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  Padding(
+                    padding: padding,
+                    child: SingleChildScrollView(
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: textColor,
+                            fontFamily: 'monospace',
+                            fontSize: fontSize,
+                            height: 1.5,
+                          ),
+                          children: _highlightCode(code, isDark),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              Padding(
-                padding: padding,
-                child: SingleChildScrollView(
-                  child: RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        color: textColor,
-                        fontFamily: 'monospace',
-                        fontSize: fontSize,
-                        height: 1.5,
+                ],
+              ),
+            ),
+          ),
+          if (showCopyButton)
+            Positioned(
+              top: 8,
+              right: 8,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: code));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('代码已复制到剪贴板'),
+                        duration: Duration(seconds: 1),
                       ),
-                      children: _highlightCode(code, isDark),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(4),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: borderColor),
+                      borderRadius: BorderRadius.circular(4),
+                      color: bgColor,
+                    ),
+                    child: Icon(
+                      Icons.copy_rounded,
+                      size: 16,
+                      color: lineNumberColor,
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+        ],
       ),
     );
   }
