@@ -113,7 +113,7 @@ class NZMarkdownStyle {
 
 /// [NZMarkdown] 是一个轻量级的 Markdown 渲染组件，完全使用 Flutter 原生组件实现。
 ///
-/// 弟弟，这个组件不依赖任何第三方 Markdown 库，支持以下语法：
+/// 此组件不依赖任何第三方 Markdown 库，支持以下语法：
 /// - 标题 (#, ##, ###)
 /// - 加粗 (**text**)
 /// - 斜体 (*text*)
