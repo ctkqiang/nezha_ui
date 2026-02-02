@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nezha_ui/theme/colors.dart';
 
 /// NZDivider 是 NezhaUI 提供的分割线组件。
 ///
@@ -27,7 +26,7 @@ class NZDivider extends StatelessWidget {
       thickness: thickness,
       indent: indent,
       endIndent: endIndent,
-      color: color ?? Colors.grey.withOpacity(0.2),
+      color: color ?? Colors.grey.withValues(alpha: 0.2),
     );
   }
 }

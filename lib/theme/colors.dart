@@ -18,6 +18,18 @@ class NZColor {
   /// 应用程序主色调，默认为标准红色
   static const Color nezhaPrimary = red500;
 
+  /// 常用语义色彩快捷访问
+  static const Color nezhaRed = red500;
+  static const Color nezhaOrange = orange500;
+  static const Color nezhaYellow = yellow500;
+  static const Color nezhaGreen = green500;
+  static const Color nezhaBlue = blue500;
+  static const Color nezhaPurple = purple500;
+  static const Color nezhaPink = pink500;
+  static const Color nezhaCyan = cyan500;
+  static const Color nezhaTeal = teal500;
+  static const Color nezhaIndigo = indigo500;
+
   // 橙色系 (辅助色) - 10 个色阶
   static const Color orange50 = Color(0xFFFFF3E0); // 极浅橙
   static const Color orange100 = Color(0xFFFFE0B2); // 浅橙

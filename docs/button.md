@@ -71,9 +71,18 @@ NZButton.primary(
 
 ## NZProgressButton 进度按钮
 
-适用于文件下载、上传或长耗时任务，直接在按钮背景显示进度百分比。
+带背景进度显示的按钮，常用于下载、上传等场景。
 
-### 1. 使用方法
+### 1. 参数说明
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+| :--- | :--- | :--- | :--- | :--- |
+| progress | double | 是 | - | 进度值 (0.0 - 1.0) |
+| color | Color | 否 | Primary | 进度条填充颜色 |
+| backgroundColor | Color | 否 | #F2F2F2 | 按钮底色 |
+| foregroundColor | Color | 否 | 动态 | 文本颜色 (随进度自动切换黑/白) |
+
+### 2. 使用方法
 ```dart
 NZProgressButton(
   progress: 0.6,
@@ -86,9 +95,19 @@ NZProgressButton(
 
 ## NZImageButton 图片按钮
 
-支持使用背景图片的按钮，具有优雅的水波纹点击效果，常用于精选分类、活动入口等场景。
+以图片作为背景的沉浸式按钮。
 
-### 1. 使用方法
+### 1. 参数说明
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+| :--- | :--- | :--- | :--- | :--- |
+| image | ImageProvider | 是 | - | 背景图片源 |
+| opacity | double | 否 | 0.8 | 图片透明度 (用于遮罩文字) |
+| color | Color | 否 | Transparent | 按钮底色 |
+| foregroundColor | Color | 否 | White | 文本和水波纹颜色 |
+| borderRadius | double | 否 | 12.0 | 圆角半径 |
+
+### 2. 使用方法
 ```dart
 NZImageButton(
   image: AssetImage('assets/banner.png'),

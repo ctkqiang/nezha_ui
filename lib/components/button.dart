@@ -319,9 +319,16 @@ class NZProgressButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final Widget? child;
   final String? label;
-  final Color? progressColor;
+
+  /// 进度条颜色 (默认为 [NZColor.nezhaPrimary])
+  final Color? color;
+
+  /// 按钮背景颜色 (默认为 #F2F2F2)
   final Color? backgroundColor;
+
+  /// 文本和图标颜色
   final Color? foregroundColor;
+
   final double? width;
   final double height;
   final double borderRadius;
@@ -333,7 +340,7 @@ class NZProgressButton extends StatelessWidget {
     required this.onPressed,
     this.child,
     this.label,
-    this.progressColor,
+    this.color,
     this.backgroundColor,
     this.foregroundColor,
     this.width,
@@ -344,7 +351,7 @@ class NZProgressButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color effectiveProgressColor = progressColor ?? NZColor.nezhaPrimary;
+    final Color effectiveProgressColor = color ?? NZColor.nezhaPrimary;
     final Color effectiveBackgroundColor =
         backgroundColor ?? const Color(0xFFF2F2F2);
     final Color effectiveForegroundColor =
@@ -404,17 +411,25 @@ class NZImageButton extends StatelessWidget {
   final double opacity;
   final bool block;
 
+  /// 按钮背景颜色 (如果不提供，则显示图片本身)
+  final Color? color;
+
+  /// 文本颜色 (默认为白色)
+  final Color? foregroundColor;
+
   const NZImageButton({
     super.key,
-    required this.onPressed,
     required this.image,
+    this.onPressed,
     this.child,
     this.label,
     this.width,
-    this.height = 120.0,
-    this.borderRadius = 16.0,
-    this.opacity = 0.6,
+    this.height = 180.0,
+    this.borderRadius = 12.0,
     this.block = false,
+    this.opacity = 0.8,
+    this.color,
+    this.foregroundColor,
   }) : assert(child != null || label != null, '必须提供 child 或 label');
 
   @override
@@ -425,11 +440,13 @@ class NZImageButton extends StatelessWidget {
       child: Material(
         borderRadius: BorderRadius.circular(borderRadius),
         clipBehavior: Clip.antiAlias,
-        color: Colors.transparent,
+        color: color ?? Colors.transparent,
         child: InkWell(
           onTap: onPressed,
-          splashColor: Colors.white.withValues(alpha: 0.2),
-          highlightColor: Colors.white.withValues(alpha: 0.1),
+          splashColor: (foregroundColor ?? Colors.white).withValues(alpha: 0.2),
+          highlightColor: (foregroundColor ?? Colors.white).withValues(
+            alpha: 0.1,
+          ),
           child: Stack(
             children: [
               Positioned.fill(
@@ -444,8 +461,8 @@ class NZImageButton extends StatelessWidget {
               ),
               Center(
                 child: DefaultTextStyle.merge(
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: foregroundColor ?? Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),

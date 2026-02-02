@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/nezha.dart';
 
@@ -14,6 +15,8 @@ class NezhaUIExample extends StatelessWidget {
       title: 'NezhaUI Example',
       theme: NZTheme.lightTheme,
       darkTheme: NZTheme.darkTheme,
+      showPerformanceOverlay: kProfileMode,
+      debugShowCheckedModeBanner: kDebugMode,
       home: const HomePage(),
     );
   }
@@ -33,6 +36,19 @@ class _HomePageState extends State<HomePage> {
   double _downloadProgress = 0.0;
   bool _isDownloading = false;
   bool _isSaving = false;
+
+  void _showMsg(String message) {
+    _messengerKey.currentState?.clearSnackBars();
+    _messengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(milliseconds: 1500),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.all(20),
+      ),
+    );
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -277,6 +293,7 @@ class _HomePageState extends State<HomePage> {
                     NZProgressButton(
                       progress: _downloadProgress,
                       block: true,
+                      color: NZColor.nezhaIndigo,
                       label: _isDownloading
                           ? '正在极速下载... ${(_downloadProgress * 100).toInt()}%'
                           : '点击体验背景进度',
@@ -293,7 +310,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                       label: '探索新视界',
                       block: true,
-                      onPressed: () {},
+                      borderRadius: 16,
+                      onPressed: () => _showMsg('开启视觉盛宴'),
                     ),
                   ),
 
@@ -315,24 +333,36 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            '活跃度',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w500,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '活跃度计数',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '当前数值：$_counter',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black26,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(width: 20),
-                          Text(
-                            '$_counter',
-                            style: const TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFF2D5AF0),
-                            ),
+                          NZButton.primary(
+                            label: '计数',
+                            width: 80,
+                            height: 40,
+                            borderRadius: 20,
+                            onPressed: _incrementCounter,
                           ),
                         ],
                       ),
@@ -344,7 +374,7 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         Text(
-                          'NezhaUI Design System',
+                          'NezhaUI ',
                           style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 12,
