@@ -394,7 +394,7 @@ packages:
     source: hosted
     version: "0.7.6"
   trading_view_flutter:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: trading_view_flutter
       sha256: "47e4d0bfcfc4dea7cb60eb96c9b59a5c693c9c0f9497424294dddbe40afbc8ed"

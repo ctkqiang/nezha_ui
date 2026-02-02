@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/nezha.dart';
+import 'trading_data_example.dart';
 
 class NZDocSection {
   final String id;
@@ -1072,6 +1073,44 @@ NZToast.show(
     NZDropDownMenuItem(value: '2', label: '选项二', icon: Icons.settings),
   ],
   onChanged: (val) => setState(() => _selected = val),
+)''',
+    ),
+    NZDocSection(
+      id: 'NZTradingView',
+      title: '金融图表 (NZTradingView)',
+      icon: Icons.candlestick_chart_rounded,
+      description: '专业级的 TradingView 行情图表组件，支持多种交易对和周期。',
+      usage: [
+        ['symbol', 'String', '交易对名称，如 "HKEX:1810"'],
+        ['interval', 'String', '行情周期，如 "1D", "1H", "15"'],
+        ['theme', 'String?', '图表主题，"light" 或 "dark"，默认跟随系统'],
+        ['height', 'double?', '图表容器高度'],
+        ['enableToolbar', 'bool', '是否显示顶部工具栏'],
+        ['isLightWeightChart', 'bool', '是否使用轻量级视图'],
+      ],
+      preview: NZTradingView(
+        key: const ValueKey('preview_tradingview'),
+        id: 1,
+        symbol: 'KO',
+        height: 300,
+        isLightWeightChart: true,
+        interval: 'M',
+        timezone: 'Asia/Shanghai',
+        chartValue: TradingDataExample.fakeChartData,
+        indicators: TradingDataExample.indicators,
+        volume: TradingDataExample.fakeVolume,
+      ),
+      content: 'NZTradingView 封装了 trading_view_flutter 插件，支持标准高级图表和轻量级图表。',
+      code: '''// 轻量级图表 (推荐用于概览)
+NZTradingView(
+  symbol: 'KO',
+  height: 300,
+  isLightWeightChart: true,
+  interval: 'M',
+  timezone: 'Asia/Shanghai',
+  chartValue: TradingDataExample.fakeChartData,
+  indicators: TradingDataExample.indicators,
+  volume: TradingDataExample.fakeVolume,
 )''',
     ),
     NZDocSection(

@@ -14,6 +14,7 @@ dependencies:
     sdk: flutter
   get_storage: ^2.1.1
   url_launcher: ^6.3.1
+  trading_view_flutter: ^0.0.7
 
 dev_dependencies:
   flutter_test:

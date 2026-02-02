@@ -1,30 +1,77 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/nezha.dart';
+import 'package:trading_view_flutter/src/web_initializer.dart';
+import 'trading_data_example.dart';
 import 'docs_site.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (kIsWeb) {
+    WebInitializer.initialize();
+  }
+
   runApp(const NezhaUIExample());
 }
 
-class NezhaUIExample extends StatelessWidget {
+class NezhaUIExample extends StatefulWidget {
   const NezhaUIExample({super.key});
+
+  @override
+  State<NezhaUIExample> createState() => _NezhaUIExampleState();
+}
+
+class _NezhaUIExampleState extends State<NezhaUIExample> {
+  NZThemeConfig _currentConfig = NZThemeConfig.defaultContent;
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void _updateConfig(NZThemeConfig config) {
+    setState(() {
+      _currentConfig = config;
+    });
+  }
+
+  void _updateThemeMode(ThemeMode mode) {
+    setState(() {
+      _themeMode = mode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return NezhaApp(
       title: 'NezhaUI 示例',
-      theme: NZTheme.lightTheme(),
-      darkTheme: NZTheme.darkTheme(),
+      theme: NZTheme.lightTheme(_currentConfig),
+      darkTheme: NZTheme.darkTheme(_currentConfig),
+      themeMode: _themeMode,
       showPerformanceOverlay: kProfileMode,
       debugShowCheckedModeBanner: kDebugMode,
-      home: kIsWeb ? const NZDocsSite() : const HomePage(),
+      home: kIsWeb
+          ? const NZDocsSite()
+          : HomePage(
+              currentConfig: _currentConfig,
+              onConfigChanged: _updateConfig,
+              themeMode: _themeMode,
+              onThemeModeChanged: _updateThemeMode,
+            ),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final NZThemeConfig currentConfig;
+  final ValueChanged<NZThemeConfig> onConfigChanged;
+  final ThemeMode themeMode;
+  final ValueChanged<ThemeMode> onThemeModeChanged;
+
+  const HomePage({
+    super.key,
+    required this.currentConfig,
+    required this.onConfigChanged,
+    required this.themeMode,
+    required this.onThemeModeChanged,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -46,6 +93,93 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+  }
+
+  void _showThemeSettings() {
+    NZThemeConfig tempConfig = widget.currentConfig;
+    NZDialog.show(
+      context,
+      title: '主题配置',
+      message: '自定义 NezhaUI 的外观和感觉',
+      content: StatefulBuilder(
+        builder: (context, setDialogState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('主色调 (Primary Color)'),
+                trailing: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: tempConfig.primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                onTap: () {
+                  final colors = [
+                    NZColor.nezhaPrimary,
+                    Colors.blue,
+                    Colors.purple,
+                    Colors.orange,
+                    Colors.teal,
+                  ];
+                  final currentIndex = colors.indexOf(tempConfig.primaryColor);
+                  final nextColor = colors[(currentIndex + 1) % colors.length];
+                  setDialogState(() {
+                    tempConfig = NZThemeConfig(
+                      primaryColor: nextColor,
+                      borderRadius: tempConfig.borderRadius,
+                    );
+                  });
+                },
+              ),
+              const Divider(height: 1),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('圆角半径: ${tempConfig.borderRadius.toInt()}px'),
+                    Slider(
+                      value: tempConfig.borderRadius,
+                      min: 0,
+                      max: 30,
+                      onChanged: (val) {
+                        setDialogState(() {
+                          tempConfig = NZThemeConfig(
+                            primaryColor: tempConfig.primaryColor,
+                            borderRadius: val,
+                          );
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+      actions: [
+        NZDialogAction(
+          label: '重置',
+          onPressed: () {
+            widget.onConfigChanged(NZThemeConfig.defaultContent);
+            Navigator.pop(context);
+          },
+        ),
+        NZDialogAction(
+          label: '应用配置',
+          isPrimary: true,
+          onPressed: () {
+            widget.onConfigChanged(tempConfig);
+            Navigator.pop(context);
+            _showMsg('主题配置已更新');
+          },
+        ),
+      ],
+    );
   }
 
   void _onScroll() {
@@ -74,6 +208,67 @@ class _HomePageState extends State<HomePage> {
 
   void _showMsg(String message) {
     NZToast.show(context, message: message);
+  }
+
+  Widget _buildThemeModeButton() {
+    IconData icon;
+    String label;
+    switch (widget.themeMode) {
+      case ThemeMode.system:
+        icon = Icons.brightness_auto_rounded;
+        label = '自动';
+        break;
+      case ThemeMode.light:
+        icon = Icons.light_mode_rounded;
+        label = '浅色';
+        break;
+      case ThemeMode.dark:
+        icon = Icons.dark_mode_rounded;
+        label = '深色';
+        break;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: PopupMenuButton<ThemeMode>(
+        initialValue: widget.themeMode,
+        icon: Icon(icon, color: Colors.white),
+        tooltip: '切换外观: $label',
+        onSelected: widget.onThemeModeChanged,
+        itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: ThemeMode.system,
+            child: Row(
+              children: [
+                Icon(Icons.brightness_auto_rounded, size: 20),
+                SizedBox(width: 12),
+                Text('跟随系统'),
+              ],
+            ),
+          ),
+          const PopupMenuItem(
+            value: ThemeMode.light,
+            child: Row(
+              children: [
+                Icon(Icons.light_mode_rounded, size: 20),
+                SizedBox(width: 12),
+                Text('浅色模式'),
+              ],
+            ),
+          ),
+          const PopupMenuItem(
+            value: ThemeMode.dark,
+            child: Row(
+              children: [
+                Icon(Icons.dark_mode_rounded, size: 20),
+                SizedBox(width: 12),
+                Text('深色模式'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showPopUp() {
@@ -223,14 +418,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildSection(String title, Widget content, {String? code}) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color cardColor = isDark ? const Color(0xFF1C1C1E) : Colors.white;
+    final Color textColor = isDark ? Colors.white : const Color(0xFF24292E);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: (isDark ? Colors.black : Colors.black).withValues(
+              alpha: isDark ? 0.2 : 0.03,
+            ),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -258,10 +459,11 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(width: 10),
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.2,
+                        color: textColor,
                       ),
                     ),
                   ],
@@ -291,12 +493,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ScaffoldMessenger(
       key: _messengerKey,
       child: Stack(
         children: [
           Scaffold(
-            backgroundColor: const Color(0xFFF7F8FA),
+            backgroundColor: isDark
+                ? const Color(0xFF000000)
+                : const Color(0xFFF7F8FA),
             body: NZPullToRefresh(
               backgroundColor: Colors.transparent,
               refreshDelay: const Duration(milliseconds: 1000),
@@ -316,9 +522,14 @@ class _HomePageState extends State<HomePage> {
                     expandedHeight: 220,
                     pinned: true,
                     stretch: true,
-                    backgroundColor: Colors.white,
-                    surfaceTintColor: Colors.white,
+                    backgroundColor: isDark
+                        ? const Color(0xFF1C1C1E)
+                        : Colors.white,
+                    surfaceTintColor: isDark
+                        ? const Color(0xFF1C1C1E)
+                        : Colors.white,
                     elevation: 0,
+                    actions: [_buildThemeModeButton()],
                     flexibleSpace: FlexibleSpaceBar(
                       stretchModes: const [
                         StretchMode.zoomBackground,
@@ -404,10 +615,10 @@ class _HomePageState extends State<HomePage> {
                       centerTitle: true,
                       title: Opacity(
                         opacity: _appBarOpacity,
-                        child: const Text(
+                        child: Text(
                           'NezhaUI 设计规范',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: isDark ? Colors.white : Colors.black,
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
                           ),
@@ -789,6 +1000,11 @@ Future.delayed(Duration(seconds: 2), () => NZToast.hide());''',
                                     'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=100&h=100&auto=format&fit=crop',
                                 actions: [
                                   IconButton(
+                                    icon: const Icon(Icons.palette_rounded),
+                                    tooltip: '主题配置',
+                                    onPressed: _showThemeSettings,
+                                  ),
+                                  IconButton(
                                     icon: const Icon(
                                       Icons.notifications_none_rounded,
                                     ),
@@ -1016,6 +1232,34 @@ NZNavBar(
   content: '提交后将无法修改，是否确认继续？',
   onConfirm: () => print('已确认'),
 );''',
+                        ),
+                        _buildSection(
+                          '金融图表 (NZTradingView)',
+
+                          NZTradingView(
+                            key: const ValueKey('main_tradingview'),
+                            id: 1,
+                            isLightWeightChart: true,
+                            symbol: 'KO',
+                            height: 300,
+                            interval: 'M',
+                            timezone: 'Asia/Shanghai',
+                            chartValue: TradingDataExample.fakeChartData,
+                            indicators: TradingDataExample.indicators,
+                            volume: TradingDataExample.fakeVolume,
+                          ),
+
+                          code: '''// 轻量级视图 (使用示例交易数据)
+NZTradingView(
+  symbol: 'KO',
+  height: 300,
+  isLightWeightChart: true,
+  interval: 'M',
+  timezone: 'Asia/Shanghai',
+  chartValue: TradingDataExample.fakeChartData,
+  indicators: TradingDataExample.indicators,
+  volume: TradingDataExample.fakeVolume,
+)''',
                         ),
                         _buildSection(
                           'Dialog 对话框 (NZDialog)',
