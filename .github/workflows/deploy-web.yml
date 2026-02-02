@@ -44,6 +44,10 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    # 暂时移除特定的并发限制，让部署更顺滑
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
