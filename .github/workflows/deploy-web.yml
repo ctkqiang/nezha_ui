@@ -23,11 +23,13 @@ jobs:
       - name: Build Web
         run: |
           cd example
-          # 修正参数：在 Wasm 模式下不需要显式 --web-renderer，或者参数名应为 --renderer
-          flutter build web --release --wasm --base-href /
+          # 因为使用了自定义域名 www.ctkqiang.xin，base-href 必须是 /
+          # 如果你访问的是 www.ctkqiang.xin/nezha_ui/，那么 base-href 必须是 /nezha_ui/
+          # 考虑到你现在的 URL，我们统一使用 /nezha_ui/ 以确保资源加载正确
+          flutter build web --release --wasm --base-href /nezha_ui/
           
-          # 强力修正 base href 以适配自定义域名
-          sed -i 's/<base href=".*">/<base href="\/">/g' build/web/index.html
+          # 确保 index.html 里的 base href 绝对正确
+          sed -i 's/<base href=".*">/<base href="\/nezha_ui\/">/g' build/web/index.html
           
           # 添加 .nojekyll 和 CNAME
           touch build/web/.nojekyll
