@@ -57,6 +57,12 @@ class NZCalendar extends StatefulWidget {
   /// 选项选中回调
   final void Function(DateTime date, String option)? onOptionSelected;
 
+  /// 事件标记 (日期 -> 颜色列表)
+  final Map<DateTime, List<Color>>? events;
+
+  /// 星期显示文本
+  final List<String> weekDayLabels;
+
   const NZCalendar({
     super.key,
     this.initialDate,
@@ -72,6 +78,8 @@ class NZCalendar extends StatefulWidget {
     this.usePrompt = false,
     this.promptOptions,
     this.onOptionSelected,
+    this.events,
+    this.weekDayLabels = const ['日', '一', '二', '三', '四', '五', '六'],
   });
 
   @override
@@ -308,12 +316,11 @@ class _NZCalendarState extends State<NZCalendar> {
   }
 
   Widget _buildWeekDays() {
-    const List<String> weekDays = ['日', '一', '二', '三', '四', '五', '六'];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: weekDays
+        children: widget.weekDayLabels
             .map(
               (day) => Expanded(
                 child: Center(
@@ -399,14 +406,22 @@ class _NZCalendarState extends State<NZCalendar> {
     final bool isToday = DateUtils.isSameDay(date, DateTime.now());
 
     bool isEnabled = true;
-    if (widget.firstDate != null && date.isBefore(widget.firstDate!))
+    if (widget.firstDate != null && date.isBefore(widget.firstDate!)) {
       isEnabled = false;
-    if (widget.lastDate != null && date.isAfter(widget.lastDate!))
+    }
+    if (widget.lastDate != null && date.isAfter(widget.lastDate!)) {
       isEnabled = false;
+    }
 
     final String lunarDay = widget.showLunar
         ? _NZLunarUtils.getDayString(date)
         : '';
+
+    // 获取当天的事件颜色
+    final List<Color>? dayEvents = widget.events?.entries
+        .where((e) => DateUtils.isSameDay(e.key, date))
+        .map((e) => e.value)
+        .firstOrNull;
 
     return GestureDetector(
       onTap: isEnabled && isCurrentMonth
@@ -457,6 +472,24 @@ class _NZCalendarState extends State<NZCalendar> {
                       ? Colors.white.withValues(alpha: 0.8)
                       : Colors.grey[400],
                   fontSize: 9,
+                ),
+              ),
+            if (dayEvents != null && dayEvents.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: dayEvents.take(3).map((color) {
+                    return Container(
+                      width: 4,
+                      height: 4,
+                      margin: const EdgeInsets.symmetric(horizontal: 1),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.white : color,
+                        shape: BoxShape.circle,
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
           ],

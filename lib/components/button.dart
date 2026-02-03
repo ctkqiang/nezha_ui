@@ -57,6 +57,12 @@ class NZButton extends StatelessWidget {
   /// 是否通栏（全宽）显示
   final bool block;
 
+  /// 进度值 (0.0 到 1.0)，若提供则显示进度条背景
+  final double? progress;
+
+  /// 进度条颜色，若不提供则使用 [foregroundColor] 的淡化版本
+  final Color? progressColor;
+
   /// 自定义背景颜色
   final Color? color;
 
@@ -77,6 +83,8 @@ class NZButton extends StatelessWidget {
     this.iconGap = 8.0,
     this.isLoading = false,
     this.block = false,
+    this.progress,
+    this.progressColor,
     this.color,
     this.foregroundColor,
   }) : assert(child != null || label != null, '必须提供 child 或 label');
@@ -94,6 +102,8 @@ class NZButton extends StatelessWidget {
     double iconGap = 8.0,
     bool isLoading = false,
     bool block = false,
+    double? progress,
+    Color? progressColor,
     Color? color,
     Color? foregroundColor,
   }) => NZButton(
@@ -108,6 +118,8 @@ class NZButton extends StatelessWidget {
     iconGap: iconGap,
     isLoading: isLoading,
     block: block,
+    progress: progress,
+    progressColor: progressColor,
     color: color,
     foregroundColor: foregroundColor,
     child: child,
@@ -126,6 +138,8 @@ class NZButton extends StatelessWidget {
     double iconGap = 8.0,
     bool isLoading = false,
     bool block = false,
+    double? progress,
+    Color? progressColor,
     Color? color,
     Color? foregroundColor,
   }) => NZButton(
@@ -140,6 +154,8 @@ class NZButton extends StatelessWidget {
     iconGap: iconGap,
     isLoading: isLoading,
     block: block,
+    progress: progress,
+    progressColor: progressColor,
     color: color,
     foregroundColor: foregroundColor,
     child: child,
@@ -158,6 +174,8 @@ class NZButton extends StatelessWidget {
     double iconGap = 8.0,
     bool isLoading = false,
     bool block = false,
+    double? progress,
+    Color? progressColor,
     Color? color,
     Color? foregroundColor,
   }) => NZButton(
@@ -172,6 +190,8 @@ class NZButton extends StatelessWidget {
     iconGap: iconGap,
     isLoading: isLoading,
     block: block,
+    progress: progress,
+    progressColor: progressColor,
     color: color,
     foregroundColor: foregroundColor,
     child: child,
@@ -190,6 +210,8 @@ class NZButton extends StatelessWidget {
     double iconGap = 8.0,
     bool isLoading = false,
     bool block = false,
+    double? progress,
+    Color? progressColor,
     Color? color,
     Color? foregroundColor,
   }) => NZButton(
@@ -204,6 +226,8 @@ class NZButton extends StatelessWidget {
     iconGap: iconGap,
     isLoading: isLoading,
     block: block,
+    progress: progress,
+    progressColor: progressColor,
     color: color,
     foregroundColor: foregroundColor,
     child: child,
@@ -290,23 +314,46 @@ class NZButton extends StatelessWidget {
         color: finalBackgroundColor,
         borderRadius: BorderRadius.circular(borderRadius),
         clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: isEnabled ? onPressed : null,
-          splashColor: finalForegroundColor.withValues(alpha: 0.1),
-          highlightColor: finalForegroundColor.withValues(alpha: 0.05),
-          child: Container(
-            padding: padding ?? const EdgeInsets.symmetric(horizontal: 24.0),
-            decoration: BoxDecoration(
-              border: borderSide != BorderSide.none
-                  ? Border.fromBorderSide(
-                      borderSide.copyWith(color: effectiveForegroundColor),
-                    )
-                  : null,
-              borderRadius: BorderRadius.circular(borderRadius),
+        child: Stack(
+          children: [
+            if (progress != null)
+              Positioned.fill(
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: progress!.clamp(0.0, 1.0),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOutCubic,
+                    color:
+                        progressColor ??
+                        finalForegroundColor.withValues(alpha: 0.2),
+                  ),
+                ),
+              ),
+            Positioned.fill(
+              child: InkWell(
+                onTap: isEnabled ? onPressed : null,
+                splashColor: finalForegroundColor.withValues(alpha: 0.1),
+                highlightColor: finalForegroundColor.withValues(alpha: 0.05),
+                child: Container(
+                  padding:
+                      padding ?? const EdgeInsets.symmetric(horizontal: 24.0),
+                  decoration: BoxDecoration(
+                    border: borderSide != BorderSide.none
+                        ? Border.fromBorderSide(
+                            borderSide.copyWith(
+                              color: effectiveForegroundColor,
+                            ),
+                          )
+                        : null,
+                    borderRadius: BorderRadius.circular(borderRadius),
+                  ),
+                  alignment: Alignment.center,
+                  child: content,
+                ),
+              ),
             ),
-            alignment: Alignment.center,
-            child: content,
-          ),
+          ],
         ),
       ),
     );
@@ -353,12 +400,18 @@ class NZProgressButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color effectiveProgressColor = color ?? NZColor.nezhaPrimary;
-    final Color effectiveBackgroundColor = backgroundColor ??
-        (isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFF2F2F2));
+    final Color effectiveBackgroundColor =
+        backgroundColor ??
+        (isDark
+            ? Colors.white.withValues(alpha: 0.05)
+            : const Color(0xFFF2F2F2));
 
     // 根据进度和背景色动态计算文本颜色，确保可读性
-    final Color effectiveForegroundColor = foregroundColor ??
-        (progress > 0.5 ? Colors.white : (isDark ? Colors.white : Colors.black87));
+    final Color effectiveForegroundColor =
+        foregroundColor ??
+        (progress > 0.5
+            ? Colors.white
+            : (isDark ? Colors.white : Colors.black87));
 
     return SizedBox(
       width: block ? double.infinity : width,
@@ -386,7 +439,9 @@ class NZProgressButton extends StatelessWidget {
               child: InkWell(
                 onTap: onPressed,
                 splashColor: effectiveForegroundColor.withValues(alpha: 0.1),
-                highlightColor: effectiveForegroundColor.withValues(alpha: 0.05),
+                highlightColor: effectiveForegroundColor.withValues(
+                  alpha: 0.05,
+                ),
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -397,7 +452,8 @@ class NZProgressButton extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
                       ),
-                      child: child ??
+                      child:
+                          child ??
                           Text(
                             label!,
                             textAlign: TextAlign.center,

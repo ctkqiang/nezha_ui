@@ -109,7 +109,7 @@ NZTag(
 // 带删除功能
 NZTag(
   label: '可删除',
-  onDeleted: () => print('deleted'),
+  onDeleted: () => debugPrint('deleted'),
 )''',
     ),
     NZDocSection(
@@ -235,7 +235,7 @@ class MyApp extends StatelessWidget {
     ),
     NZDocSection(
       id: 'Text',
-      title: '文本排版 (Text)',
+      title: '文本排版 (NZText)',
       icon: Icons.text_fields_rounded,
       description: '具有预定义层级样式的标准化排版组件。',
       usage: [
@@ -267,67 +267,99 @@ NZText.body('正文内容');''',
     ),
     NZDocSection(
       id: 'Button',
-      title: '按钮 (Button)',
+      title: '按钮 (NZButton)',
       icon: Icons.smart_button_rounded,
-      description: '支持多种视觉状态 and 配置的交互式按钮组件。',
+      description: '支持多种视觉状态、进度展示及配置的交互式按钮组件。',
       usage: [
         ['onPressed', 'VoidCallback?', '点击时触发的操作。为 null 时禁用按钮'],
         ['label', 'String?', '主要文本标签'],
         ['style', 'NZButtonStyle', '视觉变体：primary, secondary, outline, text'],
         ['isLoading', 'bool', '激活时显示加载指示器'],
+        ['progress', 'double?', '可选的进度值 (0.0 到 1.0)'],
+        ['progressColor', 'Color?', '进度条填充颜色'],
         ['block', 'bool', '强制按钮占据全宽'],
         ['icon', 'Widget?', '可选的前置图标'],
         ['borderRadius', 'double', '圆角半径（默认 12.0）'],
         ['height', 'double', '按钮高度（默认 48.0）'],
       ],
-      preview: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
+      preview: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: NZButton.primary(label: '主要按钮', onPressed: () {}),
+              Row(
+                children: [
+                  Expanded(
+                    child: NZButton.primary(label: '主要按钮', onPressed: () {}),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: NZButton.secondary(label: '次要按钮', onPressed: () {}),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: NZButton.secondary(label: '次要按钮', onPressed: () {}),
+              const SizedBox(height: 12),
+              NZButton.primary(
+                label: '系统更新中 65%',
+                progress: 0.65,
+                block: true,
+                onPressed: () {},
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: NZButton.outline(
+                      label: '资源同步',
+                      progress: 0.3,
+                      progressColor: Colors.orange.withValues(alpha: 0.2),
+                      onPressed: () {},
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: NZButton.primary(
+                      label: '完成',
+                      progress: 1.0,
+                      progressColor: Colors.green.withValues(alpha: 0.3),
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              NZButton.primary(
+                label: '加载中状态',
+                isLoading: true,
+                block: true,
+                onPressed: () {},
+              ),
+              const SizedBox(height: 12),
+              NZButton.primary(
+                label: '带图标按钮',
+                icon: const Icon(
+                  Icons.send_rounded,
+                  color: Colors.white,
+                  size: 18,
+                ),
+                block: true,
+                onPressed: () {},
               ),
             ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: NZButton.outline(label: '描边按钮', onPressed: () {}),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: NZButton.text(label: '文字按钮', onPressed: () {}),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          NZButton.primary(
-            label: '加载中状态',
-            isLoading: true,
-            block: true,
-            onPressed: () {},
-          ),
-          const SizedBox(height: 12),
-          NZButton.primary(
-            label: '带图标按钮',
-            icon: const Icon(Icons.send_rounded, color: Colors.white, size: 18),
-            block: true,
-            onPressed: () {},
-          ),
-          const SizedBox(height: 12),
-          NZButton.primary(label: '禁用状态', block: true, onPressed: null),
-        ],
+          );
+        },
       ),
-      content: 'NZButton 为主要和次要操作提供了统一的接口，并内置了反馈机制。',
-      code: '''// 主要按钮
+      content: 'NZButton 为主要和次要操作提供了统一的接口，并内置了反馈机制及进度展示功能。',
+      code: '''// 基础用法
 NZButton.primary(
   label: '立即开始',
+  onPressed: () {},
+);
+
+// 进度按钮模式
+NZButton.primary(
+  label: '下载中 65%',
+  progress: 0.65,
   onPressed: () {},
 );
 
@@ -336,31 +368,13 @@ NZButton.primary(
   label: '处理中',
   isLoading: true,
   onPressed: () {},
-);
-
-// 次要按钮 (小程序风格)
-NZButton.secondary(
-  label: '取消',
-  onPressed: () {},
-);
-
-// 描边按钮
-NZButton.outline(
-  label: '了解更多',
-  onPressed: () {},
-);
-
-// 文字按钮
-NZButton.text(
-  label: '忽略',
-  onPressed: () {},
 );''',
     ),
     NZDocSection(
       id: 'Drawer',
-      title: '抽屉 (Drawer)',
+      title: '抽屉 (NZDrawer)',
       icon: Icons.menu_open_rounded,
-      description: '用于辅助导航或内容显示的覆盖层组件。',
+      description: '用于辅助导航 or 内容显示的覆盖层组件。',
       usage: [
         ['child', 'Widget', '要在抽屉内渲染的内容'],
         ['position', 'NZDrawerPosition', '显示位置：left, right, top, bottom'],
@@ -464,14 +478,16 @@ NZDivider(
     ),
     NZDocSection(
       id: 'Calendar',
-      title: '日历 (Calendar)',
+      title: '日历 (Candar)',
       icon: Icons.calendar_month_rounded,
-      description: '专业级日历组件，支持多样式切换、农历显示、平滑动画及自定义主题。',
+      description: '专业级日历组件，支持多样式切换、农历显示、事件标记、平滑动画及自定义主题。',
       usage: [
         ['initialDate', 'DateTime?', '初始选中的日期，默认为今天'],
         ['firstDate', 'DateTime?', '最小可选日期'],
         ['lastDate', 'DateTime?', '最大可选日期'],
         ['onDateSelected', 'ValueChanged<DateTime>?', '日期选中回调'],
+        ['events', 'Map<DateTime, List<Color>>?', '日期事件标记，Key 为日期，Value 为颜色列表'],
+        ['weekDayLabels', 'List<String>', '自定义周几标签（默认：[日, 一, ..., 六]）'],
         ['showHeader', 'bool', '是否显示头部导航（默认 true）'],
         ['showLunar', 'bool', '是否显示农历（默认 true）'],
         [
@@ -488,50 +504,49 @@ NZDivider(
       ],
       preview: Column(
         children: [
-          const NZCalendar(),
+          NZCalendar(
+            events: {
+              DateTime.now(): [Colors.red, Colors.blue],
+              DateTime.now().add(const Duration(days: 1)): [Colors.green],
+              DateTime.now().subtract(const Duration(days: 2)): [
+                Colors.orange,
+                Colors.purple,
+                Colors.cyan,
+              ],
+            },
+          ),
           const SizedBox(height: 24),
           const NZCalendar(style: NZCalendarStyle.card, showLunar: true),
           const SizedBox(height: 24),
           NZCalendar(
             style: NZCalendarStyle.compact,
             usePrompt: true,
-            onOptionSelected: (date, option) =>
-                print('Selected $option for $date'),
+            onOptionSelected: (date, option) {
+              debugPrint('Selected $option for $date');
+            },
           ),
         ],
       ),
       content:
-          'NZCalendar 采用了 PageView 实现无限月份滚动，并配合 AnimatedSwitcher 和 AnimatedContainer 提供丝滑的视觉过渡效果。内置的高精度农历转换算法（支持 1900-2050 年）确保了在各种场景下的实用性。',
+          'NZCalendar 采用了 PageView 实现无限月份滚动，并配合 AnimatedSwitcher 和 AnimatedContainer 提供丝滑的视觉过渡效果。内置的高精度农历转换算法及事件标记功能，确保了在各种场景下的实用性。',
       code: '''// 基础用法
 const NZCalendar()
 
-// 卡片样式 + 农历显示
-const NZCalendar(
-  style: NZCalendarStyle.card,
-  showLunar: true,
-)
-
-// 自定义主题与事件监听
+// 带事件标记
 NZCalendar(
-  style: NZCalendarStyle.compact,
-  primaryColor: Colors.purple,
-  onDateSelected: (date) {
-    print('选中日期: \$date');
+  events: {
+    DateTime(2024, 3, 20): [Colors.red, Colors.blue],
   },
 )
 
-// 开启选项弹窗
+// 自定义周标签
 NZCalendar(
-  usePrompt: true,
-  promptOptions: ['添加日程', '查看详情'],
-  onOptionSelected: (date, option) {
-    print('\$date 选择: \$option');
-  },
+  weekDayLabels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 )''',
     ),
     NZDocSection(
       id: 'BackToTop',
-      title: '回到顶部 (BackToTop)',
+      title: '回到顶部 (BackTop)',
       icon: Icons.vertical_align_top_rounded,
       description: '用于返回可滚动内容开头的导航快捷方式。',
       usage: [
@@ -747,12 +762,12 @@ NZNavBar(
       ],
       preview: StatefulBuilder(
         builder: (context, setState) {
-          double _p = 0.65;
+          double p = 0.65;
           return Column(
             children: [
               NZProgressButton(
-                progress: _p,
-                label: '系统更新中 ${(_p * 100).toInt()}%',
+                progress: p,
+                label: '系统更新中 ${(p * 100).toInt()}%',
                 onPressed: () {
                   NZToast.show(context, message: '正在检查更新...');
                 },
@@ -1490,7 +1505,8 @@ NZPagination(
       id: 'Masonry',
       title: '瀑布流 (NZMasonry)',
       icon: Icons.dashboard_customize_rounded,
-      description: '支持多列等宽不等高的布局，适合展示图片、卡片流等内容。内置交错入场动画，支持基础列表和 Builder 模式。',
+      description:
+          '支持多列等宽不等高的布局，适合展示图片、卡片流等内容。内置交错入场动画，支持基础列表和 Builder 模式，现已支持 ScrollController。',
       usage: [
         ['children', 'List<Widget>?', '子组件列表 (基础模式)'],
         ['itemBuilder', 'IndexedWidgetBuilder?', '子组件构建器 (Builder 模式)'],
@@ -1501,61 +1517,97 @@ NZPagination(
         ['padding', 'EdgeInsetsGeometry?', '内边距'],
         ['animate', 'bool', '是否开启入场渐显动画 (默认 true)'],
         ['animationDuration', 'Duration', '动画持续时间'],
+        ['physics', 'ScrollPhysics?', '滚动物理效果'],
+        ['shrinkWrap', 'bool', '是否根据子组件总长度调整高度'],
+        ['controller', 'ScrollController?', '滚动控制器'],
       ],
       preview: SizedBox(
-        height: 200,
+        height: 400,
         child: NZMasonry.builder(
-          itemCount: 6,
+          itemCount: 8,
           crossAxisCount: 2,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
           animate: true,
           itemBuilder: (context, index) {
-            final heights = [60.0, 100.0, 80.0, 70.0, 90.0, 110.0];
+            final heights = [
+              100.0,
+              160.0,
+              120.0,
+              140.0,
+              110.0,
+              150.0,
+              130.0,
+              170.0,
+            ];
+            final color = [
+              Colors.blue,
+              Colors.purple,
+              Colors.orange,
+              Colors.green,
+              Colors.pink,
+              Colors.cyan,
+              Colors.indigo,
+              Colors.teal,
+            ][index % 8];
             return Container(
               height: heights[index % heights.length],
               decoration: BoxDecoration(
-                color: NZColor.nezhaPrimary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: NZColor.nezhaPrimary.withValues(alpha: 0.2),
+                  color: color.withValues(alpha: 0.2),
+                  width: 1,
                 ),
               ),
-              child: Center(
-                child: Text(
-                  'Item $index',
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: NZColor.nezhaPrimary,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.auto_awesome_mosaic_rounded,
+                    color: color.withValues(alpha: 0.5),
+                    size: 24,
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Item $index',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
+                  ),
+                ],
               ),
             );
           },
         ),
       ),
       content:
-          'NZMasonry 能够根据列数自动分配子组件，实现优雅的瀑布流排版效果。推荐使用 builder 构造函数以获得更好的性能和入场动画支持。',
-      code: '''// 基础用法
+          'NZMasonry 能够根据列数自动分配子组件，实现优雅的瀑布流排版效果。推荐使用 builder 构造函数以获得更好的性能和入场动画支持，现已支持 ScrollController。',
+      code: '''// 推荐用法：使用 Builder 模式支持交错入场动画
+NZMasonry.builder(
+  itemCount: 10,
+  crossAxisCount: 2,
+  mainAxisSpacing: 12,
+  crossAxisSpacing: 12,
+  animate: true,
+  controller: _scrollController,
+  itemBuilder: (context, index) {
+    return MyItemWidget(index: index);
+  },
+)
+
+// 基础用法
 NZMasonry(
   crossAxisCount: 2,
   mainAxisSpacing: 10,
   crossAxisSpacing: 10,
+  shrinkWrap: true,
   children: [
     ItemWidget(height: 100),
     ItemWidget(height: 150),
-    ItemWidget(height: 80),
   ],
-)
-
-// 推荐用法：使用 Builder 模式支持交错入场动画
-NZMasonry.builder(
-  itemCount: 10,
-  crossAxisCount: 2,
-  animate: true,
-  itemBuilder: (context, index) {
-    return MyItemWidget(index: index);
-  },
 )''',
     ),
   ];

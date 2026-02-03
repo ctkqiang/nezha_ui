@@ -2,7 +2,7 @@ export 'theme/colors.dart';
 export 'theme/theme.dart';
 
 export 'components/button.dart'
-    show NZButton, NZProgressButton, NZImageButton, NZDraggableButton;
+    show NZButton, NZImageButton, NZDraggableButton, NZProgressButton;
 export 'components/calendar.dart' show NZCalendar, NZCalendarStyle;
 export 'components/divider.dart';
 export 'components/pull_to_refresh.dart';

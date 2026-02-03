@@ -32,6 +32,15 @@ class NZMasonry extends StatelessWidget {
   /// 动画持续时间
   final Duration animationDuration;
 
+  /// 滚动物理效果
+  final ScrollPhysics? physics;
+
+  /// 是否根据子组件收缩
+  final bool shrinkWrap;
+
+  /// 滚动控制器
+  final ScrollController? controller;
+
   /// 基础构造函数
   const NZMasonry({
     super.key,
@@ -42,6 +51,9 @@ class NZMasonry extends StatelessWidget {
     this.padding,
     this.animate = true,
     this.animationDuration = const Duration(milliseconds: 500),
+    this.physics,
+    this.shrinkWrap = false,
+    this.controller,
   }) : itemBuilder = null,
        itemCount = null;
 
@@ -56,6 +68,9 @@ class NZMasonry extends StatelessWidget {
     this.padding,
     this.animate = true,
     this.animationDuration = const Duration(milliseconds: 500),
+    this.physics,
+    this.shrinkWrap = false,
+    this.controller,
   }) : children = null;
 
   @override
@@ -63,19 +78,14 @@ class NZMasonry extends StatelessWidget {
     final count = itemCount ?? children?.length ?? 0;
     if (count == 0) return const SizedBox.shrink();
 
-    return Padding(
+    Widget masonryContent = Padding(
       padding: padding ?? EdgeInsets.zero,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: List.generate(crossAxisCount, (columnIndex) {
           return Expanded(
             child: Padding(
-              padding: EdgeInsets.only(
-                left: columnIndex == 0 ? 0 : crossAxisSpacing / 2,
-                right: columnIndex == crossAxisCount - 1
-                    ? 0
-                    : crossAxisSpacing / 2,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: crossAxisSpacing / 2),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: _getChildrenForColumn(context, columnIndex, count),
@@ -84,6 +94,16 @@ class NZMasonry extends StatelessWidget {
           );
         }),
       ),
+    );
+
+    if (shrinkWrap) {
+      return masonryContent;
+    }
+
+    return SingleChildScrollView(
+      controller: controller,
+      physics: physics,
+      child: masonryContent,
     );
   }
 
@@ -94,27 +114,25 @@ class NZMasonry extends StatelessWidget {
   ) {
     List<Widget> columnChildren = [];
 
-    for (int i = 0; i < totalCount; i++) {
-      if (i % crossAxisCount == columnIndex) {
-        Widget child;
-        if (itemBuilder != null) {
-          child = itemBuilder!(context, i);
-        } else {
-          child = children![i];
-        }
+    for (int i = columnIndex; i < totalCount; i += crossAxisCount) {
+      Widget child;
+      if (itemBuilder != null) {
+        child = itemBuilder!(context, i);
+      } else {
+        child = children![i];
+      }
 
-        if (animate) {
-          child = _AnimatedMasonryItem(
-            index: i,
-            duration: animationDuration,
-            child: child,
-          );
-        }
+      if (animate) {
+        child = _AnimatedMasonryItem(
+          index: i,
+          duration: animationDuration,
+          child: child,
+        );
+      }
 
-        columnChildren.add(child);
-        if (i + crossAxisCount < totalCount) {
-          columnChildren.add(SizedBox(height: mainAxisSpacing));
-        }
+      columnChildren.add(child);
+      if (i + crossAxisCount < totalCount) {
+        columnChildren.add(SizedBox(height: mainAxisSpacing));
       }
     }
     return columnChildren;

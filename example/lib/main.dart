@@ -642,56 +642,6 @@ class _HomePageState extends State<HomePage> {
                     sliver: SliverList(
                       delegate: SliverChildListDelegate([
                         _buildSection(
-                          'K线盘面 (NZKPan)',
-                          Column(
-                            children: [
-                              const _SectionTitle('实心蜡烛 (Solid) + 国际配色'),
-                              NZKPan(
-                                symbol: 'BTC/USDT',
-                                style: KLineStyle.solid,
-                                isChinaStyle: false,
-                                height: 320,
-                                indicators: const {
-                                  KLineIndicator.ma,
-                                  KLineIndicator.vol,
-                                },
-                                data: _generateMockKData(100),
-                              ),
-                              const SizedBox(height: 24),
-                              const _SectionTitle('空心蜡烛 (Hollow) + 中国配色'),
-                              NZKPan(
-                                symbol: 'XIAOMI',
-                                style: KLineStyle.hollow,
-                                isChinaStyle: true,
-                                height: 320,
-                                indicators: const {
-                                  KLineIndicator.ema,
-                                  KLineIndicator.vol,
-                                },
-                                data: _generateMockKData(100),
-                              ),
-                            ],
-                          ),
-                          code: '''// 基础用法
-NZKPan(
-  symbol: 'BTC/USDT',
-  data: klineDataList,
-)
-
-// 高级配置
-NZKPan(
-  symbol: 'ETH/USDT',
-  style: KLineStyle.hollow,
-  isChinaStyle: false, // 国际配色：绿涨红跌
-  indicators: {
-    KLineIndicator.ma,
-    KLineIndicator.vol,
-  },
-  height: 450,
-  data: klineDataList,
-)''',
-                        ),
-                        _buildSection(
                           '基础按钮 (NZButton)',
                           Wrap(
                             spacing: 12,
@@ -1779,11 +1729,12 @@ NZPagination(
                               const Text('智能分配列布局，支持交错入场动画，完美适配各类内容展示。'),
                               const SizedBox(height: 16),
                               NZMasonry.builder(
-                                itemCount: 5,
+                                itemCount: 10,
                                 crossAxisCount: 2,
-                                mainAxisSpacing: 12,
-                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 16,
+                                crossAxisSpacing: 16,
                                 animate: true,
+                                shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   final List<Color> colors = [
                                     Colors.blue,
@@ -1791,22 +1742,25 @@ NZPagination(
                                     Colors.orange,
                                     Colors.green,
                                     Colors.pink,
+                                    Colors.cyan,
+                                    Colors.indigo,
+                                    Colors.teal,
                                   ];
                                   final color = colors[index % colors.length];
 
                                   return Container(
                                     decoration: BoxDecoration(
                                       color: Theme.of(context).cardColor,
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(20),
                                       boxShadow: [
                                         BoxShadow(
                                           color: color.withValues(alpha: 0.1),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 4),
+                                          blurRadius: 20,
+                                          offset: const Offset(0, 8),
                                         ),
                                       ],
                                       border: Border.all(
-                                        color: color.withValues(alpha: 0.1),
+                                        color: color.withValues(alpha: 0.08),
                                       ),
                                     ),
                                     clipBehavior: Clip.antiAlias,
@@ -1816,44 +1770,72 @@ NZPagination(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         AspectRatio(
-                                          aspectRatio: index % 2 == 0
-                                              ? 16 / 9
-                                              : 4 / 5,
+                                          aspectRatio: index % 3 == 0
+                                              ? 1
+                                              : (index % 3 == 1
+                                                    ? 16 / 9
+                                                    : 3 / 4),
                                           child: Container(
                                             width: double.infinity,
-                                            color: color.withValues(
-                                              alpha: 0.08,
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  color.withValues(alpha: 0.15),
+                                                  color.withValues(alpha: 0.05),
+                                                ],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                              ),
                                             ),
                                             child: Icon(
                                               Icons.auto_awesome_mosaic_rounded,
                                               color: color.withValues(
-                                                alpha: 0.5,
+                                                alpha: 0.4,
                                               ),
-                                              size: 32,
+                                              size: 36,
                                             ),
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.all(12),
+                                          padding: const EdgeInsets.all(16),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                '精选卡片 #$index',
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
-                                                ),
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    width: 8,
+                                                    height: 8,
+                                                    decoration: BoxDecoration(
+                                                      color: color,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    '精选案例 #$index',
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                              const SizedBox(height: 4),
+                                              const SizedBox(height: 8),
                                               Text(
-                                                '这里是 NezhaUI 瀑布流组件的内容展示，宽高已设为自适应。',
-                                                maxLines: 2,
+                                                'NezhaUI 瀑布流组件支持高性能渲染与交错入场动画，完美适配各类业务场景。',
+                                                maxLines: 3,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: Colors.grey.shade500,
+                                                  fontSize: 12,
+                                                  height: 1.5,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall
+                                                      ?.color
+                                                      ?.withValues(alpha: 0.6),
                                                 ),
                                               ),
                                             ],
@@ -1866,15 +1848,15 @@ NZPagination(
                               ),
                             ],
                           ),
-                          code: '''// 推荐用法：Builder 模式 + 宽高自适应
+                          code: '''// 推荐用法：Builder 模式 + 动态宽高 + 交错动画
 NZMasonry.builder(
-  itemCount: 5,
+  itemCount: 10,
   crossAxisCount: 2,
-  mainAxisSpacing: 12,
-  crossAxisSpacing: 12,
+  mainAxisSpacing: 16,
+  crossAxisSpacing: 16,
   animate: true,
   itemBuilder: (context, index) {
-    return MyFlexibleCard(index: index);
+    return MyWaterfallCard(index: index);
   },
 )''',
                         ),
@@ -2204,55 +2186,6 @@ NZMasonry.builder(
           ],
         ),
         child: const Icon(Icons.support_agent_rounded, color: Colors.white),
-      ),
-    );
-  }
-
-  List<KLineData> _generateMockKData(int count) {
-    final List<KLineData> result = [];
-    double lastClose = 150.0;
-    final random = Random();
-    for (int i = 0; i < count; i++) {
-      final double open = lastClose;
-      final double change = (random.nextDouble() - 0.48) * 4.0;
-      final double close = open + change;
-      final double high = max(open, close) + random.nextDouble() * 2.0;
-      final double low = min(open, close) - random.nextDouble() * 2.0;
-      final double vol = 10000 + random.nextDouble() * 20000;
-      result.add(
-        KLineData(
-          time: DateTime.now().subtract(Duration(minutes: count - i)),
-          open: open,
-          high: high,
-          low: low,
-          close: close,
-          volume: vol,
-        ),
-      );
-      lastClose = close;
-    }
-    return result;
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  final String title;
-  const _SectionTitle(this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
       ),
     );
   }
