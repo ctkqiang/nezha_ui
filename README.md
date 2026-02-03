@@ -122,6 +122,18 @@ class MyApp extends StatelessWidget {
 - [弹窗组件](docs/pop_up.md)
 - [滑动操作](docs/swipe_list_tile.md)
 - [轻提示](docs/toast.md)
+- [K线盘面](docs/kpan.md)
+- [标签组件](docs/tags.md)
+- [对话框组件](docs/dialog.md)
+- [分页器](docs/pagination.md)
+- [步骤条](docs/steps.md)
+- [瀑布流](docs/masonry.md)
+- [下拉菜单](docs/dropdown_menu.md)
+- [应用入口](docs/nezha_ui.md)
+- [图片按钮](docs/image_button.md)
+- [进度按钮](docs/progress_button.md)
+- [悬浮按钮](docs/floating_action_button.md)
+- [拖拽按钮](docs/draggable_button.md)
 
 ## 贡献
 
