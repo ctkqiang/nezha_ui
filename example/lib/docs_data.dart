@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/nezha.dart';
 
@@ -208,6 +209,7 @@ class MyApp extends StatelessWidget {
 
 ### 核心特性
 - **流畅交互**：每个组件都经过细致的性能调优，确保动画过渡自然顺滑。
+- **金融级组件**：内置专业 K 线图、行情公告栏等金融业务核心组件。
 - **品牌定制**：深度集成 `NZTheme` 系统，支持无缝切换主题与品牌色。
 - **生产就绪**：提供包括按钮、抽屉、下拉刷新在内的全套核心组件。
 
@@ -1170,6 +1172,76 @@ NZToast.show(
    text: ['沪深300指数今日上涨 1.25%'],
    icon: Icon(Icons.trending_up),
  )''',
+    ),
+    NZDocSection(
+      id: 'KPan',
+      title: 'K线盘面 (KPan)',
+      icon: Icons.candlestick_chart_rounded,
+      description: '专业级金融 K 线图表组件，支持多种蜡烛样式、技术指标和高度交互。',
+      usage: [
+        ['data', 'List<KLineData>', 'K线数据列表'],
+        ['symbol', 'String', '交易对/标的名称'],
+        ['isChinaStyle', 'bool', '配色风格：true (红涨绿跌), false (绿涨红跌)'],
+        [
+          'style',
+          'KLineStyle',
+          '蜡烛样式：solid (实心), hollow (空心), line (线图), ohlc (美国线)',
+        ],
+        ['indicators', 'Set<KLineIndicator>', '开启的技术指标：ma, ema, vol, macd 等'],
+        ['height', 'double', '图表容器高度'],
+        ['gridColor', 'Color?', '背景网格颜色'],
+        ['onCrosshairChanged', 'ValueChanged<KLineData?>?', '十字光标移动时的回调'],
+      ],
+      preview: NZKPan(
+        symbol: 'XIAOMI',
+        style: KLineStyle.hollow,
+        height: 350,
+        data: () {
+          final List<KLineData> result = [];
+          double lastClose = 150.0;
+          final random = Random();
+          for (int i = 0; i < 100; i++) {
+            final double open = lastClose;
+            final double change = (random.nextDouble() - 0.48) * 4.0;
+            final double close = open + change;
+            final double high = max(open, close) + random.nextDouble() * 2.0;
+            final double low = min(open, close) - random.nextDouble() * 2.0;
+            final double vol = 10000 + random.nextDouble() * 20000;
+            result.add(
+              KLineData(
+                time: DateTime.now().subtract(Duration(minutes: 100 - i)),
+                open: open,
+                high: high,
+                low: low,
+                close: close,
+                volume: vol,
+              ),
+            );
+            lastClose = close;
+          }
+          return result;
+        }(),
+      ),
+      content:
+          'NZKPan 是为金融应用量身定制的高性能图表组件。它内置了十字光标交互、缩放平移以及多种专业技术指标，能够完美适配行情分析场景。',
+      code: '''// 基础用法
+NZKPan(
+  symbol: 'BTC/USDT',
+  data: klineDataList,
+)
+
+// 高级配置
+NZKPan(
+  symbol: 'ETH/USDT',
+  style: KLineStyle.hollow,
+  isChinaStyle: false, // 国际配色
+  indicators: {
+    KLineIndicator.ma,
+    KLineIndicator.vol,
+  },
+  height: 450,
+  data: klineDataList,
+)''',
     ),
     NZDocSection(
       id: 'DropDownMenu',

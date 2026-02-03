@@ -1,4 +1,6 @@
+import 'dart:math';
 import 'package:flutter/foundation.dart';
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:nezha_ui/nezha.dart';
 import 'docs_site.dart';
@@ -639,6 +641,56 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.fromLTRB(20, 24, 20, 100),
                     sliver: SliverList(
                       delegate: SliverChildListDelegate([
+                        _buildSection(
+                          'K线盘面 (NZKPan)',
+                          Column(
+                            children: [
+                              const _SectionTitle('实心蜡烛 (Solid) + 国际配色'),
+                              NZKPan(
+                                symbol: 'BTC/USDT',
+                                style: KLineStyle.solid,
+                                isChinaStyle: false,
+                                height: 320,
+                                indicators: const {
+                                  KLineIndicator.ma,
+                                  KLineIndicator.vol,
+                                },
+                                data: _generateMockKData(100),
+                              ),
+                              const SizedBox(height: 24),
+                              const _SectionTitle('空心蜡烛 (Hollow) + 中国配色'),
+                              NZKPan(
+                                symbol: 'XIAOMI',
+                                style: KLineStyle.hollow,
+                                isChinaStyle: true,
+                                height: 320,
+                                indicators: const {
+                                  KLineIndicator.ema,
+                                  KLineIndicator.vol,
+                                },
+                                data: _generateMockKData(100),
+                              ),
+                            ],
+                          ),
+                          code: '''// 基础用法
+NZKPan(
+  symbol: 'BTC/USDT',
+  data: klineDataList,
+)
+
+// 高级配置
+NZKPan(
+  symbol: 'ETH/USDT',
+  style: KLineStyle.hollow,
+  isChinaStyle: false, // 国际配色：绿涨红跌
+  indicators: {
+    KLineIndicator.ma,
+    KLineIndicator.vol,
+  },
+  height: 450,
+  data: klineDataList,
+)''',
+                        ),
                         _buildSection(
                           '基础按钮 (NZButton)',
                           Wrap(
@@ -1827,6 +1879,127 @@ NZMasonry.builder(
 )''',
                         ),
                         _buildSection(
+                          'K线盘面 (NZKPan)',
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                '专业级金融 K 线组件，支持红涨绿跌 (中国市场)、空心/实心蜡烛样式以及 MA 均线。',
+                              ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                '专业级交互图表 (支持长按显示十字光标):',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              NZKPan(
+                                symbol: 'XIAOMI',
+                                style: KLineStyle.hollow,
+                                height: 450,
+                                indicators: const {
+                                  KLineIndicator.ma,
+                                  KLineIndicator.vol,
+                                },
+                                data: () {
+                                  final List<KLineData> result = [];
+                                  double lastClose = 150.0;
+                                  final random = Random();
+                                  for (int i = 0; i < 500; i++) {
+                                    final double open = lastClose;
+                                    // 模拟带有随机游走和轻微趋势的市场
+                                    final double change =
+                                        (random.nextDouble() - 0.48) * 4.0;
+                                    final double close = open + change;
+                                    final double high =
+                                        max(open, close) +
+                                        random.nextDouble() * 2.0;
+                                    final double low =
+                                        min(open, close) -
+                                        random.nextDouble() * 2.0;
+                                    final double vol =
+                                        10000 + random.nextDouble() * 20000;
+
+                                    result.add(
+                                      KLineData(
+                                        time: DateTime.now().subtract(
+                                          Duration(minutes: 500 - i),
+                                        ),
+                                        open: open,
+                                        high: high,
+                                        low: low,
+                                        close: close,
+                                        volume: vol,
+                                      ),
+                                    );
+                                    lastClose = close;
+                                  }
+                                  return result;
+                                }(),
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                '不同样式演示 (实心 & 国际配色):',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              NZKPan(
+                                symbol: 'XIAOMI',
+                                isChinaStyle: false, // 国际配色：绿涨红跌
+                                style: KLineStyle.solid,
+                                height: 300,
+                                indicators: const {KLineIndicator.vol},
+                                data: () {
+                                  final List<KLineData> result = [];
+                                  double lastClose = 68000.0;
+                                  final random = Random();
+                                  for (int i = 0; i < 300; i++) {
+                                    final double open = lastClose;
+                                    // 模拟高波动的加密货币市场
+                                    final double change =
+                                        (random.nextDouble() - 0.5) * 500.0;
+                                    final double close = open + change;
+                                    final double high =
+                                        max(open, close) +
+                                        random.nextDouble() * 200.0;
+                                    final double low =
+                                        min(open, close) -
+                                        random.nextDouble() * 200.0;
+                                    final double vol =
+                                        500 + random.nextDouble() * 1500;
+
+                                    result.add(
+                                      KLineData(
+                                        time: DateTime.now().subtract(
+                                          Duration(minutes: 300 - i),
+                                        ),
+                                        open: open,
+                                        high: high,
+                                        low: low,
+                                        close: close,
+                                        volume: vol,
+                                      ),
+                                    );
+                                    lastClose = close;
+                                  }
+                                  return result;
+                                }(),
+                              ),
+                            ],
+                          ),
+                          code: '''NZKPan(
+  style: KLineStyle.hollow, // 专业空心样式
+  isChinaStyle: true,      // 红涨绿跌
+  indicators: {KLineIndicator.ma, KLineIndicator.vol},
+  data: klineDataList,
+)''',
+                        ),
+                        _buildSection(
                           'DropDownMenu 下拉菜单',
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2031,6 +2204,55 @@ NZMasonry.builder(
           ],
         ),
         child: const Icon(Icons.support_agent_rounded, color: Colors.white),
+      ),
+    );
+  }
+
+  List<KLineData> _generateMockKData(int count) {
+    final List<KLineData> result = [];
+    double lastClose = 150.0;
+    final random = Random();
+    for (int i = 0; i < count; i++) {
+      final double open = lastClose;
+      final double change = (random.nextDouble() - 0.48) * 4.0;
+      final double close = open + change;
+      final double high = max(open, close) + random.nextDouble() * 2.0;
+      final double low = min(open, close) - random.nextDouble() * 2.0;
+      final double vol = 10000 + random.nextDouble() * 20000;
+      result.add(
+        KLineData(
+          time: DateTime.now().subtract(Duration(minutes: count - i)),
+          open: open,
+          high: high,
+          low: low,
+          close: close,
+          volume: vol,
+        ),
+      );
+      lastClose = close;
+    }
+    return result;
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String title;
+  const _SectionTitle(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     );
   }

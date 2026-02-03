@@ -23,5 +23,6 @@ export 'components/tags.dart';
 export 'components/steps.dart';
 export 'components/pagination.dart';
 export 'components/masonry.dart';
+export 'components/kpan.dart';
 
 export 'nezha_ui.dart';

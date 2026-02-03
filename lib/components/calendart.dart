@@ -13,9 +13,10 @@ enum NZCalendarStyle {
   compact,
 }
 
-/// NZCalendar 是 NezhaUI 提供的专业级日历组件。
+/// NZCalendar 是 NezhaUI 提供的专业日历组件。
 ///
-/// 支持月份切换动画、多样式配置、农历显示以及平滑的交互体验。
+/// 它支持多样式切换、农历显示、平滑动画以及高度自定义的主题配置。
+/// 适用于日程管理、日期选择等场景。
 class NZCalendar extends StatefulWidget {
   /// 初始选中的日期，默认为今天
   final DateTime? initialDate;
