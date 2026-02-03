@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   int _counter = 0;
   double _downloadProgress = 0.0;
+  int _currentPage = 1;
   bool _isDownloading = false;
   bool _isSaving = false;
   bool _showDraggable = false;
@@ -406,6 +407,20 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey,
         ),
       ),
     );
@@ -868,6 +883,7 @@ func main() {
                                     const Duration(seconds: 2),
                                     () {
                                       NZToast.hide();
+                                      if (!context.mounted) return;
                                       NZToast.success(context, '加载完成');
                                     },
                                   );
@@ -1060,6 +1076,43 @@ NZNavBar(
   title: '自定义',
   backgroundColor: NZColor.nezhaPrimary,
   foregroundColor: Colors.white,
+)''',
+                        ),
+                        _buildSection(
+                          '日历 (NZCalendar)',
+                          Column(
+                            children: [
+                              const NZCalendar(
+                                style: NZCalendarStyle.card,
+                                showLunar: true,
+                              ),
+                              const SizedBox(height: 16),
+                              NZCalendar(
+                                style: NZCalendarStyle.compact,
+                                usePrompt: true,
+                                onOptionSelected: (date, option) {
+                                  NZToast.show(
+                                    context,
+                                    message:
+                                        '${date.year}-${date.month}-${date.day} 选择: $option',
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          code: '''// 卡片样式 + 农历
+NZCalendar(
+  style: NZCalendarStyle.card,
+  showLunar: true,
+)
+
+// 紧凑样式 + 选项弹窗
+NZCalendar(
+  style: NZCalendarStyle.compact,
+  usePrompt: true,
+  onOptionSelected: (date, option) {
+    print('选择: \$option');
+  },
 )''',
                         ),
                         _buildSection(
@@ -1326,7 +1379,12 @@ NZNavBar(
                                         );
                                         Future.delayed(
                                           const Duration(seconds: 2),
-                                          () => Navigator.pop(context),
+                                          () {
+                                            if (mounted) {
+                                              // ignore: use_build_context_synchronously
+                                              Navigator.pop(context);
+                                            }
+                                          },
                                         );
                                       },
                                     ),
@@ -1386,7 +1444,7 @@ NZDialog.show(
 );''',
                         ),
                         _buildSection(
-                          'Tag 标签 (Chip)',
+                          '标签 (NZTag)',
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -1398,7 +1456,7 @@ NZDialog.show(
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              Wrap(
+                              const Wrap(
                                 spacing: 8,
                                 runSpacing: 8,
                                 children: [
@@ -1438,13 +1496,13 @@ NZDialog.show(
                                   NZTag(
                                     label: 'Round',
                                     round: true,
-                                    color: Colors.purple,
+                                    color: Colors.purple[400],
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 20),
                               const Text(
-                                '功能示例',
+                                '功能与语义',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey,
@@ -1474,22 +1532,298 @@ NZDialog.show(
                               ),
                             ],
                           ),
-                          code: '''// 基础用法
-NZTag(label: '标签文字')
-
-// 成功状态
+                          code: '''// 成功状态
 NZTag.success('已完成')
 
 // 带删除按钮
 NZTag(
   label: '可删除',
   onDeleted: () => print('deleted'),
+)''',
+                        ),
+                        _buildSection(
+                          '步骤条 (NZSteps)',
+                          const Column(
+                            children: [
+                              NZSteps(
+                                current: 1,
+                                steps: [
+                                  NZStep(title: '第一步', description: '填写基本信息'),
+                                  NZStep(title: '第二步', description: '上传身份证明'),
+                                  NZStep(title: '第三步', description: '审核通过'),
+                                ],
+                              ),
+                              SizedBox(height: 32),
+                              NZSteps(
+                                direction: Axis.vertical,
+                                current: 0,
+                                steps: [
+                                  NZStep(
+                                    title: '订单提交',
+                                    description: '2024-03-20 10:00',
+                                  ),
+                                  NZStep(
+                                    title: '仓库打包',
+                                    description: '预计 1 小时内完成',
+                                  ),
+                                  NZStep(title: '等待揽收'),
+                                ],
+                              ),
+                            ],
+                          ),
+                          code: '''// 水平步骤条
+NZSteps(
+  current: 1,
+  steps: [
+    NZStep(title: '步骤1'),
+    NZStep(title: '步骤2'),
+  ],
 )
 
-// 填充样式
-NZTag(
-  label: '填充',
-  style: NZTagStyle.filled,
+// 垂直步骤条
+NZSteps(
+  direction: Axis.vertical,
+  current: 0,
+  steps: [
+    NZStep(title: '已完成'),
+    NZStep(title: '进行中'),
+  ],
+)''',
+                        ),
+                        _buildSection(
+                          '分页器 (NZPagination)',
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildSubSectionTitle('基础与形状'),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: NZPagination(
+                                      total: 50,
+                                      current: _currentPage,
+                                      onPageChanged: (p) =>
+                                          setState(() => _currentPage = p),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: NZPagination(
+                                      total: 50,
+                                      current: _currentPage,
+                                      shape: NZPaginationShape.circle,
+                                      onPageChanged: (p) =>
+                                          setState(() => _currentPage = p),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+                              _buildSubSectionTitle('样式变体 (描边 & 浅色)'),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: NZPagination(
+                                      total: 100,
+                                      current: _currentPage,
+                                      type: NZPaginationType.outline,
+                                      showFirstLast: true,
+                                      onPageChanged: (p) =>
+                                          setState(() => _currentPage = p),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: NZPagination(
+                                      total: 100,
+                                      current: _currentPage,
+                                      type: NZPaginationType.light,
+                                      shape: NZPaginationShape.circle,
+                                      onPageChanged: (p) =>
+                                          setState(() => _currentPage = p),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+                              _buildSubSectionTitle('快速跳转 & 禁用状态'),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: NZPagination(
+                                      total: 200,
+                                      current: _currentPage,
+                                      showQuickJumper: true,
+                                      onPageChanged: (p) =>
+                                          setState(() => _currentPage = p),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: NZPagination(
+                                      total: 50,
+                                      current: 2,
+                                      disabled: true,
+                                      onPageChanged: (p) {},
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+                              _buildSubSectionTitle('移动端自动滚动模式'),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color:
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white.withValues(alpha: 0.05)
+                                      : Colors.black.withValues(alpha: 0.02),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Theme.of(
+                                      context,
+                                    ).dividerColor.withValues(alpha: 0.05),
+                                  ),
+                                ),
+                                child: NZPagination(
+                                  total: 500,
+                                  current: _currentPage,
+                                  scrollable: true,
+                                  onPageChanged: (p) =>
+                                      setState(() => _currentPage = p),
+                                ),
+                              ),
+                            ],
+                          ),
+                          code: '''// 基础用法
+NZPagination(
+  total: 50,
+  current: 1,
+  onPageChanged: (page) => print(page),
+)
+
+// 开启滚动模式（适配移动端多页码）
+NZPagination(
+  total: 500,
+  scrollable: true,
+)''',
+                        ),
+                        _buildSection(
+                          '瀑布流 (NZMasonry)',
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('智能分配列布局，支持交错入场动画，完美适配各类内容展示。'),
+                              const SizedBox(height: 16),
+                              NZMasonry.builder(
+                                itemCount: 5,
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 12,
+                                crossAxisSpacing: 12,
+                                animate: true,
+                                itemBuilder: (context, index) {
+                                  final List<Color> colors = [
+                                    Colors.blue,
+                                    Colors.purple,
+                                    Colors.orange,
+                                    Colors.green,
+                                    Colors.pink,
+                                  ];
+                                  final color = colors[index % colors.length];
+
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).cardColor,
+                                      borderRadius: BorderRadius.circular(16),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: color.withValues(alpha: 0.1),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                      border: Border.all(
+                                        color: color.withValues(alpha: 0.1),
+                                      ),
+                                    ),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        AspectRatio(
+                                          aspectRatio: index % 2 == 0
+                                              ? 16 / 9
+                                              : 4 / 5,
+                                          child: Container(
+                                            width: double.infinity,
+                                            color: color.withValues(
+                                              alpha: 0.08,
+                                            ),
+                                            child: Icon(
+                                              Icons.auto_awesome_mosaic_rounded,
+                                              color: color.withValues(
+                                                alpha: 0.5,
+                                              ),
+                                              size: 32,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(12),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '精选卡片 #$index',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                '这里是 NezhaUI 瀑布流组件的内容展示，宽高已设为自适应。',
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: Colors.grey.shade500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          code: '''// 推荐用法：Builder 模式 + 宽高自适应
+NZMasonry.builder(
+  itemCount: 5,
+  crossAxisCount: 2,
+  mainAxisSpacing: 12,
+  crossAxisSpacing: 12,
+  animate: true,
+  itemBuilder: (context, index) {
+    return MyFlexibleCard(index: index);
+  },
 )''',
                         ),
                         _buildSection(
@@ -1594,6 +1928,62 @@ NZTag(
     NZDropDownMenuItem(value: 'hot', label: '最热优先'),
   ],
   onChanged: (val) => print(val),
+)''',
+                        ),
+                        _buildSection(
+                          'Tags 标签',
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  const NZTag(label: '默认样式'),
+                                  NZTag(
+                                    label: '填充样式',
+                                    style: NZTagStyle.filled,
+                                    color: NZColor.nezhaPrimary,
+                                  ),
+                                  const NZTag(
+                                    label: '描边样式',
+                                    style: NZTagStyle.outline,
+                                  ),
+                                  NZTag(
+                                    label: '浅色填充',
+                                    style: NZTagStyle.soft,
+                                    color: Colors.orange,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  NZTag(
+                                    label: '带图标',
+                                    leading: const Icon(
+                                      Icons.star_rounded,
+                                      size: 14,
+                                      color: Colors.amber,
+                                    ),
+                                    onTap: () => _showMsg('点击了带图标标签'),
+                                  ),
+                                  NZTag(
+                                    label: '可删除',
+                                    color: Colors.red,
+                                    onDeleted: () => _showMsg('删除了标签'),
+                                  ),
+                                  const NZTag(label: '胶囊形', round: true),
+                                ],
+                              ),
+                            ],
+                          ),
+                          code: '''NZTag(
+  label: '可删除',
+  color: Colors.red,
+  onDeleted: () => print('deleted'),
 )''',
                         ),
                       ]),

@@ -32,6 +32,86 @@ class NZDocSection {
 class NZDocContent {
   static List<NZDocSection> getSections(BuildContext context) => [
     NZDocSection(
+      id: 'Tag',
+      title: '标签 (NZTag)',
+      icon: Icons.label_important_outline_rounded,
+      description: '精致、灵活的标签组件，支持多种样式、尺寸和交互。',
+      usage: [
+        ['label', 'String', '标签文本内容'],
+        ['style', 'NZTagStyle', '样式类型：filled (填充), outline (描边), soft (浅色填充)'],
+        ['size', 'NZTagSize', '尺寸：small, medium, large'],
+        ['color', 'Color?', '标签主题颜色'],
+        ['leading', 'Widget?', '左侧图标或组件'],
+        ['trailing', 'Widget?', '右侧图标或组件'],
+        ['onTap', 'VoidCallback?', '点击回调'],
+        ['onDeleted', 'VoidCallback?', '删除回调，若提供则显示删除图标'],
+        ['round', 'bool', '是否为胶囊形状'],
+      ],
+      preview: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              const NZTag(label: '默认标签'),
+              NZTag(
+                label: '主要标签',
+                color: NZColor.nezhaPrimary,
+                style: NZTagStyle.filled,
+              ),
+              NZTag(label: '成功状态', color: Colors.green, style: NZTagStyle.soft),
+              const NZTag(label: '描边样式', style: NZTagStyle.outline),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              const NZTag(label: '小号', size: NZTagSize.small),
+              const NZTag(label: '中号', size: NZTagSize.medium),
+              const NZTag(label: '大号', size: NZTagSize.large),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              NZTag(
+                label: '带图标',
+                leading: const Icon(
+                  Icons.star_rounded,
+                  size: 14,
+                  color: Colors.amber,
+                ),
+                onTap: () {},
+              ),
+              NZTag(label: '可删除', color: Colors.red, onDeleted: () {}),
+              const NZTag(label: '胶囊形', round: true),
+            ],
+          ),
+        ],
+      ),
+      content: 'NZTag 提供了丰富的视觉反馈，适用于商品标签、筛选项、状态标记等场景。',
+      code: '''// 基础用法
+NZTag(label: '标签内容')
+
+// 填充样式
+NZTag(
+  label: '主要',
+  style: NZTagStyle.filled,
+  color: Colors.blue,
+)
+
+// 带删除功能
+NZTag(
+  label: '可删除',
+  onDeleted: () => print('deleted'),
+)''',
+    ),
+    NZDocSection(
       id: 'NezhaApp',
       title: '应用入口 (NezhaApp)',
       icon: Icons.apps_rounded,
@@ -381,6 +461,73 @@ NZDivider(
 );''',
     ),
     NZDocSection(
+      id: 'Calendar',
+      title: '日历 (Calendar)',
+      icon: Icons.calendar_month_rounded,
+      description: '专业级日历组件，支持多样式切换、农历显示、平滑动画及自定义主题。',
+      usage: [
+        ['initialDate', 'DateTime?', '初始选中的日期，默认为今天'],
+        ['firstDate', 'DateTime?', '最小可选日期'],
+        ['lastDate', 'DateTime?', '最大可选日期'],
+        ['onDateSelected', 'ValueChanged<DateTime>?', '日期选中回调'],
+        ['showHeader', 'bool', '是否显示头部导航（默认 true）'],
+        ['showLunar', 'bool', '是否显示农历（默认 true）'],
+        [
+          'style',
+          'NZCalendarStyle',
+          '样式类型：classic (经典), card (卡片), compact (紧凑)',
+        ],
+        ['primaryColor', 'Color?', '自定义主色调'],
+        ['backgroundColor', 'Color?', '背景颜色'],
+        ['borderRadius', 'double', '容器圆角（默认 16.0）'],
+        ['usePrompt', 'bool', '是否开启点击日期显示选项弹窗（默认 false）'],
+        ['promptOptions', 'List<String>?', '弹窗中的选项列表'],
+        ['onOptionSelected', 'Function?', '选中选项时的回调'],
+      ],
+      preview: Column(
+        children: [
+          const NZCalendar(),
+          const SizedBox(height: 24),
+          const NZCalendar(style: NZCalendarStyle.card, showLunar: true),
+          const SizedBox(height: 24),
+          NZCalendar(
+            style: NZCalendarStyle.compact,
+            usePrompt: true,
+            onOptionSelected: (date, option) =>
+                print('Selected $option for $date'),
+          ),
+        ],
+      ),
+      content:
+          'NZCalendar 采用了 PageView 实现无限月份滚动，并配合 AnimatedSwitcher 和 AnimatedContainer 提供丝滑的视觉过渡效果。内置的高精度农历转换算法（支持 1900-2050 年）确保了在各种场景下的实用性。',
+      code: '''// 基础用法
+const NZCalendar()
+
+// 卡片样式 + 农历显示
+const NZCalendar(
+  style: NZCalendarStyle.card,
+  showLunar: true,
+)
+
+// 自定义主题与事件监听
+NZCalendar(
+  style: NZCalendarStyle.compact,
+  primaryColor: Colors.purple,
+  onDateSelected: (date) {
+    print('选中日期: \$date');
+  },
+)
+
+// 开启选项弹窗
+NZCalendar(
+  usePrompt: true,
+  promptOptions: ['添加日程', '查看详情'],
+  onOptionSelected: (date, option) {
+    print('\$date 选择: \$option');
+  },
+)''',
+    ),
+    NZDocSection(
       id: 'BackToTop',
       title: '回到顶部 (BackToTop)',
       icon: Icons.vertical_align_top_rounded,
@@ -598,11 +745,12 @@ NZNavBar(
       ],
       preview: StatefulBuilder(
         builder: (context, setState) {
+          double _p = 0.65;
           return Column(
             children: [
               NZProgressButton(
-                progress: 0.65,
-                label: '系统更新中 65%',
+                progress: _p,
+                label: '系统更新中 ${(_p * 100).toInt()}%',
                 onPressed: () {
                   NZToast.show(context, message: '正在检查更新...');
                 },
@@ -631,6 +779,26 @@ NZNavBar(
                 ],
               ),
               const SizedBox(height: 16),
+              NZProgressButton(
+                progress: 0.4,
+                backgroundColor: Colors.blueGrey.shade50,
+                color: Colors.blueGrey.shade300,
+                onPressed: () {},
+                block: true,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.cloud_download_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Text('自定义内容按钮'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
               NZText.caption('提示：进度按钮常用于显示耗时操作的即时状态反馈。'),
             ],
           );
@@ -651,6 +819,21 @@ NZProgressButton(
   color: Colors.orange,
   block: true,
   onPressed: () {},
+);
+
+// 自定义内容 (Child Widget)
+NZProgressButton(
+  progress: 0.3,
+  color: Colors.blue,
+  onPressed: () {},
+  child: Row(
+    mainAxisSize: MainAxisSize.min,
+    children: const [
+      Icon(Icons.download, color: Colors.white),
+      SizedBox(width: 8),
+      Text('自定义内容'),
+    ],
+  ),
 );
 
 // 完成状态
@@ -1122,6 +1305,186 @@ String? text = await NZDialog.input(context, title: '反馈');
 
 // 4. 进度展示
 NZDialog.progress(context, 0.5, title: '上传中');''',
+    ),
+    NZDocSection(
+      id: 'Steps',
+      title: '步骤条 (Steps)',
+      icon: Icons.linear_scale_rounded,
+      description: '专业步骤条组件，用于展示任务进度或引导用户完成流程。',
+      usage: [
+        ['steps', 'List<NZStep>', '步骤配置列表'],
+        ['current', 'int', '当前进行的步骤索引 (从 0 开始)'],
+        ['direction', 'Axis', '排列方向：horizontal, vertical'],
+        ['color', 'Color?', '激活步骤的主色调'],
+      ],
+      preview: Column(
+        children: [
+          const NZSteps(
+            current: 1,
+            steps: [
+              NZStep(title: '第一步', description: '填写基本信息'),
+              NZStep(title: '第二步', description: '上传身份证明'),
+              NZStep(title: '第三步', description: '审核通过'),
+            ],
+          ),
+          const SizedBox(height: 32),
+          const NZSteps(
+            direction: Axis.vertical,
+            current: 0,
+            steps: [
+              NZStep(title: '订单提交', description: '2024-03-20 10:00'),
+              NZStep(title: '仓库打包', description: '预计 1 小时内完成'),
+              NZStep(title: '等待揽收'),
+            ],
+          ),
+        ],
+      ),
+      content: 'NZSteps 支持水平和垂直两种展示模式，能够清晰地传达复杂任务的当前状态和后续步骤。',
+      code: '''// 水平步骤条
+NZSteps(
+  current: 1,
+  steps: [
+    NZStep(title: '步骤1'),
+    NZStep(title: '步骤2'),
+  ],
+)
+
+// 垂直步骤条
+NZSteps(
+  direction: Axis.vertical,
+  current: 0,
+  steps: [
+    NZStep(title: '已完成'),
+    NZStep(title: '进行中'),
+  ],
+)''',
+    ),
+    NZDocSection(
+      id: 'Pagination',
+      title: '分页器 (Pagination)',
+      icon: Icons.last_page_rounded,
+      description: '将大量数据分割成多页展示，支持直接跳转、上一页/下一页、多种形状和样式、滚动模式等。',
+      usage: [
+        ['total', 'int', '总条目数'],
+        ['pageSize', 'int', '每页条数 (默认 10)'],
+        ['current', 'int', '当前页码 (从 1 开始)'],
+        ['onPageChanged', 'ValueChanged<int>?', '页码切换回调'],
+        ['shape', 'NZPaginationShape', '形状: square, circle'],
+        ['type', 'NZPaginationType', '类型: filled, outline, light'],
+        ['showQuickJumper', 'bool', '是否显示快速跳转'],
+        ['scrollable', 'bool', '是否开启滚动模式'],
+        ['disabled', 'bool', '是否禁用'],
+      ],
+      preview: Column(
+        children: [
+          NZPagination(total: 100, current: 1, onPageChanged: (p) {}),
+          const SizedBox(height: 12),
+          NZPagination(
+            total: 100,
+            current: 2,
+            shape: NZPaginationShape.circle,
+            type: NZPaginationType.outline,
+            onPageChanged: (p) {},
+          ),
+          const SizedBox(height: 12),
+          NZPagination(
+            total: 100,
+            current: 3,
+            type: NZPaginationType.light,
+            showQuickJumper: true,
+            onPageChanged: (p) {},
+          ),
+        ],
+      ),
+      content:
+          'NZPagination 提供了丰富的配置项，能够满足移动端各种分页场景的需求。推荐在页码较多时开启 scrollable 模式或使用默认的省略号逻辑。',
+      code: '''// 基础用法
+NZPagination(
+  total: 100,
+  current: 1,
+  onPageChanged: (page) => print(page),
+)
+
+// 圆形描边 + 快速跳转
+NZPagination(
+  total: 100,
+  shape: NZPaginationShape.circle,
+  type: NZPaginationType.outline,
+  showQuickJumper: true,
+  onPageChanged: (page) => print(page),
+)''',
+    ),
+    NZDocSection(
+      id: 'Masonry',
+      title: '瀑布流 (NZMasonry)',
+      icon: Icons.dashboard_customize_rounded,
+      description: '支持多列等宽不等高的布局，适合展示图片、卡片流等内容。内置交错入场动画，支持基础列表和 Builder 模式。',
+      usage: [
+        ['children', 'List<Widget>?', '子组件列表 (基础模式)'],
+        ['itemBuilder', 'IndexedWidgetBuilder?', '子组件构建器 (Builder 模式)'],
+        ['itemCount', 'int?', '组件数量 (Builder 模式)'],
+        ['crossAxisCount', 'int', '列数 (默认 2)'],
+        ['mainAxisSpacing', 'double', '垂直间距 (默认 8.0)'],
+        ['crossAxisSpacing', 'double', '水平间距 (默认 8.0)'],
+        ['padding', 'EdgeInsetsGeometry?', '内边距'],
+        ['animate', 'bool', '是否开启入场渐显动画 (默认 true)'],
+        ['animationDuration', 'Duration', '动画持续时间'],
+      ],
+      preview: SizedBox(
+        height: 200,
+        child: NZMasonry.builder(
+          itemCount: 6,
+          crossAxisCount: 2,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          animate: true,
+          itemBuilder: (context, index) {
+            final heights = [60.0, 100.0, 80.0, 70.0, 90.0, 110.0];
+            return Container(
+              height: heights[index % heights.length],
+              decoration: BoxDecoration(
+                color: NZColor.nezhaPrimary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: NZColor.nezhaPrimary.withValues(alpha: 0.2),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  'Item $index',
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: NZColor.nezhaPrimary,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      content:
+          'NZMasonry 能够根据列数自动分配子组件，实现优雅的瀑布流排版效果。推荐使用 builder 构造函数以获得更好的性能和入场动画支持。',
+      code: '''// 基础用法
+NZMasonry(
+  crossAxisCount: 2,
+  mainAxisSpacing: 10,
+  crossAxisSpacing: 10,
+  children: [
+    ItemWidget(height: 100),
+    ItemWidget(height: 150),
+    ItemWidget(height: 80),
+  ],
+)
+
+// 推荐用法：使用 Builder 模式支持交错入场动画
+NZMasonry.builder(
+  itemCount: 10,
+  crossAxisCount: 2,
+  animate: true,
+  itemBuilder: (context, index) {
+    return MyItemWidget(index: index);
+  },
+)''',
     ),
   ];
 

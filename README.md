@@ -95,6 +95,9 @@ class MyApp extends StatelessWidget {
 ### 进度按钮 (Progress Button)
 带有实时进度条背景的按钮，适用于下载、上传或耗时操作，提供直观的状态反馈。
 
+### 日历组件 (Calendar)
+专业级日历组件，支持多样式切换、农历显示、平滑动画及自定义主题。
+
 ### 轻提示 (Toast)
 简洁的全局浮层提示，支持成功、失败、加载中等多种状态，自动处理堆栈与消失逻辑。
 
@@ -115,6 +118,7 @@ class MyApp extends StatelessWidget {
 - [导航栏组件](docs/navbar.md)
 - [分割线组件](docs/divider.md)
 - [公告栏组件](docs/notice_bar.md)
+- [日历组件](docs/calendar.md)
 - [弹窗组件](docs/pop_up.md)
 - [滑动操作](docs/swipe_list_tile.md)
 - [轻提示](docs/toast.md)

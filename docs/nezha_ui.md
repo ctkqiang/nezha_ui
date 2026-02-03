@@ -72,3 +72,4 @@ NezhaUI 提供了一系列精心设计的组件，你可以点击下方链接查
 - [NZBackToTop 回到顶部](back_to_top.md): 自动监听滚动状态的快速返回组件。
 - [NZMarkdownView Markdown 渲染](markdown_view.md): 原生 Flutter 实现的轻量级渲染组件。
 - [NZCodeView 代码查看器](code_view.md): 带有语法高亮的专业代码展示组件。
+- [NZCalendar 日历](calendar.md): 专业级日历组件，支持多样式、农历和过渡动画。

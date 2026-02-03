@@ -1,7 +1,9 @@
 export 'theme/colors.dart';
 export 'theme/theme.dart';
 
-export 'components/button.dart';
+export 'components/button.dart'
+    show NZButton, NZProgressButton, NZImageButton, NZDraggableButton;
+export 'components/calendart.dart' show NZCalendar, NZCalendarStyle;
 export 'components/divider.dart';
 export 'components/pull_to_refresh.dart';
 export 'components/floating_action_button.dart';
@@ -18,5 +20,8 @@ export 'components/pop_up.dart';
 export 'components/dropdown_menu.dart';
 export 'components/dialog.dart';
 export 'components/tags.dart';
+export 'components/steps.dart';
+export 'components/pagination.dart';
+export 'components/masonry.dart';
 
 export 'nezha_ui.dart';
