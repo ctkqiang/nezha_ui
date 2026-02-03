@@ -867,14 +867,18 @@ func main() {
                             children: [
                               NZButton.primary(
                                 label: '成功提示',
-                                onPressed: () =>
-                                    NZToast.success(context, '保存成功啦'),
+                                onPressed: () {
+                                  if (!context.mounted) return;
+                                  NZToast.success(context, '保存成功啦');
+                                },
                               ),
                               NZButton.primary(
                                 label: '错误提示',
                                 color: Colors.redAccent,
-                                onPressed: () =>
-                                    NZToast.error(context, '网络连接超时'),
+                                onPressed: () {
+                                  if (!context.mounted) return;
+                                  NZToast.error(context, '网络连接超时');
+                                },
                               ),
                               NZButton.primary(
                                 label: '加载中',
@@ -1347,18 +1351,21 @@ NZCalendar(
                               NZButton.outline(
                                 label: '状态展示',
                                 block: true,
-                                onPressed: () => NZDialog.status(
-                                  context,
-                                  title: '系统状态',
-                                  message: '所有服务运行正常',
-                                  statusWidget: const Center(
-                                    child: Icon(
-                                      Icons.cloud_done_rounded,
-                                      size: 64,
-                                      color: Colors.green,
+                                onPressed: () {
+                                  if (!context.mounted) return;
+                                  NZDialog.status(
+                                    context,
+                                    title: '系统状态',
+                                    message: '所有服务运行正常',
+                                    statusWidget: const Center(
+                                      child: Icon(
+                                        Icons.cloud_done_rounded,
+                                        size: 64,
+                                        color: Colors.green,
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                },
                               ),
                               const SizedBox(height: 12),
                               Row(

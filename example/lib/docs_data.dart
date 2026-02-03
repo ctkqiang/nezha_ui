@@ -1091,7 +1091,7 @@ NZToast.show(
        label: '删除',
        backgroundColor: Colors.red,
        icon: Icon(Icons.delete),
-       onTap: () => print('Delete'),
+       onTap: () => debugPrint('Delete'),
      ),
    ],
    child: ListTile(title: Text('滑动操作')),
@@ -1489,7 +1489,7 @@ NZSteps(
 NZPagination(
   total: 100,
   current: 1,
-  onPageChanged: (page) => print(page),
+  onPageChanged: (page) => debugPrint(page.toString()),
 )
 
 // 圆形描边 + 快速跳转
@@ -1498,115 +1498,147 @@ NZPagination(
   shape: NZPaginationShape.circle,
   type: NZPaginationType.outline,
   showQuickJumper: true,
-  onPageChanged: (page) => print(page),
+  onPageChanged: (page) => debugPrint(page.toString()),
 )''',
     ),
     NZDocSection(
       id: 'Masonry',
-      title: '瀑布流 (NZMasonry)',
+      title: '瀑布流布局 (NZMasonry)',
       icon: Icons.dashboard_customize_rounded,
       description:
-          '支持多列等宽不等高的布局，适合展示图片、卡片流等内容。内置交错入场动画，支持基础列表和 Builder 模式，现已支持 ScrollController。',
+          '专业级瀑布流布局组件，支持多列等宽不等高排列、交错入场动画、Builder 模式以及滚动监听。完美适配图片墙、商品流等高度动态变化的场景。',
       usage: [
-        ['children', 'List<Widget>?', '子组件列表 (基础模式)'],
-        ['itemBuilder', 'IndexedWidgetBuilder?', '子组件构建器 (Builder 模式)'],
-        ['itemCount', 'int?', '组件数量 (Builder 模式)'],
-        ['crossAxisCount', 'int', '列数 (默认 2)'],
-        ['mainAxisSpacing', 'double', '垂直间距 (默认 8.0)'],
-        ['crossAxisSpacing', 'double', '水平间距 (默认 8.0)'],
-        ['padding', 'EdgeInsetsGeometry?', '内边距'],
-        ['animate', 'bool', '是否开启入场渐显动画 (默认 true)'],
-        ['animationDuration', 'Duration', '动画持续时间'],
-        ['physics', 'ScrollPhysics?', '滚动物理效果'],
-        ['shrinkWrap', 'bool', '是否根据子组件总长度调整高度'],
-        ['controller', 'ScrollController?', '滚动控制器'],
+        ['children', 'List<Widget>?', '子组件列表 (基础模式，适用于静态少量数据)'],
+        ['itemBuilder', 'IndexedWidgetBuilder?', '子组件构建器 (推荐模式，支持海量数据和动画)'],
+        ['itemCount', 'int?', '组件总数 (Builder 模式必填)'],
+        ['crossAxisCount', 'int', '排列列数 (默认: 2)'],
+        ['mainAxisSpacing', 'double', '垂直方向（主轴）间距 (默认: 8.0)'],
+        ['crossAxisSpacing', 'double', '水平方向（交叉轴）间距 (默认: 8.0)'],
+        ['padding', 'EdgeInsetsGeometry?', '容器内边距'],
+        ['animate', 'bool', '是否启用交错入场渐显动画 (默认: true)'],
+        ['animationDuration', 'Duration', '入场动画持续时间 (默认: 300ms)'],
+        ['shrinkWrap', 'bool', '是否根据内容自动调整容器高度'],
+        ['physics', 'ScrollPhysics?', '滚动物理效果配置'],
+        ['controller', 'ScrollController?', '滚动控制器，用于监听滚动或控制跳转'],
       ],
-      preview: SizedBox(
-        height: 400,
-        child: NZMasonry.builder(
-          itemCount: 8,
-          crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          animate: true,
-          itemBuilder: (context, index) {
-            final heights = [
-              100.0,
-              160.0,
-              120.0,
-              140.0,
-              110.0,
-              150.0,
-              130.0,
-              170.0,
-            ];
-            final color = [
-              Colors.blue,
-              Colors.purple,
-              Colors.orange,
-              Colors.green,
-              Colors.pink,
-              Colors.cyan,
-              Colors.indigo,
-              Colors.teal,
-            ][index % 8];
-            return Container(
-              height: heights[index % heights.length],
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: color.withValues(alpha: 0.2),
-                  width: 1,
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.auto_awesome_mosaic_rounded,
-                    color: color.withValues(alpha: 0.5),
-                    size: 24,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Item $index',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: color,
+      preview: Container(
+        height: 450,
+        decoration: BoxDecoration(
+          color: Colors.grey.withValues(alpha: 0.02),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: NZMasonry.builder(
+            itemCount: 12,
+            crossAxisCount: 2,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            padding: const EdgeInsets.all(12),
+            animate: true,
+            itemBuilder: (context, index) {
+              final heights = [120.0, 180.0, 140.0, 200.0, 160.0, 130.0];
+              final colors = [
+                Colors.blue,
+                Colors.indigo,
+                Colors.purple,
+                Colors.teal,
+                Colors.orange,
+                Colors.pink,
+              ];
+              final color = colors[index % colors.length];
+              final height = heights[index % heights.length];
+
+              return Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.03),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
+                  ],
+                  border: Border.all(
+                    color: color.withValues(alpha: 0.1),
+                    width: 1,
                   ),
-                ],
-              ),
-            );
-          },
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: height,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.05),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(16),
+                        ),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.auto_awesome_mosaic_rounded,
+                          color: color.withValues(alpha: 0.3),
+                          size: 32,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          NZText.subtitle('发现精彩 #$index'),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              NZTag(
+                                label: '推荐',
+                                size: NZTagSize.small,
+                                color: color,
+                                style: NZTagStyle.soft,
+                              ),
+                              const Spacer(),
+                              Icon(
+                                Icons.favorite_border_rounded,
+                                size: 14,
+                                color: Colors.grey.shade400,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
       content:
-          'NZMasonry 能够根据列数自动分配子组件，实现优雅的瀑布流排版效果。推荐使用 builder 构造函数以获得更好的性能和入场动画支持，现已支持 ScrollController。',
-      code: '''// 推荐用法：使用 Builder 模式支持交错入场动画
+          'NZMasonry 是 NezhaUI 提供的核心布局组件。它通过智能算法将子组件分配到高度最小的列中，从而实现瀑布流效果。与传统的 GridView 不同，它允许每个子组件拥有不同的高度，非常适合用于展示内容丰富、形式多样的信息流。',
+      code: '''// 1. 高级用法 (Builder 模式 + 动画)
 NZMasonry.builder(
-  itemCount: 10,
-  crossAxisCount: 2,
-  mainAxisSpacing: 12,
-  crossAxisSpacing: 12,
-  animate: true,
-  controller: _scrollController,
+  itemCount: items.length,
+  crossAxisCount: 2, // 两列显示
+  mainAxisSpacing: 12.0,
+  crossAxisSpacing: 12.0,
+  animate: true, // 开启入场动画
   itemBuilder: (context, index) {
-    return MyItemWidget(index: index);
+    return MyMasonryCard(item: items[index]);
   },
 )
 
-// 基础用法
+// 2. 基础用法 (列表模式)
 NZMasonry(
-  crossAxisCount: 2,
-  mainAxisSpacing: 10,
-  crossAxisSpacing: 10,
-  shrinkWrap: true,
+  crossAxisCount: 3,
   children: [
-    ItemWidget(height: 100),
-    ItemWidget(height: 150),
+    ImageCard(height: 200),
+    ImageCard(height: 150),
+    ImageCard(height: 250),
   ],
 )''',
     ),
