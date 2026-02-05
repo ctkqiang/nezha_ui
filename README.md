@@ -106,41 +106,41 @@ class MyApp extends StatelessWidget {
 
 ## 文档
 
-请参考 [docs/nezha_ui.md](docs/nezha_ui.md) 获取完整的组件指南。
+请参考 [doc/nezha_ui.md](doc/nezha_ui.md) 获取完整的组件指南。
 
 ### 📚 API 引用
-- [**Full API Reference**](https://www.ctkqiang.xin/nezha_ui/docs/api/index.html) - 自动生成的详细代码文档。
+- [**Full API Reference**](https://www.ctkqiang.xin/nezha_ui/doc/api/index.html) - 自动生成的详细代码文档。
 
 ### 📖 核心指南
-- [颜色规范](docs/colors.md)
-- [主题配置](docs/theme.md)
-- [按钮组件](docs/button.md)
-- [文本组件](docs/text.md)
-- [抽屉组件](docs/drawer.md)
-- [回到顶部](docs/back_to_top.md)
-- [悬浮按钮](docs/floating_action_button.md)
-- [下拉刷新](docs/pull_to_refresh.md)
-- [代码查看器](docs/code_view.md)
-- [Markdown 渲染](docs/markdown_view.md)
-- [导航栏组件](docs/navbar.md)
-- [分割线组件](docs/divider.md)
-- [公告栏组件](docs/notice_bar.md)
-- [日历组件](docs/calendar.md)
-- [弹窗组件](docs/pop_up.md)
-- [滑动操作](docs/swipe_list_tile.md)
-- [轻提示](docs/toast.md)
-- [K线盘面](docs/kpan.md)
-- [标签组件](docs/tags.md)
-- [对话框组件](docs/dialog.md)
-- [分页器](docs/pagination.md)
-- [步骤条](docs/steps.md)
-- [瀑布流](docs/masonry.md)
-- [下拉菜单](docs/dropdown_menu.md)
-- [应用入口](docs/nezha_ui.md)
-- [图片按钮](docs/image_button.md)
-- [进度按钮](docs/progress_button.md)
-- [悬浮按钮](docs/floating_action_button.md)
-- [拖拽按钮](docs/draggable_button.md)
+- [颜色规范](doc/colors.md)
+- [主题配置](doc/theme.md)
+- [按钮组件](doc/button.md)
+- [文本组件](doc/text.md)
+- [抽屉组件](doc/drawer.md)
+- [回到顶部](doc/back_to_top.md)
+- [悬浮按钮](doc/floating_action_button.md)
+- [下拉刷新](doc/pull_to_refresh.md)
+- [代码查看器](doc/code_view.md)
+- [Markdown 渲染](doc/markdown_view.md)
+- [导航栏组件](doc/navbar.md)
+- [分割线组件](doc/divider.md)
+- [公告栏组件](doc/notice_bar.md)
+- [日历组件](doc/calendar.md)
+- [弹窗组件](doc/pop_up.md)
+- [滑动操作](doc/swipe_list_tile.md)
+- [轻提示](doc/toast.md)
+- [K线盘面](doc/kpan.md)
+- [标签组件](doc/tags.md)
+- [对话框组件](doc/dialog.md)
+- [分页器](doc/pagination.md)
+- [步骤条](doc/steps.md)
+- [瀑布流](doc/masonry.md)
+- [下拉菜单](doc/dropdown_menu.md)
+- [应用入口](doc/nezha_ui.md)
+- [图片按钮](doc/image_button.md)
+- [进度按钮](doc/progress_button.md)
+- [悬浮按钮](doc/floating_action_button.md)
+- [拖拽按钮](doc/draggable_button.md)
 
 ## 贡献
 
