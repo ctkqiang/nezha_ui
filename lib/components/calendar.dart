@@ -257,7 +257,6 @@ class _NZCalendarState extends State<NZCalendar> {
           borderRadius: BorderRadius.circular(widget.borderRadius),
         );
       case NZCalendarStyle.classic:
-      default:
         return BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(widget.borderRadius),

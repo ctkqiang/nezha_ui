@@ -8,8 +8,6 @@ class NZDatabase {
   NZDatabase._();
   NZDatabase.init() : this._();
 
-  static Database? _database;
-
   Future<void> create({
     required String databaseName,
     required List<NZORMEngine> tables,
@@ -20,7 +18,7 @@ class NZDatabase {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, '$databaseName.db');
 
-    _database = await openDatabase(
+    await openDatabase(
       path,
       version: version,
       onCreate: (db, version) async {
@@ -35,13 +33,9 @@ class NZDatabase {
     required Database db,
     required NZORMEngine table,
   }) async {
-    int index = 0;
-
     final buffer = StringBuffer();
 
     buffer.write('CREATE TABLE IF NOT EXISTS ${table.tableName} (');
     buffer.write('id INTEGER PRIMARY KEY AUTOINCREMENT, ');
-
-    final entries = table.schema.entries.toList();
   }
 }

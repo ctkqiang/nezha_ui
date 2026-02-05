@@ -687,7 +687,9 @@ class KLinePainter extends CustomPainter {
 
     for (int i = period - 1; i < data.length; i++) {
       double sum = 0;
-      for (int j = 0; j < period; j++) sum += data[i - j].close;
+      for (int j = 0; j < period; j++) {
+        sum += data[i - j].close;
+      }
       final avg = sum / period;
 
       final x = (i * candleW) + scrollOffset + candleW / 2;

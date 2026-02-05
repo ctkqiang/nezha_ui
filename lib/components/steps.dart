@@ -74,7 +74,6 @@ class NZSteps extends StatelessWidget {
   ) {
     final bool isCompleted = index < current;
     final bool isActive = index == current;
-    final bool isPending = index > current;
 
     final Color statusColor = isCompleted || isActive
         ? primary

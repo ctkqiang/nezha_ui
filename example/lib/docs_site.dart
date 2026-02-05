@@ -286,71 +286,6 @@ class _SearchDialogState extends State<_SearchDialog> {
   }
 }
 
-class _Logo extends StatelessWidget {
-  final bool isDark;
-  final String? githubUrl;
-  const _Logo({required this.isDark, this.githubUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        if (githubUrl != null) {
-          final url = Uri.parse(githubUrl!);
-          if (await canLaunchUrl(url)) {
-            await launchUrl(url, mode: LaunchMode.externalApplication);
-          }
-        }
-      },
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    NZColor.nezhaPrimary,
-                    NZColor.nezhaPrimary.withValues(alpha: 0.7),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: NZColor.nezhaPrimary.withValues(alpha: 0.4),
-                    blurRadius: 16,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.bolt_rounded,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Text(
-              'NezhaUI',
-              style: TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 22,
-                letterSpacing: -1.0,
-                color: isDark ? Colors.white : Colors.black,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _NavLink extends StatefulWidget {
   final String title;
   final bool isSelected;
@@ -1080,9 +1015,9 @@ class _DocContentViewState extends State<_DocContentView> {
                       const _SectionHeader(title: '组件预览'),
                       const SizedBox(height: 32),
                       _PreviewCard(
-                        child: widget.section.preview!,
                         isDark: widget.isDark,
                         isMobile: isMobile,
+                        child: widget.section.preview!,
                       ),
                       SizedBox(height: isMobile ? 40 : 80),
                     ],

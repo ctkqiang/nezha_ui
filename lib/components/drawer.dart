@@ -136,7 +136,7 @@ class NZDrawer extends StatelessWidget {
                   ? Radius.circular(borderRadius)
                   : Radius.zero,
             ),
-            child: Container(
+            child: SizedBox(
               width: size ?? 300,
               height: double.infinity,
               child: child,
