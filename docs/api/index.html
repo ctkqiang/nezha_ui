@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="nezha_ui API docs, for the Dart programming language.">
+  <title>nezha_ui - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/ctkqiang/nezha_ui.git">nezha_ui package</a></li>
+  </ol>
+  <div class="self-name">nezha_ui</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="nezhaui">NezhaUI</h1>
+<p>轻量、优雅且专业的 Flutter 移动端组件库。</p>
+<p><a href="https://pub.dev/packages/nezha_ui"><img src="https://img.shields.io/pub/v/nezha_ui.svg" alt="pub package"></a>
+<a href="https://github.com/ctkqiang/nezha_ui/blob/master/LICENSE"><img src="https://img.shields.io/github/license/ctkqiang/nezha_ui.svg" alt="license"></a></p>
+<p>NezhaUI 是一套基于 Flutter 构建的移动端设计系统，致力于为现代应用开发提供丝滑、灵敏且高度可定制的 UI 组件。</p>
+<h2 id="">特性</h2>
+<ul>
+<li><strong>流畅交互</strong>：每个组件都经过细致的性能调优，确保动画过渡自然顺滑。</li>
+<li><strong>品牌定制</strong>：深度集成 NZTheme 系统，支持无缝切换主题与品牌色。</li>
+<li><strong>生产就绪</strong>：提供包括按钮、分割线、下拉刷新和悬浮按钮在内的全套核心组件。</li>
+<li><strong>动态布局</strong>：具备边缘吸附、滚动关联可见性等高级交互逻辑。</li>
+<li><strong>详尽文档</strong>：为每个组件提供详细的 API 参考及实现示例。</li>
+</ul>
+<h2 id="-2">安装</h2>
+<p>在 <code>pubspec.yaml</code> 文件中添加以下依赖：</p>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  nezha_ui: ^1.0.1
+</code></pre>
+<p>或者通过命令行安装：</p>
+<pre class="language-bash"><code class="language-bash">flutter pub add nezha_ui
+</code></pre>
+<h2 id="-3">快速开始</h2>
+<p>使用 <code>NezhaApp</code> 初始化应用，即可接入该设计系统：</p>
+<pre class="language-dart"><code class="language-dart">import 'package:flutter/material.dart';
+import 'package:nezha_ui/nezha.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return NezhaApp(
+      title: 'NezhaUI 示例',
+      theme: NZTheme.lightTheme(),
+      home: const MyHomePage(),
+    );
+  }
+}
+</code></pre>
+<h2 id="-4">组件概览</h2>
+<h3 id="-text">文本排版 (Text)</h3>
+<p>高度规范化的排版组件，内置 H1-H3 标题、副标题、正文及说明文字样式。</p>
+<h3 id="-drawer">抽屉组件 (Drawer)</h3>
+<p>灵活的抽屉导航，支持从左、上、右、下四个方向弹出，支持自定义圆角与尺寸。</p>
+<h3 id="-backtotop">回到顶部 (BackToTop)</h3>
+<p>自动监听滚动状态，点击后平滑滚动回顶部，提升长列表阅读体验。</p>
+<h3 id="-buttons">按钮 (Buttons)</h3>
+<p>支持主要、次要、描边及文字样式，包含进度追踪和图片背景变体。</p>
+<h3 id="-pull-to-refresh">下拉刷新 (Pull to Refresh)</h3>
+<p>高度可定制的刷新交互，支持配置标签与加载动画。</p>
+<h3 id="-floating-action-button">悬浮按钮 (Floating Action Button)</h3>
+<p>具备滚动隐藏、自由拖拽及智能边缘吸附功能。</p>
+<h3 id="-code-view">代码查看器 (Code View)</h3>
+<p>专业的语法高亮组件，内置 GitHub Light/Dark 主题，支持多语言识别。</p>
+<h3 id="markdown--markdown-view">Markdown 渲染 (Markdown View)</h3>
+<p>纯原生实现的轻量级 Markdown 解析组件，支持基础语法及高度样式定制。</p>
+<h3 id="-navbar">导航栏 (NavBar)</h3>
+<p>多功能顶栏，提供标准、搜索、Logo 及小程序胶囊控制四种模式，深度适配亮/暗色主题。</p>
+<h3 id="-noticebar">公告栏 (NoticeBar)</h3>
+<p>用于循环播放重要信息。支持水平/垂直滚动，内置金融新闻、成功、警告等多种专业样式。</p>
+<h3 id="-popup">弹窗 (PopUp)</h3>
+<p>微信风格的对话框组件，用于重要的交互提示或确认操作。支持横向/纵向按钮排列及警示操作样式。</p>
+<h3 id="-swipe-action">滑动操作 (Swipe Action)</h3>
+<p>模拟原生移动端滑动交互，支持左/右/上/下四个方向滑出操作按钮，完美适配各类列表操作场景。</p>
+<h3 id="-nzmasonry">瀑布流 (NZMasonry)</h3>
+<p>高性能瀑布流布局，支持多列等宽不等高排列、交错入场动画及 Builder 模式。经过深度算法优化，即使在处理海量数据时也能保持极高的渲染效率。</p>
+<h3 id="-nzprogressbutton">进度按钮 (NZProgressButton)</h3>
+<p>带有实时进度条背景的专业级按钮，适用于下载、上传或长耗时异步操作，提供极具沉浸感的直观状态反馈。</p>
+<h3 id="-calendar">日历组件 (Calendar)</h3>
+<p>专业级日历组件，支持多样式切换、农历显示、平滑动画及自定义主题。</p>
+<h3 id="-toast">轻提示 (Toast)</h3>
+<p>简洁的全局浮层提示，支持成功、失败、加载中等多种状态，自动处理堆栈与消失逻辑。</p>
+<h2 id="-5">文档</h2>
+<p>请参考 <a href="docs/nezha_ui.md">docs/nezha_ui.md</a> 获取完整的组件指南。</p>
+<ul>
+<li><a href="docs/colors.md">颜色规范</a></li>
+<li><a href="docs/theme.md">主题配置</a></li>
+<li><a href="docs/button.md">按钮组件</a></li>
+<li><a href="docs/text.md">文本组件</a></li>
+<li><a href="docs/drawer.md">抽屉组件</a></li>
+<li><a href="docs/back_to_top.md">回到顶部</a></li>
+<li><a href="docs/floating_action_button.md">悬浮按钮</a></li>
+<li><a href="docs/pull_to_refresh.md">下拉刷新</a></li>
+<li><a href="docs/code_view.md">代码查看器</a></li>
+<li><a href="docs/markdown_view.md">Markdown 渲染</a></li>
+<li><a href="docs/navbar.md">导航栏组件</a></li>
+<li><a href="docs/divider.md">分割线组件</a></li>
+<li><a href="docs/notice_bar.md">公告栏组件</a></li>
+<li><a href="docs/calendar.md">日历组件</a></li>
+<li><a href="docs/pop_up.md">弹窗组件</a></li>
+<li><a href="docs/swipe_list_tile.md">滑动操作</a></li>
+<li><a href="docs/toast.md">轻提示</a></li>
+<li><a href="docs/kpan.md">K线盘面</a></li>
+<li><a href="docs/tags.md">标签组件</a></li>
+<li><a href="docs/dialog.md">对话框组件</a></li>
+<li><a href="docs/pagination.md">分页器</a></li>
+<li><a href="docs/steps.md">步骤条</a></li>
+<li><a href="docs/masonry.md">瀑布流</a></li>
+<li><a href="docs/dropdown_menu.md">下拉菜单</a></li>
+<li><a href="docs/nezha_ui.md">应用入口</a></li>
+<li><a href="docs/image_button.md">图片按钮</a></li>
+<li><a href="docs/progress_button.md">进度按钮</a></li>
+<li><a href="docs/floating_action_button.md">悬浮按钮</a></li>
+<li><a href="docs/draggable_button.md">拖拽按钮</a></li>
+</ul>
+<h2 id="-6">贡献</h2>
+<p>欢迎任何形式的贡献。如有改进建议，请提交 Issue 或 Pull Request。</p>
+<hr>
+<div align="center">
+<p><strong>如果这个项目对你有帮助，请给它一个 ⭐️ 星标！</strong></p>
+</div>
+<hr>
+<h3 id="-">🌐 全球捐赠通道</h3>
+<h4 id="-7">国内用户</h4>
+<div align="center" style="margin: 40px 0">
+<div align="center">
+<table>
+<tbody><tr>
+<td align="center" width="300">
+<img src="https://github.com/ctkqiang/ctkqiang/blob/main/assets/IMG_9863.jpg?raw=true" width="200">
+<br>
+<strong>🔵 支付宝</strong>（小企鹅在收金币哟~）
+</td>
+<td align="center" width="300">
+<img src="https://github.com/ctkqiang/ctkqiang/blob/main/assets/IMG_9859.JPG?raw=true" width="200">
+<br>
+<strong>🟢 微信支付</strong>（小绿龙在收金币哟~）
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<h4 id="-8">国际用户</h4>
+<div align="center" style="margin: 40px 0">
+  <a href="https://qr.alipay.com/fkx19369scgxdrkv8mxso92" target="_blank">
+    <img src="https://img.shields.io/badge/Alipay-全球支付-00A1E9?style=flat-square&amp;logo=alipay&amp;logoColor=white&amp;labelColor=008CD7">
+  </a>
+  <a href="https://ko-fi.com/F1F5VCZJU" target="_blank">
+    <img src="https://img.shields.io/badge/Ko--fi-买杯咖啡-FF5E5B?style=flat-square&amp;logo=ko-fi&amp;logoColor=white">
+  </a>
+  <a href="https://www.paypal.com/paypalme/ctkqiang" target="_blank">
+    <img src="https://img.shields.io/badge/PayPal-安全支付-00457C?style=flat-square&amp;logo=paypal&amp;logoColor=white">
+  </a>
+  <a href="https://donate.stripe.com/00gg2nefu6TK1LqeUY" target="_blank">
+    <img src="https://img.shields.io/badge/Stripe-企业级支付-626CD9?style=flat-square&amp;logo=stripe&amp;logoColor=white">
+  </a>
+</div>
+<hr>
+<h3 id="--2">📌 开发者社交图谱</h3>
+<h4 id="-9">技术交流</h4>
+<div align="center" style="margin: 20px 0">
+  <a href="https://github.com/ctkqiang" target="_blank">
+    <img src="https://img.shields.io/badge/GitHub-开源仓库-181717?style=for-the-badge&amp;logo=github">
+  </a>
+  <a href="https://stackoverflow.com/users/10758321/%e9%92%9f%e6%99%ba%e5%bc%ba" target="_blank">
+    <img src="https://img.shields.io/badge/Stack_Overflow-技术问答-F58025?style=for-the-badge&amp;logo=stackoverflow">
+  </a>
+  <a href="https://www.linkedin.com/in/ctkqiang/" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-职业网络-0A66C2?style=for-the-badge&amp;logo=linkedin">
+  </a>
+</div>
+<h4 id="-10">社交互动</h4>
+<div align="center" style="margin: 20px 0">
+  <a href="https://www.instagram.com/ctkqiang" target="_blank">
+    <img src="https://img.shields.io/badge/Instagram-生活瞬间-E4405F?style=for-the-badge&amp;logo=instagram">
+  </a>
+  <a href="https://twitch.tv/ctkqiang" target="_blank">
+    <img src="https://img.shields.io/badge/Twitch-技术直播-9146FF?style=for-the-badge&amp;logo=twitch">
+  </a>
+  <a href="https://github.com/ctkqiang/ctkqiang/blob/main/assets/IMG_9245.JPG?raw=true" target="_blank">
+    <img src="https://img.shields.io/badge/微信公众号-钟智强-07C160?style=for-the-badge&amp;logo=wechat">
+  </a>
+</div>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="back_to_top">
+  <span class="name"><a href="components_back_to_top/">components/back_to_top</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="button">
+  <span class="name"><a href="components_button/">components/button</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="calendar">
+  <span class="name"><a href="components_calendar/">components/calendar</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="code_view">
+  <span class="name"><a href="components_code_view/">components/code_view</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="dialog">
+  <span class="name"><a href="components_dialog/">components/dialog</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="divider">
+  <span class="name"><a href="components_divider/">components/divider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="drawer">
+  <span class="name"><a href="components_drawer/">components/drawer</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="dropdown_menu">
+  <span class="name"><a href="components_dropdown_menu/">components/dropdown_menu</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="floating_action_button">
+  <span class="name"><a href="components_floating_action_button/">components/floating_action_button</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="kpan">
+  <span class="name"><a href="components_kpan/">components/kpan</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="markdown_view">
+  <span class="name"><a href="components_markdown_view/">components/markdown_view</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="masonry">
+  <span class="name"><a href="components_masonry/">components/masonry</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="navbar">
+  <span class="name"><a href="components_navbar/">components/navbar</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="notice_bar">
+  <span class="name"><a href="components_notice_bar/">components/notice_bar</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="pagination">
+  <span class="name"><a href="components_pagination/">components/pagination</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="pop_up">
+  <span class="name"><a href="components_pop_up/">components/pop_up</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="pull_to_refresh">
+  <span class="name"><a href="components_pull_to_refresh/">components/pull_to_refresh</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="steps">
+  <span class="name"><a href="components_steps/">components/steps</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="swipe_list_tile">
+  <span class="name"><a href="components_swipe_list_tile/">components/swipe_list_tile</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="tags">
+  <span class="name"><a href="components_tags/">components/tags</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="text">
+  <span class="name"><a href="components_text/">components/text</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="toast">
+  <span class="name"><a href="components_toast/">components/toast</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="tradingview">
+  <span class="name"><a href="components_tradingview/">components/tradingview</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="database">
+  <span class="name"><a href="functions_database/">functions/database</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="nzorm">
+  <span class="name"><a href="model_nzorm/">model/nzorm</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="nezha">
+  <span class="name"><a href="nezha/">nezha</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="nezha_ui">
+  <span class="name"><a href="nezha_ui/">nezha_ui</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="colors">
+  <span class="name"><a href="theme_colors/">theme/colors</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="theme">
+  <span class="name"><a href="theme_theme/">theme/theme</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="utilities">
+  <span class="name"><a href="utilities_utilities/">utilities/utilities</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="https://github.com/ctkqiang/nezha_ui.git">nezha_ui package</a></li>
+</ol>
+
+    <h5 class="hidden-xs"><span class="package-name">nezha_ui</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="components_back_to_top/">components/back_to_top</a></li>
+      <li><a href="components_button/">components/button</a></li>
+      <li><a href="components_calendar/">components/calendar</a></li>
+      <li><a href="components_code_view/">components/code_view</a></li>
+      <li><a href="components_dialog/">components/dialog</a></li>
+      <li><a href="components_divider/">components/divider</a></li>
+      <li><a href="components_drawer/">components/drawer</a></li>
+      <li><a href="components_dropdown_menu/">components/dropdown_menu</a></li>
+      <li><a href="components_floating_action_button/">components/floating_action_button</a></li>
+      <li><a href="components_kpan/">components/kpan</a></li>
+      <li><a href="components_markdown_view/">components/markdown_view</a></li>
+      <li><a href="components_masonry/">components/masonry</a></li>
+      <li><a href="components_navbar/">components/navbar</a></li>
+      <li><a href="components_notice_bar/">components/notice_bar</a></li>
+      <li><a href="components_pagination/">components/pagination</a></li>
+      <li><a href="components_pop_up/">components/pop_up</a></li>
+      <li><a href="components_pull_to_refresh/">components/pull_to_refresh</a></li>
+      <li><a href="components_steps/">components/steps</a></li>
+      <li><a href="components_swipe_list_tile/">components/swipe_list_tile</a></li>
+      <li><a href="components_tags/">components/tags</a></li>
+      <li><a href="components_text/">components/text</a></li>
+      <li><a href="components_toast/">components/toast</a></li>
+      <li><a href="components_tradingview/">components/tradingview</a></li>
+      <li><a href="functions_database/">functions/database</a></li>
+      <li><a href="model_nzorm/">model/nzorm</a></li>
+      <li><a href="nezha/">nezha</a></li>
+      <li><a href="nezha_ui/">nezha_ui</a></li>
+      <li><a href="theme_colors/">theme/colors</a></li>
+      <li><a href="theme_theme/">theme/theme</a></li>
+      <li><a href="utilities_utilities/">utilities/utilities</a></li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+</main>
+<footer>
+  <span class="no-break">
+    nezha_ui
+      1.0.1
+  </span>
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

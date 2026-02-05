@@ -590,7 +590,7 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: const Text(
-                                      'V1.0.0 STABLE',
+                                      'V1.0.1 STABLE',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 10,

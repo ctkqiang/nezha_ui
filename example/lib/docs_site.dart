@@ -781,7 +781,7 @@ class _LandingPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     NZText.caption(
-                      'v1.0.0 Stable',
+                      'v1.0.1 Stable',
                       color: NZColor.nezhaPrimary,
                     ),
                   ],

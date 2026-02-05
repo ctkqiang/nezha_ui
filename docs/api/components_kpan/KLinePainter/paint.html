@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the paint method from the KLinePainter class, for the Dart programming language.">
+  <title>paint method - KLinePainter class - kpan library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">nezha_ui</a></li>
+    <li><a href="../../components_kpan/">components&#47;kpan.dart</a></li>
+    <li><a href="../../components_kpan/KLinePainter-class.html">KLinePainter</a></li>
+    <li class="self-crumb">paint method</li>
+  </ol>
+  <div class="self-name">paint</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="components_kpan&#47;KLinePainter-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">paint</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+  <div>
+    <ol class="annotation-list">
+        <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+    </ol>
+  </div>
+<span class="returntype">void</span>
+<span class="name ">paint</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="paint-param-canvas"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Canvas-class.html">Canvas</a></span> <span class="parameter-name">canvas</span>, </span></li>
+<li><span class="parameter" id="paint-param-size"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Size-class.html">Size</a></span> <span class="parameter-name">size</span></span></li>
+</ol>)
+
+      <div class="features"><span class="feature">override</span></div>
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Called whenever the object needs to paint. The given <a href="https://api.flutter.dev/flutter/dart-ui/Canvas-class.html">Canvas</a> has its
+coordinate space configured such that the origin is at the top left of the
+box. The area of the box is the size of the <code>size</code> argument.</p>
+<p>Paint operations should remain inside the given area. Graphical
+operations outside the bounds may be silently ignored, clipped, or not
+clipped. It may sometimes be difficult to guarantee that a certain
+operation is inside the bounds (e.g., drawing a rectangle whose size is
+determined by user inputs). In that case, consider calling
+<a href="https://api.flutter.dev/flutter/dart-ui/Canvas/clipRect.html">Canvas.clipRect</a> at the beginning of <a href="../../components_kpan/KLinePainter/paint.html">paint</a> so everything that follows
+will be guaranteed to only draw within the clipped area.</p>
+<p>Implementations should be wary of correctly pairing any calls to
+<a href="https://api.flutter.dev/flutter/dart-ui/Canvas/save.html">Canvas.save</a>/<a href="https://api.flutter.dev/flutter/dart-ui/Canvas/saveLayer.html">Canvas.saveLayer</a> and <a href="https://api.flutter.dev/flutter/dart-ui/Canvas/restore.html">Canvas.restore</a>, otherwise all
+subsequent painting on this canvas may be affected, with potentially
+hilarious but confusing results.</p>
+<p>To paint text on a <a href="https://api.flutter.dev/flutter/dart-ui/Canvas-class.html">Canvas</a>, use a <a href="https://api.flutter.dev/flutter/painting/TextPainter-class.html">TextPainter</a>.</p>
+<p>To paint an image on a <a href="https://api.flutter.dev/flutter/dart-ui/Canvas-class.html">Canvas</a>:</p>
+<ol>
+<li>
+<p>Obtain an <a href="https://api.flutter.dev/flutter/painting/ImageStream-class.html">ImageStream</a>, for example by calling <a href="https://api.flutter.dev/flutter/painting/ImageProvider/resolve.html">ImageProvider.resolve</a>
+on an <a href="https://api.flutter.dev/flutter/painting/AssetImage-class.html">AssetImage</a> or <a href="https://api.flutter.dev/flutter/painting/NetworkImage-class.html">NetworkImage</a> object.</p>
+</li>
+<li>
+<p>Whenever the <a href="https://api.flutter.dev/flutter/painting/ImageStream-class.html">ImageStream</a>'s underlying <a href="https://api.flutter.dev/flutter/painting/ImageInfo-class.html">ImageInfo</a> object changes
+(see <a href="https://api.flutter.dev/flutter/painting/ImageStream/addListener.html">ImageStream.addListener</a>), create a new instance of your custom
+paint delegate, giving it the new <a href="https://api.flutter.dev/flutter/painting/ImageInfo-class.html">ImageInfo</a> object.</p>
+</li>
+<li>
+<p>In your delegate's <a href="../../components_kpan/KLinePainter/paint.html">paint</a> method, call the <a href="https://api.flutter.dev/flutter/dart-ui/Canvas/drawImage.html">Canvas.drawImage</a>,
+<a href="https://api.flutter.dev/flutter/dart-ui/Canvas/drawImageRect.html">Canvas.drawImageRect</a>, or <a href="https://api.flutter.dev/flutter/dart-ui/Canvas/drawImageNine.html">Canvas.drawImageNine</a> methods to paint the
+<a href="https://api.flutter.dev/flutter/painting/ImageInfo/image.html">ImageInfo.image</a> object, applying the <a href="https://api.flutter.dev/flutter/painting/ImageInfo/scale.html">ImageInfo.scale</a> value to
+obtain the correct rendering size.</p>
+</li>
+</ol>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">@override
+void paint(Canvas canvas, Size size) {
+  if (data.isEmpty) return;
+
+  final double baseCandleWidth = 10.0;
+  final double candleWidth = baseCandleWidth * scale;
+  final double candlePadding = candleWidth * 0.2;
+
+  &#47;&#47; Calculate how many candles can fit in the viewport
+  final int visibleCount = (size.width &#47; candleWidth).ceil() + 1;
+
+  &#47;&#47; Calculate the start index based on scrollOffset
+  &#47;&#47; Default scrollOffset is 0, which means the rightmost candle is at the right edge
+  final double totalWidth = data.length * candleWidth;
+  final double maxScroll = max(0.0, totalWidth - size.width);
+
+  &#47;&#47; Clamp scrollOffset to stay within data bounds
+  final double effectiveScroll = scrollOffset.clamp(-maxScroll, 0.0);
+
+  &#47;&#47; Start drawing from...
+  final int startIndex = ((-effectiveScroll) &#47; candleWidth).floor().clamp(
+    0,
+    data.length,
+  );
+  final int endIndex = (startIndex + visibleCount).clamp(0, data.length);
+
+  final List&lt;KLineData&gt; visibleData = data.sublist(startIndex, endIndex);
+  if (visibleData.isEmpty) return;
+
+  final double chartHeight = size.height * 0.7;
+  final double volumeHeight = size.height * 0.2;
+
+  &#47;&#47; Calculate Min&#47;Max for Scaling (only for visible data)
+  double minPrice = visibleData.map((e) =&gt; e.low).reduce(min);
+  double maxPrice = visibleData.map((e) =&gt; e.high).reduce(max);
+  double maxVolume = visibleData.map((e) =&gt; e.volume).reduce(max);
+
+  &#47;&#47; Padding for Price Axis
+  final double pricePadding = (maxPrice - minPrice) * 0.1;
+  minPrice -= pricePadding;
+  maxPrice += pricePadding;
+
+  &#47;&#47; Draw Grid &amp; Axes
+  _drawGrid(canvas, size, chartHeight, volumeHeight, minPrice, maxPrice);
+
+  &#47;&#47; Draw Candles &amp; Volumes
+  for (int i = startIndex; i &lt; endIndex; i++) {
+    final d = data[i];
+    final isUp = d.close &gt;= d.open;
+    final color = isUp ? upColor : downColor;
+
+    &#47;&#47; Calculate X position relative to viewport
+    final x = (i * candleWidth) + effectiveScroll + candleWidth &#47; 2;
+
+    if (x &lt; -candleWidth || x &gt; size.width + candleWidth) continue;
+
+    &#47;&#47; Candle Y positions
+    final yOpen = _getY(d.open, minPrice, maxPrice, chartHeight);
+    final yClose = _getY(d.close, minPrice, maxPrice, chartHeight);
+    final yHigh = _getY(d.high, minPrice, maxPrice, chartHeight);
+    final yLow = _getY(d.low, minPrice, maxPrice, chartHeight);
+
+    &#47;&#47; Volume Y positions
+    final vY = size.height - (d.volume &#47; maxVolume) * volumeHeight;
+
+    &#47;&#47; Draw Volume
+    final vPaint = Paint()..color = color.withValues(alpha: 0.4);
+    canvas.drawRect(
+      Rect.fromLTRB(
+        x - candleWidth &#47; 2 + candlePadding,
+        vY,
+        x + candleWidth &#47; 2 - candlePadding,
+        size.height,
+      ),
+      vPaint,
+    );
+
+    &#47;&#47; Draw Candle
+    _drawCandle(
+      canvas,
+      x,
+      candleWidth - candlePadding * 2,
+      yOpen,
+      yClose,
+      yHigh,
+      yLow,
+      isUp,
+      color,
+    );
+  }
+
+  &#47;&#47; Draw MA Lines (Only for visible range + padding for continuity)
+  if (indicators.contains(KLineIndicator.ma)) {
+    _drawMA(
+      canvas,
+      5,
+      Colors.orange,
+      minPrice,
+      maxPrice,
+      chartHeight,
+      candleWidth,
+      effectiveScroll,
+    );
+    _drawMA(
+      canvas,
+      10,
+      Colors.blue,
+      minPrice,
+      maxPrice,
+      chartHeight,
+      candleWidth,
+      effectiveScroll,
+    );
+  }
+
+  &#47;&#47; Draw EMA Lines
+  if (indicators.contains(KLineIndicator.ema)) {
+    _drawEMA(
+      canvas,
+      7,
+      Colors.purple,
+      minPrice,
+      maxPrice,
+      chartHeight,
+      candleWidth,
+      effectiveScroll,
+    );
+    _drawEMA(
+      canvas,
+      25,
+      Colors.teal,
+      minPrice,
+      maxPrice,
+      chartHeight,
+      candleWidth,
+      effectiveScroll,
+    );
+  }
+
+  &#47;&#47; Handle Crosshair
+  if (tapPosition != null) {
+    &#47;&#47; Find the index based on tapPosition and scrollOffset
+    final double relativeX = tapPosition!.dx - effectiveScroll;
+    final int index = (relativeX &#47; candleWidth).floor().clamp(
+      0,
+      data.length - 1,
+    );
+    final selected = data[index];
+
+    final x = (index * candleWidth) + effectiveScroll + candleWidth &#47; 2;
+
+    final chPaint = Paint()
+      ..color = textColor.withValues(alpha: 0.5)
+      ..strokeWidth = 1;
+
+    &#47;&#47; Vertical line
+    canvas.drawLine(Offset(x, 0), Offset(x, size.height), chPaint);
+    &#47;&#47; Horizontal line
+    canvas.drawLine(
+      Offset(0, tapPosition!.dy),
+      Offset(size.width, tapPosition!.dy),
+      chPaint,
+    );
+
+    onDataSelected(selected);
+
+    &#47;&#47; Draw Info Tooltip
+    _drawTooltip(canvas, size, selected, isDark);
+
+    &#47;&#47; Draw Price Label on crosshair
+    final double priceAtY =
+        maxPrice - (tapPosition!.dy &#47; chartHeight) * (maxPrice - minPrice);
+    if (tapPosition!.dy &lt;= chartHeight) {
+      _drawPriceTag(
+        canvas,
+        priceAtY.toStringAsFixed(2),
+        Offset(size.width - 50, tapPosition!.dy - 10),
+        isDark: true,
+      );
+    }
+  } else {
+    onDataSelected(null);
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">nezha_ui</a></li>
+    <li><a href="../../components_kpan/">kpan</a></li>
+    <li><a href="../../components_kpan/KLinePainter-class.html">KLinePainter</a></li>
+    <li class="self-crumb">paint method</li>
+</ol>
+
+    <h5>KLinePainter class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    nezha_ui
+      1.0.1
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

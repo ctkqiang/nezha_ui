@@ -21,7 +21,7 @@ NezhaUI 是一套基于 Flutter 构建的移动端设计系统，致力于为现
 
 ```yaml
 dependencies:
-  nezha_ui: ^1.0.0
+  nezha_ui: ^1.0.1
 ```
 
 或者通过命令行安装：
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return NezhaApp(
       title: 'NezhaUI 示例',
-      theme: NZTheme.lightTheme,
+      theme: NZTheme.lightTheme(),
       home: const MyHomePage(),
     );
   }
@@ -92,8 +92,11 @@ class MyApp extends StatelessWidget {
 ### 滑动操作 (Swipe Action)
 模拟原生移动端滑动交互，支持左/右/上/下四个方向滑出操作按钮，完美适配各类列表操作场景。
 
-### 进度按钮 (Progress Button)
-带有实时进度条背景的按钮，适用于下载、上传或耗时操作，提供直观的状态反馈。
+### 瀑布流 (NZMasonry)
+高性能瀑布流布局，支持多列等宽不等高排列、交错入场动画及 Builder 模式。经过深度算法优化，即使在处理海量数据时也能保持极高的渲染效率。
+
+### 进度按钮 (NZProgressButton)
+带有实时进度条背景的专业级按钮，适用于下载、上传或长耗时异步操作，提供极具沉浸感的直观状态反馈。
 
 ### 日历组件 (Calendar)
 专业级日历组件，支持多样式切换、农历显示、平滑动画及自定义主题。
@@ -105,6 +108,10 @@ class MyApp extends StatelessWidget {
 
 请参考 [docs/nezha_ui.md](docs/nezha_ui.md) 获取完整的组件指南。
 
+### 📚 API 引用
+- [**Full API Reference**](https://www.ctkqiang.xin/nezha_ui/docs/api/index.html) - 自动生成的详细代码文档。
+
+### 📖 核心指南
 - [颜色规范](docs/colors.md)
 - [主题配置](docs/theme.md)
 - [按钮组件](docs/button.md)
@@ -139,6 +146,93 @@ class MyApp extends StatelessWidget {
 
 欢迎任何形式的贡献。如有改进建议，请提交 Issue 或 Pull Request。
 
-## 开源协议
+---
 
-本项目基于 MIT 协议开源。
+
+<div align="center">
+
+**如果这个项目对你有帮助，请给它一个 ⭐️ 星标！**
+
+</div>
+
+--- 
+
+### 🌐 全球捐赠通道
+
+#### 国内用户
+
+<div align="center" style="margin: 40px 0">
+
+<div align="center">
+<table>
+<tr>
+<td align="center" width="300">
+<img src="https://github.com/ctkqiang/ctkqiang/blob/main/assets/IMG_9863.jpg?raw=true" width="200" />
+<br />
+<strong>🔵 支付宝</strong>（小企鹅在收金币哟~）
+</td>
+<td align="center" width="300">
+<img src="https://github.com/ctkqiang/ctkqiang/blob/main/assets/IMG_9859.JPG?raw=true" width="200" />
+<br />
+<strong>🟢 微信支付</strong>（小绿龙在收金币哟~）
+</td>
+</tr>
+</table>
+</div>
+</div>
+
+#### 国际用户
+
+<div align="center" style="margin: 40px 0">
+  <a href="https://qr.alipay.com/fkx19369scgxdrkv8mxso92" target="_blank">
+    <img src="https://img.shields.io/badge/Alipay-全球支付-00A1E9?style=flat-square&logo=alipay&logoColor=white&labelColor=008CD7">
+  </a>
+  
+  <a href="https://ko-fi.com/F1F5VCZJU" target="_blank">
+    <img src="https://img.shields.io/badge/Ko--fi-买杯咖啡-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white">
+  </a>
+  
+  <a href="https://www.paypal.com/paypalme/ctkqiang" target="_blank">
+    <img src="https://img.shields.io/badge/PayPal-安全支付-00457C?style=flat-square&logo=paypal&logoColor=white">
+  </a>
+  
+  <a href="https://donate.stripe.com/00gg2nefu6TK1LqeUY" target="_blank">
+    <img src="https://img.shields.io/badge/Stripe-企业级支付-626CD9?style=flat-square&logo=stripe&logoColor=white">
+  </a>
+</div>
+
+---
+
+### 📌 开发者社交图谱
+
+#### 技术交流
+
+<div align="center" style="margin: 20px 0">
+  <a href="https://github.com/ctkqiang" target="_blank">
+    <img src="https://img.shields.io/badge/GitHub-开源仓库-181717?style=for-the-badge&logo=github">
+  </a>
+  
+  <a href="https://stackoverflow.com/users/10758321/%e9%92%9f%e6%99%ba%e5%bc%ba" target="_blank">
+    <img src="https://img.shields.io/badge/Stack_Overflow-技术问答-F58025?style=for-the-badge&logo=stackoverflow">
+  </a>
+  
+  <a href="https://www.linkedin.com/in/ctkqiang/" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-职业网络-0A66C2?style=for-the-badge&logo=linkedin">
+  </a>
+</div>
+
+#### 社交互动
+
+<div align="center" style="margin: 20px 0">
+  <a href="https://www.instagram.com/ctkqiang" target="_blank">
+    <img src="https://img.shields.io/badge/Instagram-生活瞬间-E4405F?style=for-the-badge&logo=instagram">
+  </a>
+  
+  <a href="https://twitch.tv/ctkqiang" target="_blank">
+    <img src="https://img.shields.io/badge/Twitch-技术直播-9146FF?style=for-the-badge&logo=twitch">
+  </a>
+  
+  <a href="https://github.com/ctkqiang/ctkqiang/blob/main/assets/IMG_9245.JPG?raw=true" target="_blank">
+    <img src="https://img.shields.io/badge/微信公众号-钟智强-07C160?style=for-the-badge&logo=wechat">
+  </a>
+</div>

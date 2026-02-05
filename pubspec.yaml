@@ -1,6 +1,6 @@
 name: nezha_ui
-description: "A new Flutter package project."
-version: 0.0.1
+description: "轻量、优雅且专业的 Flutter 移动端组件库。NezhaUI 致力于为现代应用开发提供丝滑、灵敏且高度可定制的 UI 组件。"
+version: 1.0.1
 homepage: "https://github.com/ctkqiang/nezha_ui.git"
 
 environment:
